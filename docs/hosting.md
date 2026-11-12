@@ -6,20 +6,20 @@ Prebuilt runtime users do not need Rust, Git, Python, CMake or a C++ compiler. L
 
 ## Prebuilt container bootstrap
 
-The configured image is `ghcr.io/zionqyl/luau-decompiler:0.4.0-rc.3`. It has **not been published or runtime-tested in this workspace**. The repository's public API returned HTTP 404; no publication credentials or Linux/Docker runner are available. The following commands become operational only after the immutable tag is published by the [release workflow](../.github/workflows/publish.yml) and its Linux/container acceptance passes. They are not current installation claims.
+The configured candidate image is `ghcr.io/zionqyl/luau-decompiler:0.4.0-rc.4`. A direct source-built container passed clean Ubuntu 24.04 CI, as recorded [below](#evidence-boundary-for-this-candidate). Matching registry publication and anonymous pull are still pending. The following commands become operational only after the tested immutable image is published by the [release workflow](../.github/workflows/publish.yml); they are not current published-installation claims.
 
 Use the `deployment` directory and `release.json` from one matching runtime bundle. Prerequisites are Docker Engine or Docker Desktop with Compose v2 and permission to run Docker. The Windows bootstrap uses Windows PowerShell 5.1 or newer. The Linux bootstrap additionally needs `curl`, `sha256sum`, `od`, `tr`, `sed`, `grep`, `awk`, `cut`, `wc`, `flock`, and `timeout` from the ordinary distribution tools.
 
 Windows, from the extracted runtime root:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ./deployment/start-server.ps1 -Version 0.4.0-rc.3 -Preview
+powershell -NoProfile -ExecutionPolicy Bypass -File ./deployment/start-server.ps1 -Version 0.4.0-rc.4 -Preview
 ```
 
-Linux, from the matching runtime root, after that platform has passed acceptance:
+Linux, from the matching runtime root, after the tested image has been published:
 
 ```sh
-sh deployment/start-server.sh start --version 0.4.0-rc.3 --preview
+sh deployment/start-server.sh start --version 0.4.0-rc.4 --preview
 ```
 
 The bootstrap pulls once, resolves a repository digest, starts the service, waits for authenticated readiness, and performs one small verified-typed operation before activating configuration. The local endpoint is `http://127.0.0.1:7879`. It generates a protected persistent `credential.txt`; routine output gives its path without printing the credential. Retrieve it explicitly with `Get-Content` on Windows or `cat` on Linux, and supply `Authorization: Bearer TOKEN` to clients. Treat the credential and `server.env` as secrets.
@@ -100,4 +100,8 @@ The Windows release driver owns comprehensive runtime acceptance once at the ext
 
 ## Evidence boundary for this candidate
 
-The available development host is Windows. It has no installed WSL distribution, Docker, Podman or Linux runner. Linux build execution, container startup, reverse-proxy TLS and Linux packaging tests are **not run** on this host. The Linux build/deployment files and CI job are reproducible procedures, not completed Linux release evidence. macOS and mobile remain untested. Advertise a Linux binary only after the Linux job and package acceptance complete; do not relabel Windows acceptance or Python syntax checks as Linux validation.
+The [Linux candidate job](https://github.com/zionqyl/luau-decompiler/actions/runs/43271305691/job/131368239885) completed successfully on a clean GitHub-hosted Ubuntu 24.04 runner at commit `8749f133897978c3d0495d85aeb88de72fe7ba7e`. It ran the Rust 1.85 all-target check, pinned build, formatting, Clippy and ordinary Cargo tests; extracted-runtime acceptance with independent compiler/typed-oracle tools; container build, authenticated startup/readiness and a verified-typed request; same-container restart, clean shutdown and shell shutdown contracts; and runtime/image archival.
+
+This is actual Linux CI evidence, independent of the local Windows host, which still has no installed Linux/Docker runtime. The public job result and step conclusions were observed; detailed artifacts require authenticated download and their exact case counts, executable/image hashes and full reports have not been retrieved into this checkout. The Rust engine/runtime implementation is unchanged since that tested commit; later workflow and diagnostic-only test changes are not claimed as another Linux execution.
+
+The direct container check does not certify a distinct-image upgrade/rollback, the complete bootstrap lifecycle, published anonymous registry access, reverse-proxy HTTPS, another Linux distribution, macOS or mobile. Registry publication and matching downloadable assets remain separate pending boundaries. A passing Linux job does not imply that the complete Windows release gate passed.

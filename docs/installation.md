@@ -1,6 +1,6 @@
 # Install and use offline
 
-Windows x64 is the supported installer target. The runtime contains the Rust executable, pinned analyzer and manifest, Roblox definitions, a small check fixture, and the required notices. Ordinary processing needs no Roblox, executor, account, server, Git, Rust, Python, CMake, or C++ compiler.
+Windows x64 is the supported transactional-installer target. Linux x64 runtime/container acceptance passed clean Ubuntu 24.04 CI; its publication and deployment boundaries are described in [hosting](hosting.md#evidence-boundary-for-this-candidate). The runtime contains the Rust executable, pinned analyzer and manifest, Roblox definitions, a small check fixture, and the required notices. Ordinary processing needs no Roblox, executor, account, server, Git, Rust, Python, CMake, or C++ compiler.
 
 ## Current distribution status
 
@@ -64,7 +64,7 @@ This command names the real configured source location but is not operational un
 & ([scriptblock]::Create((Invoke-RestMethod https://raw.githubusercontent.com/zionqyl/luau-decompiler/main/scripts/install.ps1))) -Repository zionqyl/luau-decompiler -Preview
 ```
 
-Linux installation and the prebuilt-container path require actual Linux/container acceptance and publication. Those environments are unavailable in this session. See [self-hosting](hosting.md), [evidence](evidence.md), and [contributor setup](development.md).
+The Linux x64 runtime and direct container passed clean Ubuntu 24.04 CI at the recorded commit. Matching public runtime/image publication is still pending, so the prebuilt pull path is not yet an operational download claim. This does not certify the bootstrap's distinct-image update/rollback or HTTPS lifecycle. See [self-hosting](hosting.md), [evidence](evidence.md), and [contributor setup](development.md).
 
 ## Interrupted first installation
 

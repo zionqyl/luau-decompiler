@@ -6,11 +6,17 @@ on:
       - "**/*.md"
       - "docs/**"
       - "evidence/**"
+      - "scripts/setup.ps1"
+      - "scripts/env.ps1"
+      - "tests/release-requirements-rc.json"
   pull_request:
     paths-ignore:
       - "**/*.md"
       - "docs/**"
       - "evidence/**"
+      - "scripts/setup.ps1"
+      - "scripts/env.ps1"
+      - "tests/release-requirements-rc.json"
   workflow_dispatch:
 permissions:
   contents: read

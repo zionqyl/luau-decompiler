@@ -18,7 +18,7 @@ Prepare the pinned tools using the [development instructions](development.md), t
 ./scripts/release.ps1
 ```
 
-Ordinary Cargo tests do not replace ignored compiler/oracle/analyzer matrices. `validate.ps1` verifies the first-party comment rule, pinned assets, required source/case identities, ordinary and ignored tests, adapter mocks, malformed-input coverage, and source/tool freshness. `release.ps1` owns that optimized gate once, then packages and comprehensively checks the exact extracted runtime. CI calls this driver instead of repeating formatting, Clippy and package acceptance. Neither command certifies Linux, macOS, mobile, or a live executor.
+Ordinary Cargo tests do not replace ignored compiler/oracle/analyzer matrices. `validate.ps1` verifies the first-party comment rule, pinned assets, required source/case identities, ordinary and ignored tests, adapter mocks, malformed-input coverage, and source/tool freshness. `release.ps1` owns that optimized gate once, then packages and comprehensively checks the exact extracted runtime. CI calls this driver instead of repeating formatting, Clippy and package acceptance. Each platform and live executor still needs its own evidence; a Windows gate does not certify another environment.
 
 Ordinary tests run once through `cargo test --all-targets`. Required ignored compiler/oracle/analyzer cases are then selected with `--ignored`, so ordinary cases are not run a second time. The single `runtime-smoke.py` owner includes the former unique missing-analyzer/strict-benchmark negative, per-request formatting, authentication, source/bytecode, batches and controlled behavioral checks. The two staging smoke wrappers were retired only after these assertions migrated.
 
@@ -70,7 +70,7 @@ The historical rc.1 development session observed four native function dumps and 
 
 The prepared [controlled place](native-place-v3.md) has fourteen known-source fixtures and host preparation checks. Normal-engine compilation through that place, native getters and typed native observations remains unrun. A catalog entry, getter capability, handshake, or documentation match does not replace this evidence.
 
-Windows is the available host. No Linux or Mac runner is available; Linux build/container/TLS/package execution and macOS packages/tests are not run. The Linux deployment files and CI procedure are implementation, not a tested Linux artifact. Android/iOS same-device or paired encrypted executor transport remains uncertified. See the [support matrix](support-matrix-rc.md) and [adapter contract](adapter-rc.md).
+The local host is Windows. A clean Ubuntu 24.04 [CI job](https://github.com/zionqyl/luau-decompiler/actions/runs/43271305691/job/131368239885) passed for commit `8749f133897978c3d0495d85aeb88de72fe7ba7e`, covering the Linux runtime, extracted-package acceptance, and source-built container lifecycle described in the [hosting evidence](hosting.md#evidence-boundary-for-this-candidate). Detailed archived artifacts have not been retrieved because download requires authentication. Published image pulls, distinct-image upgrades and rollback, HTTPS, macOS packages, and mobile integration remain unverified. Android/iOS same-device or paired encrypted executor transport remains uncertified. See the [support matrix](support-matrix-rc.md) and [adapter contract](adapter-rc.md).
 
 ## Provenance and history
 

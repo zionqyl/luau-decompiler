@@ -2,9 +2,11 @@
 
 A standalone Rust decompiler and source processor for readable, meaningfully typed Luau, with an entirely browser-local application.
 
+[Open the browser app](https://zionqyl.github.io/luau-decompiler/) — processing and strict validation run locally on your device.
+
 ## Status
 
-`0.4.0-rc.4` is a release candidate. Windows x64 is the tested native target. The Next.js static export uses the shared Rust WASM engine and the actual pinned Luau compiler/strict analyzer in workers. [Browser setup and publication status](docs/browser.md).
+`0.4.0-rc.4` is a release candidate. Windows x64 has local validation; Linux x64 runtime and container checks passed clean Ubuntu 24.04 CI. Published runtime/image availability remains separate. The static browser application uses the shared Rust WASM engine and pinned Luau compiler/strict analyzer in workers. [Browser status](docs/browser.md) / [platform evidence](docs/hosting.md#evidence-boundary-for-this-candidate).
 
 Supported inputs are explicit Luau bytecode profiles 3 through 14, the evidenced Roblox signed-container profile, and documented source subsets. Standard Lua/LuaJIT bytecode is recognized and rejected. Missing contracts and unsupported operations remain visible; strict success is separate from behavioral correctness.
 
@@ -54,6 +56,6 @@ return answer
 
 ## Limits and license
 
-Support is per program. Erased source types and unknown external contracts cannot be recovered by assumption. Linux/container, macOS and mobile execution remain untested here. See the [support matrix](docs/support-matrix-rc.md), [limitations](docs/remaining-limitations-rc.md) and [candidate assessment](docs/release-candidate.md).
+Support is per program. Erased types and unknown external contracts cannot be recovered by assumption. Linux evidence covers its recorded CI environment; HTTPS, distinct-image upgrades, macOS and mobile remain untested. See the [support matrix](docs/support-matrix-rc.md), [limitations](docs/remaining-limitations-rc.md) and [candidate assessment](docs/release-candidate.md).
 
 Tool code is MIT licensed: [LICENSE](LICENSE), [third-party notices](docs/third-party.md). MM2 examples use the separately recorded owner permission and are not relicensed under the tool's MIT license. Original bytecode and unrelated engine/dependency code stay private.

@@ -358,7 +358,15 @@
     "nested_pack_record_any",
     "nested_unknown",
     "recursive_record_clean",
-    "sdk_calls_clean"
+    "sdk_calls_clean",
+    "context_module_number",
+    "context_changed_module_reject",
+    "context_module_removed",
+    "context_contract_number",
+    "context_changed_contract_reject",
+    "context_contract_string",
+    "context_contract_removed",
+    "context_plain_positive_after_rejections"
   ],
   "analyzer_quality_self_test_flags": [
     "cycle_clean",

@@ -11,6 +11,17 @@ try {
             throw ('Download checksum mismatch: ' + $Path)
         }
     }
+    $ripgrepDirectory = '.tools/ripgrep-14.1.1-x86_64-pc-windows-msvc'
+    $ripgrepExecutable = Join-Path $ripgrepDirectory 'rg.exe'
+    if (-not (Test-Path -LiteralPath $ripgrepExecutable)) {
+        Get-CheckedDownload 'https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-pc-windows-msvc.zip' '.tools/ripgrep-14.1.1-windows.zip' 'd0f534024c42afd6cb4d38907c25cd2b249b79bbe6cc1dbee8e3e37c2b6e25a1'
+        Expand-Archive -LiteralPath '.tools/ripgrep-14.1.1-windows.zip' -DestinationPath '.tools' -Force
+    }
+    if ((Get-FileHash -LiteralPath $ripgrepExecutable -Algorithm SHA256).Hash.ToLowerInvariant() -ne 'f162b54de2adfc72d78adb1dbada2dedda111ae0a5e2f6e9500f4f909664c5d2') {
+        throw 'Pinned ripgrep binary checksum mismatch'
+    }
+    $ripgrepVersion = @(& $ripgrepExecutable --version)
+    if ($LASTEXITCODE -ne 0 -or $ripgrepVersion[0] -cne 'ripgrep 14.1.1 (rev 4649aa9700)') { throw 'Pinned ripgrep version check failed' }
     if (-not (Test-Path -LiteralPath 'vendor/luau/.git')) {
         & git clone --branch $lock.tag --depth 1 $lock.repository vendor/luau
         if ($LASTEXITCODE -ne 0) { throw 'Official Luau clone failed' }

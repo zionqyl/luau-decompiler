@@ -1,5 +1,8 @@
 
 $taskRoot = Split-Path -Parent $PSScriptRoot
+if (Test-Path -LiteralPath (Join-Path $taskRoot '.tools/ripgrep-14.1.1-x86_64-pc-windows-msvc/rg.exe')) {
+    $env:PATH = (Join-Path $taskRoot '.tools/ripgrep-14.1.1-x86_64-pc-windows-msvc') + ';' + $env:PATH
+}
 if (Test-Path -LiteralPath (Join-Path $taskRoot '.tools/cargo/bin/cargo.exe')) {
     $env:RUSTUP_HOME = Join-Path $taskRoot '.tools/rustup'
     $env:CARGO_HOME = Join-Path $taskRoot '.tools/cargo'
