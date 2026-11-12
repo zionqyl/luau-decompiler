@@ -6,16 +6,16 @@ A standalone Rust decompiler and source processor for readable, meaningfully typ
 
 ## Status
 
-`0.4.0-rc.4` is a release candidate. Windows x64 has local validation; Linux x64 runtime and container checks passed clean Ubuntu 24.04 CI. Published runtime/image availability remains separate. The static browser application uses the shared Rust WASM engine and pinned Luau compiler/strict analyzer in workers. [Browser status](docs/browser.md) / [platform evidence](docs/hosting.md#evidence-boundary-for-this-candidate).
+`0.4.0-rc.4` is a [published release candidate](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.4). Windows x64 runtime/installer and Ubuntu 24.04 x64 runtime/container checks passed clean CI; the public Windows installation and anonymous container pull were verified. The static browser application uses the shared Rust WASM engine and pinned Luau compiler/strict analyzer in workers. [Browser status](docs/browser.md) / [platform evidence](docs/hosting.md#evidence-boundary-for-this-candidate).
 
 Supported inputs are explicit Luau bytecode profiles 3 through 14, the evidenced Roblox signed-container profile, and documented source subsets. Standard Lua/LuaJIT bytecode is recognized and rejected. Missing contracts and unsupported operations remain visible; strict success is separate from behavioral correctness.
 
 ## Install on Windows
 
-Use the runtime ZIP, matching checksum sidecar and bundled installer. Public release-download status is recorded in the [installation guide](docs/installation.md).
+Install the verified prebuilt runtime per user. No contributor toolchain is required. [Installation and offline ZIP usage](docs/installation.md).
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Archive .\luau-decompiler-0.4.0-rc.4-windows-x64.zip -Preview
+& ([scriptblock]::Create((Invoke-RestMethod https://raw.githubusercontent.com/zionqyl/luau-decompiler/v0.4.0-rc.4/scripts/install.ps1))) -Repository zionqyl/luau-decompiler -Version 0.4.0-rc.4 -Preview
 ```
 
 No developer tools, account, Roblox, executor or server are needed for installed offline processing.
@@ -51,7 +51,7 @@ return answer
 | CLI and input scope | [API](API.md) / [supported inputs](docs/source-input.md) |
 | Rust embedding | [Working example](examples/embed.rs) |
 | Optional HTTP service | [Self-hosting](docs/hosting.md) |
-| MM2 showcase | [Observed client hierarchy and per-file outcomes](examples/Murder%20Mystery%202/manifest.json) / [scope and permission](docs/client-corpus.md) |
+| MM2 showcase | [Browse scripts](examples/Murder%20Mystery%202) / [scope, outcomes and permission](docs/client-corpus.md) |
 | Development and evidence | [Development](docs/development.md) / [validation](docs/validation.md) |
 
 ## Limits and license

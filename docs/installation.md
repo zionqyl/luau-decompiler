@@ -4,7 +4,15 @@ Windows x64 is the supported transactional-installer target. Linux x64 runtime/c
 
 ## Current distribution status
 
-The configured publisher is `zionqyl/luau-decompiler`, recorded in [release.json](../release.json). A configured repository is not proof of a published asset. Use the matching local runtime/checksum files while public release availability is unverified; the release assessment records actual publication evidence. The remote bootstrap below is inactive until the script and matching assets have been published.
+The [rc.4 release](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.4) publishes matching Windows/Linux runtimes, source, evidence, indexes and checksum sidecars from source `6a84b6248681552ff1746347caf24b9e64e47995`. The tag-pinned online installer was tested against those public assets in a separate Unicode/space destination, including diagnosis, verified bytecode, CLI/stdin, HTTP quality rejection and owned uninstall. Ordinary installation requires no account or developer tools. The default adds the owned per-user command directory to PATH; `-NoPath` is available.
+
+## Windows: one-command installation
+
+```powershell
+& ([scriptblock]::Create((Invoke-RestMethod https://raw.githubusercontent.com/zionqyl/luau-decompiler/v0.4.0-rc.4/scripts/install.ps1))) -Repository zionqyl/luau-decompiler -Version 0.4.0-rc.4 -Preview
+```
+
+The version and preview channel are explicit. The installer resolves one release, verifies its runtime checksum and every manifest file, then runs a small verified-typed diagnosis before activation. Its streaming SHA-256 implementation does not depend on the optional PowerShell `Get-FileHash` function.
 
 ## Windows: install a downloaded runtime
 
@@ -56,15 +64,11 @@ This explicit migration verifies the active runtime and its diagnosis, promotes 
 
 Checksums and manifests establish integrity relative to the configured publisher; they are not signing keys. The installer rejects unowned nonempty destinations, archive traversal, duplicate entries, symbolic links, excessive sizes and mismatched component versions.
 
-## Remote bootstrap after publication
+## Linux and container downloads
 
-This command names the real configured source location but is not operational until that script and matching assets are published:
+The same [release](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.4) provides `luau-decompiler-0.4.0-rc.4-linux-x64.tar.gz` and its checksum. The Linux runtime and exact container passed clean Ubuntu 24.04 CI; the published TAR's 77 manifest files and validation reports were independently audited. Linux currently uses the portable TAR rather than the Windows transactional installer.
 
-```powershell
-& ([scriptblock]::Create((Invoke-RestMethod https://raw.githubusercontent.com/zionqyl/luau-decompiler/main/scripts/install.ps1))) -Repository zionqyl/luau-decompiler -Preview
-```
-
-The Linux x64 runtime and direct container passed clean Ubuntu 24.04 CI at the recorded commit. Matching public runtime/image publication is still pending, so the prebuilt pull path is not yet an operational download claim. This does not certify the bootstrap's distinct-image update/rollback or HTTPS lifecycle. See [self-hosting](hosting.md), [evidence](evidence.md), and [contributor setup](development.md).
+The published image's anonymous digest pull passed. [Self-hosting](hosting.md) documents the prebuilt image and bootstrap prerequisites. The Linux bootstrap base flow, failed missing-image update preservation and credential persistence passed a focused Ubuntu run. Successful distinct-image upgrades/rollback, actual Windows Docker bootstrap and HTTPS remain separate untested boundaries.
 
 ## Interrupted first installation
 
