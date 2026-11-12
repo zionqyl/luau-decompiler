@@ -1,0 +1,245 @@
+name: published-selfhost-acceptance
+on:
+  push:
+    branches: [validation/rc4-public-selfhost]
+permissions:
+  contents: read
+concurrency:
+  group: published-selfhost-acceptance
+  cancel-in-progress: false
+jobs:
+  published-bootstrap:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 6a84b6248681552ff1746347caf24b9e64e47995
+      - name: Test the published runtime bootstrap without building
+        id: acceptance
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import datetime,hashlib,http.client,io,json,os,pathlib,re,subprocess,tarfile,time,urllib.request
+          source='6a84b6248681552ff1746347caf24b9e64e47995'
+          image='ghcr.io/zionqyl/luau-decompiler@sha256:24f508c5b35c080a503630b408987badd946f777e6ddc1571dfa2e8e05706494'
+          tag='v0.4.0-rc.4'
+          version='0.4.0-rc.4'
+          root=pathlib.Path.cwd()
+          work=pathlib.Path(os.environ['RUNNER_TEMP'])/('luau-published-selfhost-'+os.environ['GITHUB_RUN_ID'])
+          work.mkdir(mode=0o700)
+          state=work/'server state'
+          bundle=work/'published bundle'
+          bundle.mkdir(mode=0o700)
+          docker_config=work/'anonymous docker'
+          docker_config.mkdir(mode=0o700)
+          environment=dict(os.environ,DOCKER_CONFIG=str(docker_config))
+          artifacts=root/'artifacts/published-selfhost'
+          artifacts.mkdir(parents=True)
+          name='luau-decompiler-'+version+'-published-selfhost-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.json'
+          report_path=artifacts/name
+          deadline=time.monotonic()+480
+          report={'schema':1,'passed':False,'version':version,'tag':tag,'source_commit':source,'harness_commit':os.environ['GITHUB_SHA'],'harness_workflow_ref':os.environ['GITHUB_WORKFLOW_REF'],'workflow_run':os.environ['GITHUB_RUN_ID'],'workflow_attempt':os.environ['GITHUB_RUN_ATTEMPT'],'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'Actual published Linux bundle bootstrap and exact published image; controlled source is compiled/analyzed, never executed','image':image,'cases':[],'not_run':['distinct-image successful upgrade','distinct-image rollback','HTTPS/reverse proxy','other distributions and architectures'],'stage':'guard','publication_guard_passed':False}
+          token=None
+          project=None
+          def require(condition,message):
+              if not condition: raise RuntimeError(message)
+          def sha(data): return hashlib.sha256(data).hexdigest()
+          def command(arguments,limit=60,success=True):
+              remaining=min(limit,deadline-time.monotonic())
+              require(remaining>0,'Shared acceptance deadline exhausted')
+              result=subprocess.run(arguments,env=environment,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=remaining)
+              if (result.returncode==0)!=success:
+                  raise RuntimeError('Command outcome differs at stage '+report['stage']+'; exit='+str(result.returncode)+'; stderr_sha256='+sha(result.stderr))
+              return result
+          def record(identity,**values): report['cases'].append({'id':identity,'passed':True,**values})
+          def download(name,limit):
+              url='https://github.com/zionqyl/luau-decompiler/releases/download/'+tag+'/'+name
+              with urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'luau-decompiler-published-selfhost-acceptance'}),timeout=30) as response:
+                  data=response.read(limit+1)
+              require(len(data)<=limit,'Published asset exceeds its bound')
+              return data
+          def receipt(name):
+              data=download(name,1024*1024)
+              sidecar=download(name+'.sha256',4096).decode('ascii').split()
+              require(len(sidecar)==2 and sidecar[0]==sha(data) and sidecar[1]==name,'Published receipt checksum differs')
+              return json.loads(data),sha(data)
+          def bootstrap(action,*arguments,success=True,limit=90):
+              return command(['sh',str(bundle/'deployment/start-server.sh'),action,'--directory',str(state),*arguments],limit,success)
+          def configuration():
+              return dict(line.split('=',1) for line in (state/'server.env').read_text().splitlines() if '=' in line)
+          def container_id():
+              return command(['docker','compose','--project-name',project,'--env-file',str(state/'server.env'),'--file',str(state/'compose.yaml'),'ps','--all','--quiet','decompiler']).stdout.decode().strip()
+          def request(method,path,payload=None,authenticated=True):
+              connection=http.client.HTTPConnection('127.0.0.1',18789,timeout=min(40,max(1,deadline-time.monotonic())))
+              headers={'Content-Type':'application/json'}
+              if authenticated: headers['Authorization']='Bearer '+token
+              body=None if payload is None else json.dumps(payload).encode()
+              connection.request(method,path,body,headers)
+              response=connection.getresponse()
+              data=response.read(4*1024*1024+1)
+              status=response.status
+              connection.close()
+              require(len(data)<=4*1024*1024,'HTTP result exceeds test bound')
+              return status,json.loads(data)
+          positive={'source':'local answer: number = 42\nreturn answer\n','input_format':'luau_source','reconstruction_config':{'output_policy':'verified_typed'}}
+          negative={**positive,'source':"local answer: number = 'wrong'\nreturn answer\n"}
+          def check_positive():
+              status,body=request('POST','/v1/process',positive)
+              validation=body.get('validation',{})
+              require(status==200 and body.get('complete') and validation.get('required_passed'),'Published verified-typed operation failed')
+              require(validation.get('output_policy')=='verified_typed' and validation.get('meaningful_typing',{}).get('passed'),'Meaningful verified typing was not enforced')
+              require(all(validation.get(gate)=='passed' for gate in ['syntax','compilation','strict_analysis']),'A final-source validation gate did not pass')
+              header='--!strict\n--[=[\n    Luau Decompiler '+version+'\n    Made by @zionqyl\n    https://github.com/zionqyl/luau-decompiler\n]=]\n'
+              require(body['source'].startswith(header) and body['source'].count('Made by @zionqyl')==1,'Canonical output header differs')
+              return {'status':status,'source_sha256':sha(body['source'].encode()),'analyzer_sha256':validation.get('analyzer_sha256'),'definitions_sha256':validation.get('definitions_sha256')}
+          try:
+              require(command(['git','rev-parse','HEAD']).stdout.decode().strip()==source,'Checked-out source differs')
+              remote=command(['git','ls-remote','origin','refs/tags/'+tag+'^{}']).stdout.decode().split()
+              require(remote and remote[0]==source,'Published tag differs from validated source')
+              runtime,runtime_sha=receipt('runtime-publication.json')
+              published,published_sha=receipt('publication.json')
+              require(runtime['source_commit']==source and published['source_commit']==source and runtime['version']==version and published['version']==version,'Published source/version differs')
+              require(str(runtime['evidence_workflow_run'])=='43307786774' and str(published['evidence_workflow_run'])=='43307786774','Canonical CI evidence differs')
+              require(published['image']==image and published['runtime_receipt']['sha256']==runtime_sha,'Published image/runtime receipt differs')
+              report.update(publication_guard_passed=True,runtime_receipt_sha256=runtime_sha,container_receipt_sha256=published_sha,evidence_workflow_run='43307786774')
+              package=next(row for row in runtime['assets'] if row['name']=='luau-decompiler-'+version+'-linux-x64.tar.gz')
+              data=download(package['name'],8*1024*1024)
+              require(sha(data)==package['sha256'] and len(data)==package['bytes'],'Published Linux bundle identity differs')
+              wanted={'deployment/start-server.sh','deployment/compose.yaml','deployment/Caddyfile','release.json'}
+              copied=set()
+              with tarfile.open(fileobj=io.BytesIO(data),mode='r:gz') as archive:
+                  total=0
+                  count=0
+                  for member in archive:
+                      count+=1
+                      total+=member.size
+                      require(count<=1024 and total<=128*1024*1024,'Published bundle expansion exceeds bound')
+                      path=member.name.removeprefix('./')
+                      if path not in wanted: continue
+                      require(member.isfile() and member.size<=1024*1024,'Unexpected bootstrap member type/size')
+                      content=archive.extractfile(member).read()
+                      require(content==(root/path).read_bytes(),'Published bootstrap file differs from checked-out tag')
+                      target=bundle/path
+                      target.parent.mkdir(parents=True,exist_ok=True)
+                      target.write_bytes(content)
+                      copied.add(path)
+              require(copied==wanted,'Published bootstrap closure is incomplete')
+              report['bootstrap_files']=[{'path':path,'sha256':sha((bundle/path).read_bytes())} for path in sorted(wanted)]
+              report['linux_bundle_sha256']=package['sha256']
+              report['docker_version']=command(['docker','version','--format','{{.Server.Version}}']).stdout.decode().strip()
+              report['compose_version']=command(['docker','compose','version','--short']).stdout.decode().strip()
+              record('published_receipts_tag_image_and_bundled_bootstrap_match')
+              report['stage']='initial_start'
+              bootstrap('start','--version',version,'--preview','--port','18789',limit=210)
+              token=(state/'credential.txt').read_text()
+              require(len(token)==64 and all(char in '0123456789abcdef' for char in token),'Generated credential format differs')
+              credential_bytes=(state/'credential.txt').read_bytes()
+              config_bytes=(state/'server.env').read_bytes()
+              owner_bytes=(state/'ownership.json').read_bytes()
+              observed_project=json.loads(owner_bytes)['project']
+              require(observed_project=='luau-decompiler-'+sha(str(state.resolve()).encode())[:12],'Bootstrap ownership project differs')
+              project=observed_project
+              require(configuration()['LUAU_DECOMPILER_IMAGE']==image,'Bootstrap did not pin the published digest')
+              require((state/'credential.txt').stat().st_mode&0o077==0 and (state/'server.env').stat().st_mode&0o077==0,'Credential/configuration permissions are not private')
+              cid=container_id()
+              require(cid and command(['docker','inspect','--format','{{.Config.Image}}',cid]).stdout.decode().strip()==image,'Running container uses a different image')
+              bootstrap('status')
+              record('published_bootstrap_start_status_and_private_persistent_configuration')
+              report['stage']='independent_http_gates'
+              require(request('GET','/healthz',authenticated=False)[0]==401,'Unauthenticated health was not rejected')
+              first=check_positive()
+              status,body=request('POST','/v1/process',negative)
+              validation=body.get('validation',{})
+              require(status==422 and body.get('source') and body.get('complete') and validation.get('required_passed') is False,'Strict-negative source was silently accepted or omitted')
+              require(validation.get('strict_analysis')=='failed' and validation.get('output_policy')=='verified_typed','Strict-negative gate did not fail explicitly')
+              record('independent_http_verified_positive_and_faithful_strict_negative',positive=first,negative={'status':status,'source_sha256':sha(body['source'].encode()),'strict_analysis':validation['strict_analysis'],'required_passed':False})
+              report['stage']='failed_missing_image_update'
+              missing='0.0.0-absent-'+os.environ['GITHUB_RUN_ID']
+              result=bootstrap('update','--version',missing,'--preview',success=False,limit=60)
+              failure=result.stderr.decode('utf-8','replace').lower()
+              require('manifest unknown' in failure or 'not found' in failure,'Missing-image update failed for an unclassified reason')
+              require((state/'credential.txt').read_bytes()==credential_bytes and (state/'server.env').read_bytes()==config_bytes and (state/'ownership.json').read_bytes()==owner_bytes,'Failed update altered active configuration or credentials')
+              require(check_positive()==first,'Working service changed after rejected update')
+              record('missing_image_update_preserves_active_config_credentials_and_http_operation')
+              report['stage']='stop_and_restart'
+              bootstrap('stop',limit=60)
+              require(command(['docker','wait',cid],45).stdout.decode().strip()=='0','Container did not exit cleanly')
+              require(command(['docker','inspect','--format','{{.State.Running}} {{.State.OOMKilled}}',cid]).stdout.decode().strip()=='false false','Stopped container remains running or was OOM-killed')
+              require((state/'credential.txt').read_bytes()==credential_bytes and (state/'server.env').read_bytes()==config_bytes,'Stop did not preserve state')
+              bootstrap('start',limit=90)
+              bootstrap('status')
+              require((state/'credential.txt').read_bytes()==credential_bytes and (state/'server.env').read_bytes()==config_bytes,'Restart replaced configuration or credentials')
+              require(check_positive()==first,'Verified HTTP output changed after bootstrap restart')
+              record('stop_start_preserves_credentials_configuration_and_verified_http_output',docker_wait_exit_code=0)
+              report['stage']='final_clean_stop'
+              cid=container_id()
+              bootstrap('stop',limit=60)
+              require(command(['docker','wait',cid],45).stdout.decode().strip()=='0','Final container exit was not clean')
+              record('final_bootstrap_stop_and_docker_wait_exit_zero')
+              report['passed']=True
+          except Exception as error:
+              report['error']=str(error)
+          finally:
+              report['finished_at']=datetime.datetime.now(datetime.timezone.utc).isoformat()
+              report['cleanup_attempted']=False
+              if project is None and (state/'ownership.json').exists():
+                  try:
+                      owner=json.loads((state/'ownership.json').read_text())
+                      expected='luau-decompiler-'+sha(str(state.resolve()).encode())[:12]
+                      require(owner.get('schema')==1 and owner.get('product')=='luau-decompiler-server' and owner.get('project')==expected,'Cleanup ownership identity differs')
+                      project=expected
+                  except (OSError,ValueError,RuntimeError):
+                      report['cleanup_status']='not_attempted_invalid_ownership'
+                      report['cleanup_failed']=True
+                      report['passed']=False
+              if project:
+                  report['cleanup_attempted']=True
+                  try:
+                      env_file=state/'server.env' if (state/'server.env').exists() else state/'pending.env'
+                      if env_file.exists():
+                          cleanup=subprocess.run(['docker','compose','--project-name',project,'--env-file',str(env_file),'--file',str(state/'compose.yaml'),'down','--timeout','20'],env=environment,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=40)
+                      else:
+                          listed=subprocess.run(['docker','ps','--all','--quiet','--filter','label=com.docker.compose.project='+project],env=environment,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=15,check=True)
+                          ids=listed.stdout.decode().split()
+                          require(all(re.fullmatch('[0-9a-f]{12,64}',item) for item in ids),'Cleanup returned an invalid container identity')
+                          cleanup=subprocess.run(['docker','rm','--force',*ids],env=environment,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=25) if ids else listed
+                      if cleanup.returncode:
+                          report['cleanup_failed']=True
+                          report['passed']=False
+                          report['cleanup_status']='failed_nonzero'
+                      else:
+                          report['cleanup_status']='owned_project_removed'
+                  except (OSError,ValueError,RuntimeError,subprocess.SubprocessError):
+                      report['cleanup_failed']=True
+                      report['passed']=False
+                      report['cleanup_status']='failed_exception'
+              elif 'cleanup_status' not in report:
+                  report['cleanup_status']='not_needed_no_owned_project'
+              if report.get('cleanup_failed') and 'error' not in report:
+                  report['error']='Owned-project cleanup failed'
+              serialized=json.dumps(report,indent=2)+'\n'
+              if token and token in serialized:
+                  report['passed']=False
+                  report['error']=report.get('error','Credential appeared in report; redacted')
+                  serialized=(json.dumps(report,indent=2)+'\n').replace(token,'[redacted credential]')
+              report_path.write_text(serialized)
+              report_path.with_name(name+'.sha256').write_text(sha(report_path.read_bytes())+'  '+name+'\n')
+              print(json.dumps({'passed':report['passed'],'stage':report['stage'],'cases':len(report['cases']),'report':name}))
+              if report['passed']:
+                  print('::notice::'+json.dumps({'status':'passed','stage':report['stage'],'completed_cases':len(report['cases'])}))
+              if not report['passed']:
+                  detail=str(report.get('error','Acceptance failed'))
+                  if token: detail=detail.replace(token,'[redacted credential]')
+                  while True:
+                      annotation=json.dumps({'stage':report['stage'],'error':detail,'completed_cases':len(report['cases'])}).replace('%','%25').replace('\r','%0D').replace('\n','%0A')
+                      if len(annotation)<=4000: break
+                      detail=detail[:max(1,len(detail)//2)]
+                  print('::error::'+annotation)
+          if not report['passed']: raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: published-selfhost-acceptance
+          path: artifacts/published-selfhost/*.json*
