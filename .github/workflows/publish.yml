@@ -1,5 +1,7 @@
 name: publish-validated-release
 on:
+  push:
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       tag:
@@ -12,32 +14,41 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: publish-${{ inputs.tag || github.event.workflow_run.head_sha }}
+  group: publish-${{ inputs.tag || github.event.workflow_run.head_sha || github.sha }}
   cancel-in-progress: false
 jobs:
   check-request:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.event.deleted != true) || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      actions: read
     outputs:
       version: ${{ steps.version.outputs.version }}
       commit: ${{ steps.version.outputs.commit }}
       tag: ${{ steps.version.outputs.tag }}
       publish: ${{ steps.version.outputs.publish }}
+      evidence_run_id: ${{ steps.version.outputs.evidence_run_id }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || inputs.tag }}
+          ref: ${{ github.event.workflow_run.head_sha || inputs.tag || github.ref }}
       - id: version
         env:
           REQUESTED_TAG: ${{ inputs.tag }}
           EXPECTED_REPOSITORY: ${{ github.repository }}
-          AUTOMATIC_PUBLICATION: ${{ github.event_name == 'workflow_run' }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           python3 - <<'PY'
-          import json,os,pathlib,re,subprocess,tomllib
+          import json,os,pathlib,re,subprocess,tomllib,urllib.parse
           version=tomllib.loads(pathlib.Path('Cargo.toml').read_text())['package']['version']
-          tag=os.environ.get('REQUESTED_TAG') or 'v'+version
-          automatic=os.environ['AUTOMATIC_PUBLICATION']=='true'
+          event_name=os.environ['GITHUB_EVENT_NAME']
+          event=json.loads(pathlib.Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          if event_name not in ('workflow_dispatch','workflow_run','push'):
+              raise SystemExit('Unsupported publication event')
+          if event_name=='push' and (event.get('deleted') or not event.get('ref','').startswith('refs/tags/')):
+              raise SystemExit('Publication requires an existing version tag')
+          tag=event['ref'][len('refs/tags/'):] if event_name=='push' else os.environ.get('REQUESTED_TAG') or 'v'+version
           release=json.loads(pathlib.Path('release.json').read_text())
           if not re.fullmatch(r'v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?',tag) or tag!='v'+version:
               raise SystemExit('The requested tag must exactly match the Cargo package version')
@@ -52,13 +63,74 @@ jobs:
           if matching:
               subprocess.run(['git','fetch','--depth','1','origin',ref+':'+ref],check=True)
               matching=subprocess.check_output(['git','rev-parse',ref+'^{commit}'],text=True).strip()==commit
-          if not automatic and not matching:
+          if event_name!='workflow_run' and not matching:
               raise SystemExit('Release tag differs from the validated source commit')
+          evidence_run_id=''
+          if matching and event_name=='workflow_dispatch':
+              evidence_run_id=os.environ['GITHUB_RUN_ID']
+              if not evidence_run_id.isdecimal() or int(evidence_run_id)<1:
+                  raise SystemExit('The manual reusable validation run identity is invalid')
+          elif matching:
+              repository=os.environ['EXPECTED_REPOSITORY']
+              if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repository):
+                  raise SystemExit('Invalid repository identity')
+              def api(path):
+                  response=subprocess.run(['gh','api','-H','Accept: application/vnd.github+json',path],text=True,capture_output=True,timeout=30)
+                  if response.returncode or len(response.stdout)>8388608:
+                      raise SystemExit('Unable to resolve bounded canonical CI evidence through the GitHub API')
+                  try:
+                      return json.loads(response.stdout)
+                  except json.JSONDecodeError:
+                      raise SystemExit('The GitHub CI evidence response is malformed')
+              workflow=api('repos/'+repository+'/actions/workflows/ci.yml')
+              if not isinstance(workflow,dict) or workflow.get('path')!='.github/workflows/ci.yml' or workflow.get('name')!='correctness-and-packages' or type(workflow.get('id')) is not int or workflow['id']<1:
+                  raise SystemExit('The canonical correctness workflow identity differs')
+              def eligible(run):
+                  if not isinstance(run,dict):
+                      return False
+                  return (
+                      type(run.get('id')) is int and run['id']>0
+                      and type(run.get('workflow_id')) is int and run['workflow_id']==workflow['id']
+                      and run.get('name')=='correctness-and-packages'
+                      and isinstance(run.get('path'),str) and run['path'].split('@',1)[0]=='.github/workflows/ci.yml'
+                      and run.get('status')=='completed' and run.get('conclusion')=='success'
+                      and run.get('event')=='push' and run.get('head_branch')=='main' and run.get('head_sha')==commit
+                      and isinstance(run.get('repository'),dict)
+                      and run['repository'].get('full_name','').lower()==repository.lower()
+                      and isinstance(run.get('head_repository'),dict)
+                      and run['head_repository'].get('full_name','').lower()==repository.lower()
+                  )
+              if event_name=='workflow_run':
+                  trigger=event.get('workflow_run',{})
+                  if (
+                      not isinstance(trigger,dict) or type(trigger.get('id')) is not int or trigger['id']<1
+                      or event.get('action')!='completed' or trigger.get('head_sha')!=commit or trigger.get('head_branch')!='main'
+                      or not isinstance(trigger.get('head_repository'),dict)
+                      or trigger['head_repository'].get('full_name','').lower()!=repository.lower()
+                  ):
+                      raise SystemExit('The triggering CI run is not successful main-push evidence for this commit')
+                  run=api('repos/'+repository+'/actions/runs/'+str(trigger['id']))
+                  if not eligible(run) or run['id']!=trigger['id']:
+                      raise SystemExit('The triggering canonical CI run no longer matches')
+                  evidence_run_id=str(run['id'])
+              else:
+                  query=urllib.parse.urlencode({'branch':'main','event':'push','status':'success','head_sha':commit,'per_page':100})
+                  response=api('repos/'+repository+'/actions/workflows/'+str(workflow['id'])+'/runs?'+query)
+                  runs=response.get('workflow_runs') if isinstance(response,dict) else None
+                  if not isinstance(runs,list) or len(runs)>100:
+                      raise SystemExit('The bounded canonical CI run listing is malformed')
+                  candidates=[run for run in runs if eligible(run)]
+                  if candidates:
+                      evidence_run_id=str(max(candidates,key=lambda run:run['id'])['id'])
+                  else:
+                      print('No completed successful main-push CI run for the exact tag commit; publication is skipped')
+          publish=matching and bool(evidence_run_id)
           with open(os.environ['GITHUB_OUTPUT'],'a') as output:
               output.write('version='+version+'\n')
               output.write('commit='+commit+'\n')
               output.write('tag='+tag+'\n')
-              output.write('publish='+str(matching).lower()+'\n')
+              output.write('publish='+str(publish).lower()+'\n')
+              output.write('evidence_run_id='+evidence_run_id+'\n')
           if not matching:
               print('No matching immutable release tag; no release will be published')
           PY
@@ -80,6 +152,7 @@ jobs:
     env:
       RELEASE_VERSION: ${{ needs.check-request.outputs.version }}
       RELEASE_TAG: ${{ needs.check-request.outputs.tag }}
+      EVIDENCE_RUN_ID: ${{ needs.check-request.outputs.evidence_run_id }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
@@ -89,13 +162,13 @@ jobs:
         with:
           name: windows-release-evidence
           path: artifacts/windows
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          run-id: ${{ needs.check-request.outputs.evidence_run_id }}
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           name: linux-runtime-candidate-evidence
           path: artifacts/linux
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          run-id: ${{ needs.check-request.outputs.evidence_run_id }}
           github-token: ${{ github.token }}
       - name: Refuse replacement of an existing release
         run: |
@@ -145,7 +218,7 @@ jobs:
               digest=hashlib.sha256(path.read_bytes()).hexdigest()
               path.with_name(path.name+'.sha256').write_text(digest+'  '+path.name+'\n')
               files.append({'name':path.name,'bytes':path.stat().st_size,'sha256':digest})
-          receipt={'schema':1,'version':os.environ['RELEASE_VERSION'],'tag':os.environ['RELEASE_TAG'],'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'workflow_run':os.environ['GITHUB_RUN_ID'],'container_publication':'Separate publication.json is created only after anonymous pull succeeds','assets':files}
+          receipt={'schema':1,'version':os.environ['RELEASE_VERSION'],'tag':os.environ['RELEASE_TAG'],'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'workflow_run':os.environ['GITHUB_RUN_ID'],'evidence_workflow_run':os.environ['EVIDENCE_RUN_ID'],'container_publication':'Separate publication.json is created only after anonymous pull succeeds','assets':files}
           path=directory/'runtime-publication.json'
           path.write_text(json.dumps(receipt,indent=2)+'\n')
           path.with_name(path.name+'.sha256').write_text(hashlib.sha256(path.read_bytes()).hexdigest()+'  '+path.name+'\n')
@@ -168,6 +241,7 @@ jobs:
     env:
       RELEASE_VERSION: ${{ needs.check-request.outputs.version }}
       RELEASE_TAG: ${{ needs.check-request.outputs.tag }}
+      EVIDENCE_RUN_ID: ${{ needs.check-request.outputs.evidence_run_id }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
@@ -177,7 +251,7 @@ jobs:
         with:
           name: linux-runtime-candidate-evidence
           path: artifacts/linux
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          run-id: ${{ needs.check-request.outputs.evidence_run_id }}
           github-token: ${{ github.token }}
       - name: Verify the exact successful container boundary
         run: |
@@ -215,7 +289,7 @@ jobs:
           commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
           if prior['version']!=os.environ['RELEASE_VERSION'] or prior['source_commit']!=commit:
               raise SystemExit('Runtime and container publication source/version differ')
-          receipt={'schema':1,'version':os.environ['RELEASE_VERSION'],'tag':os.environ['RELEASE_TAG'],'source_commit':commit,'workflow_run':os.environ['GITHUB_RUN_ID'],'image':pathlib.Path('artifacts/published-image.txt').read_text().strip(),'image_policy':'Exact image from successful canonical container acceptance; anonymous digest pull passed','runtime_receipt':{'asset':'runtime-publication.json','sha256':hashlib.sha256(runtime.read_bytes()).hexdigest()}}
+          receipt={'schema':1,'version':os.environ['RELEASE_VERSION'],'tag':os.environ['RELEASE_TAG'],'source_commit':commit,'workflow_run':os.environ['GITHUB_RUN_ID'],'evidence_workflow_run':os.environ['EVIDENCE_RUN_ID'],'image':pathlib.Path('artifacts/published-image.txt').read_text().strip(),'image_policy':'Exact image from successful canonical container acceptance; anonymous digest pull passed','runtime_receipt':{'asset':'runtime-publication.json','sha256':hashlib.sha256(runtime.read_bytes()).hexdigest()}}
           path=pathlib.Path('artifacts/publication.json')
           path.write_text(json.dumps(receipt,indent=2)+'\n')
           path.with_name('publication.json.sha256').write_text(hashlib.sha256(path.read_bytes()).hexdigest()+'  publication.json\n')
