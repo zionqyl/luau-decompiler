@@ -1,0 +1,17 @@
+{
+  "scope": "Controlled-program performance packaging and extracted integrity only; no new execution or private provenance publication",
+  "passed": true,
+  "archive": "luau-decompiler-0.4.0-rc.4-controlled-performance.zip",
+  "archive_bytes": 1937267,
+  "archive_sha256": "42414238ad0b9b463cd13a8bcf33c3830cb9df0b40b162e322650454d9216d26",
+  "report_members": 37,
+  "total_members": 39,
+  "native_raw_references_included_and_verified": 35,
+  "browser_raw_references_included": 0,
+  "browser_raw_references_withheld": 4,
+  "source_workload_identities_checked": 2002,
+  "privacy_matches": 0,
+  "original_reports_unchanged": true,
+  "all_extracted_members_match": true,
+  "published": false
+}

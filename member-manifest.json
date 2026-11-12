@@ -1,0 +1,554 @@
+{
+  "schema": 1,
+  "purpose": "Owned controlled-program performance measurements only; no native-client, captured-game, live-executor or private-session evidence",
+  "version": "0.4.0-rc.4",
+  "candidate_executable_sha256": "5b1316e78fa183aafe32c46471ce31cb3601778a5650b26898e7a27743a7953d",
+  "baseline_executable_sha256": "a5b735d38c2f61bc6d6a5d09cfc83a486cb3b7dc26e59dcf1ded215f189a150b",
+  "members": [
+    {
+      "path": "reports/docs/results/performance-rc4-final.json",
+      "original_path": "docs/results/performance-rc4-final.json",
+      "bytes": 373347,
+      "sha256": "21edabed07f8e0a240e443287340f3fa91ed836ae5acb0dfd71fda30f020bedb",
+      "original_mtime_ns": 1794503324027350700,
+      "original_mtime_utc": "2026-11-12T17:08:44.027351+00:00"
+    },
+    {
+      "path": "reports/docs/results/browser-performance-rc4.json",
+      "original_path": "docs/results/browser-performance-rc4.json",
+      "bytes": 10824,
+      "sha256": "6f69f561e77667b14b66720f560b5fc792a87bf942a4e19a66cc7f0c0c0aacf1",
+      "original_mtime_ns": 1794503341961741800,
+      "original_mtime_utc": "2026-11-12T17:09:01.961742+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-many_independent_inputs.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-many_independent_inputs.json.gz",
+      "bytes": 354859,
+      "sha256": "a8bba5509cce3e4c89c6d0f64b5f70ee3c4cfe3e473b54a6a6af02b99aa7940b",
+      "original_mtime_ns": 1794503045484355100,
+      "original_mtime_utc": "2026-11-12T17:04:05.484355+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-one_large_function.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-one_large_function.json.gz",
+      "bytes": 7192,
+      "sha256": "de2999b6a25bc58fd2eb693d221291e957775ff1c884fe74e65dc859b8ded9a4",
+      "original_mtime_ns": 1794503050314921200,
+      "original_mtime_utc": "2026-11-12T17:04:10.314921+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-one_large_module.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-one_large_module.json.gz",
+      "bytes": 7193,
+      "sha256": "142597b9aba97d7f216803cfe21761e0054c5126378adf5c3f94928905c4a098",
+      "original_mtime_ns": 1794503056228233500,
+      "original_mtime_utc": "2026-11-12T17:04:16.228234+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-many_independent_inputs.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-many_independent_inputs.json.gz",
+      "bytes": 354834,
+      "sha256": "ae535c2baa15b102d841f40f3ad1c7cd58b7e5735e21db74e3b4d8cb98ed892c",
+      "original_mtime_ns": 1794503070497388600,
+      "original_mtime_utc": "2026-11-12T17:04:30.497389+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-one_large_function.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-one_large_function.json.gz",
+      "bytes": 7212,
+      "sha256": "6b181b325d7c4c3729d277788fffcd070ebed05f76178cb04be96ddcf52d560e",
+      "original_mtime_ns": 1794503075759732000,
+      "original_mtime_utc": "2026-11-12T17:04:35.759732+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-one_large_module.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-one_large_module.json.gz",
+      "bytes": 7234,
+      "sha256": "19bcf388aa3c3018868034ecc3ba5804c7ed1eb743a5fa1cf4c544d12a587a84",
+      "original_mtime_ns": 1794503083349349700,
+      "original_mtime_utc": "2026-11-12T17:04:43.349350+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-many_independent_inputs.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-many_independent_inputs.json.gz",
+      "bytes": 354917,
+      "sha256": "8c4c2250f05adbce0f98da3846c5178f01f3969d4b4ce641fd03f11982d4e7dc",
+      "original_mtime_ns": 1794503092342606500,
+      "original_mtime_utc": "2026-11-12T17:04:52.342607+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-one_large_function.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-one_large_function.json.gz",
+      "bytes": 7163,
+      "sha256": "8d5d0bf8ec22330ce829ae27ea1836212f08f45ded59edc71324954699711ec4",
+      "original_mtime_ns": 1794503096869692500,
+      "original_mtime_utc": "2026-11-12T17:04:56.869693+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-one_large_module.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-one_large_module.json.gz",
+      "bytes": 7195,
+      "sha256": "1a3a996a4439a0290ef64844df9f7101a7490a3b8c64bb4d05ad9f8f721b3c77",
+      "original_mtime_ns": 1794503102828424600,
+      "original_mtime_utc": "2026-11-12T17:05:02.828425+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-many_independent_inputs.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-many_independent_inputs.json.gz",
+      "bytes": 354766,
+      "sha256": "f28da47da6a70d28fdd7e97594ed9a03ecc7b87f739a5fdf3c215364fde01fad",
+      "original_mtime_ns": 1794503117732852000,
+      "original_mtime_utc": "2026-11-12T17:05:17.732852+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-one_large_function.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-one_large_function.json.gz",
+      "bytes": 7220,
+      "sha256": "5d6dd86ff95e910cfbfad50bea4111955f90718a7ab3bf8520ea3592c0c8e65e",
+      "original_mtime_ns": 1794503123036773200,
+      "original_mtime_utc": "2026-11-12T17:05:23.036773+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-one_large_module.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-one_large_module.json.gz",
+      "bytes": 7214,
+      "sha256": "cc1eabf61e6269f8379b3f45b5896e8dfb5686c258b697a30e2d37b3d42d44b6",
+      "original_mtime_ns": 1794503131023404400,
+      "original_mtime_utc": "2026-11-12T17:05:31.023404+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-0.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-0.json.gz",
+      "bytes": 4095,
+      "sha256": "9aa4c319cbc9d0c76ff4b4f0a7da73db0f6e8a35725e3153e345962c252eafe9",
+      "original_mtime_ns": 1794503135525217700,
+      "original_mtime_utc": "2026-11-12T17:05:35.525218+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-1.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-1.json.gz",
+      "bytes": 4104,
+      "sha256": "bd6a1f3feee991126ba0aedf109627a8cbc5fcc1406871fa949c3eadf741b824",
+      "original_mtime_ns": 1794503138901166100,
+      "original_mtime_utc": "2026-11-12T17:05:38.901166+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-2.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-2.json.gz",
+      "bytes": 4090,
+      "sha256": "7844640ed8de44723291aa6618d9c03d1f4319f82f1922ee72e270bff1d5db65",
+      "original_mtime_ns": 1794503142323548900,
+      "original_mtime_utc": "2026-11-12T17:05:42.323549+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-3.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-3.json.gz",
+      "bytes": 4103,
+      "sha256": "53cf040e75bcfebfd98075c002123101e77b158eabc61f04e23d4d1af91d0ab2",
+      "original_mtime_ns": 1794503145662371100,
+      "original_mtime_utc": "2026-11-12T17:05:45.662371+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-0.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-0.json.gz",
+      "bytes": 4099,
+      "sha256": "3613fdf956345ff3409d9763768bbeac28c919d7f43bcb1b32018054114e039d",
+      "original_mtime_ns": 1794503149028293100,
+      "original_mtime_utc": "2026-11-12T17:05:49.028293+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-1.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-1.json.gz",
+      "bytes": 4087,
+      "sha256": "870c0d7288145b65a43930f45e6ca4f244b2ea3787d33ec725b07b33f3b03e08",
+      "original_mtime_ns": 1794503152549223000,
+      "original_mtime_utc": "2026-11-12T17:05:52.549223+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-2.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-2.json.gz",
+      "bytes": 4097,
+      "sha256": "19ddb6ca9d6c8096dd9cef5b2bca9d17838f41fbc5c7b88d2659bf24baf9d329",
+      "original_mtime_ns": 1794503155853839700,
+      "original_mtime_utc": "2026-11-12T17:05:55.853840+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-3.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-3.json.gz",
+      "bytes": 4108,
+      "sha256": "d49b22d42cb34e0f54df5ad56d86e96f40669fa879260b7e2c91ec662e71dd65",
+      "original_mtime_ns": 1794503159150599000,
+      "original_mtime_utc": "2026-11-12T17:05:59.150599+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-0.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-0.json.gz",
+      "bytes": 4094,
+      "sha256": "d2ab39769685d94a5e069586ada69948d8c302ffd42e8d13182e53fac5e9ccb5",
+      "original_mtime_ns": 1794503162524370300,
+      "original_mtime_utc": "2026-11-12T17:06:02.524370+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-1.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-1.json.gz",
+      "bytes": 4082,
+      "sha256": "862da41965aaafccebe803e41f857bdf899097d51de217cf97d197dd5cb410b6",
+      "original_mtime_ns": 1794503165993473300,
+      "original_mtime_utc": "2026-11-12T17:06:05.993473+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-2.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-2.json.gz",
+      "bytes": 4103,
+      "sha256": "24e524773726c7091abb54012dee61178523cea75d8c8ced02c5180753ee67a9",
+      "original_mtime_ns": 1794503169328313400,
+      "original_mtime_utc": "2026-11-12T17:06:09.328313+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-3.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-3.json.gz",
+      "bytes": 4098,
+      "sha256": "ce35c5c012e40f97e2de5954c4326489b127b32f8c2883ad35697c5c543b4f62",
+      "original_mtime_ns": 1794503172905729600,
+      "original_mtime_utc": "2026-11-12T17:06:12.905730+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-validation-cache-false.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-validation-cache-false.json.gz",
+      "bytes": 189848,
+      "sha256": "f8e5f33485cf33adc9a4c73c71e5274b6ae5917ed54cd53ee4b4181f9ff99a70",
+      "original_mtime_ns": 1794503226208687100,
+      "original_mtime_utc": "2026-11-12T17:07:06.208687+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-validation-cache-true.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-validation-cache-true.json.gz",
+      "bytes": 189820,
+      "sha256": "c7fa05e06c429ccd79ce04e4a9f7e781219f15681b141e3cba605135ed8aad8e",
+      "original_mtime_ns": 1794503245934460500,
+      "original_mtime_utc": "2026-11-12T17:07:25.934460+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-allocations-faithful.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-allocations-faithful.json.gz",
+      "bytes": 1791,
+      "sha256": "c789e31c65a44e120b42081674c6be024420bfe2bbb443dfd75e76351011b5dd",
+      "original_mtime_ns": 1794503246314231500,
+      "original_mtime_utc": "2026-11-12T17:07:26.314231+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-allocations-annotated.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-allocations-annotated.json.gz",
+      "bytes": 1820,
+      "sha256": "c104510e5a0ef7455a7ec2b3f7f994db2deda6b1fb730c477eecf8eae1b25846",
+      "original_mtime_ns": 1794503246865754400,
+      "original_mtime_utc": "2026-11-12T17:07:26.865754+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-validation-cache-false.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-validation-cache-false.json.gz",
+      "bytes": 189175,
+      "sha256": "295371fa57d26ed4f4b21ea27d6cc3c6d96be13f67366c7684f2fc8e9b16077c",
+      "original_mtime_ns": 1794503299516144400,
+      "original_mtime_utc": "2026-11-12T17:08:19.516145+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-validation-cache-true.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-validation-cache-true.json.gz",
+      "bytes": 189134,
+      "sha256": "cc6bdd9ae351a3c91d81138b487c8b3b7dbd3f14467216b1b9a6e4f136715035",
+      "original_mtime_ns": 1794503319418078200,
+      "original_mtime_utc": "2026-11-12T17:08:39.418078+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-allocations-faithful.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-allocations-faithful.json.gz",
+      "bytes": 1786,
+      "sha256": "44fa49fe18d0516adda3ff7a60e7f457cf87398cc574cd019c07a58776961e26",
+      "original_mtime_ns": 1794503319945041500,
+      "original_mtime_utc": "2026-11-12T17:08:39.945041+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-allocations-annotated.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-allocations-annotated.json.gz",
+      "bytes": 1800,
+      "sha256": "99b21168aaa4cd52c7f86c8c45f1882e0a279f4403b51bddd08e7fe6f3ed78bf",
+      "original_mtime_ns": 1794503320488739900,
+      "original_mtime_utc": "2026-11-12T17:08:40.488740+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-0.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-0.json.gz",
+      "bytes": 2359,
+      "sha256": "42a6a9664290e967767a5f82474e1858ad1444e1da09ea55083ba77acde6047e",
+      "original_mtime_ns": 1794503321342872900,
+      "original_mtime_utc": "2026-11-12T17:08:41.342873+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-1.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-1.json.gz",
+      "bytes": 2360,
+      "sha256": "e886496ab413da3d7322ef525d935a9bd8147ace26937e721af42b00320b522f",
+      "original_mtime_ns": 1794503322279704300,
+      "original_mtime_utc": "2026-11-12T17:08:42.279704+00:00"
+    },
+    {
+      "path": "reports/docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-2.json.gz",
+      "original_path": "docs/results/performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-2.json.gz",
+      "bytes": 2361,
+      "sha256": "6eacd87fe7e4802d2cea84a125ae90de4e4c77688dfaf63bf84e7c5dba8ce461",
+      "original_mtime_ns": 1794503323217670900,
+      "original_mtime_utc": "2026-11-12T17:08:43.217671+00:00"
+    }
+  ],
+  "native_raw_references_verified": [
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-many_independent_inputs.json.gz",
+      "sha256": "a8bba5509cce3e4c89c6d0f64b5f70ee3c4cfe3e473b54a6a6af02b99aa7940b",
+      "original_sha256": "a78e1cd43e6f4bbaeb248491b5737ba68ac2cb4932e28a19869cec332f5273d5",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-one_large_function.json.gz",
+      "sha256": "de2999b6a25bc58fd2eb693d221291e957775ff1c884fe74e65dc859b8ded9a4",
+      "original_sha256": "9553acbd2a386e747b8e96029d82580eb6f27e4c4d1968148fd7a99ce6e0ce62",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-faithful-one_large_module.json.gz",
+      "sha256": "142597b9aba97d7f216803cfe21761e0054c5126378adf5c3f94928905c4a098",
+      "original_sha256": "2dc3e6c979a38af99fc603034c6cc0f81ed8d1b29f3582a744b7ac83bbdce8d8",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-many_independent_inputs.json.gz",
+      "sha256": "ae535c2baa15b102d841f40f3ad1c7cd58b7e5735e21db74e3b4d8cb98ed892c",
+      "original_sha256": "5bee1a2c33d9ecc3094ccd68296ea8e68d51dd0aaece380088e64fb53f5f70f5",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-one_large_function.json.gz",
+      "sha256": "6b181b325d7c4c3729d277788fffcd070ebed05f76178cb04be96ddcf52d560e",
+      "original_sha256": "5761b9176dc9f6f5edc311ab6b682f7eefd4b6c9ea6296c0f3bf0b7d28c52e7b",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-annotated-one_large_module.json.gz",
+      "sha256": "19bcf388aa3c3018868034ecc3ba5804c7ed1eb743a5fa1cf4c544d12a587a84",
+      "original_sha256": "f4d855eda17ee7b5ff22c12e218aae6273851389b318dc48939f60e563abc4bc",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-many_independent_inputs.json.gz",
+      "sha256": "8c4c2250f05adbce0f98da3846c5178f01f3969d4b4ce641fd03f11982d4e7dc",
+      "original_sha256": "175aa655101046b96d313ff4b0d6b35919a4808a4a8c1b71e290d9a54b3001a4",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-one_large_function.json.gz",
+      "sha256": "8d5d0bf8ec22330ce829ae27ea1836212f08f45ded59edc71324954699711ec4",
+      "original_sha256": "7146205fbf5ae580f62dd34602fc35c45d7501144f9d522cc5e214ab420e890e",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-faithful-one_large_module.json.gz",
+      "sha256": "1a3a996a4439a0290ef64844df9f7101a7490a3b8c64bb4d05ad9f8f721b3c77",
+      "original_sha256": "68ea53ea316114439d4dca67bc9bd17ebee5b6a559daf5843754ed0f7a577501",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-many_independent_inputs.json.gz",
+      "sha256": "f28da47da6a70d28fdd7e97594ed9a03ecc7b87f739a5fdf3c215364fde01fad",
+      "original_sha256": "5f880303340978bef3c7ee4f0dd7b4412910e37f99322bfc0de108cdccca091c",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-one_large_function.json.gz",
+      "sha256": "5d6dd86ff95e910cfbfad50bea4111955f90718a7ab3bf8520ea3592c0c8e65e",
+      "original_sha256": "f4e483eabf7920470e23e74fe48682602c66908196eae04084569dcc22e92c26",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-annotated-one_large_module.json.gz",
+      "sha256": "cc1eabf61e6269f8379b3f45b5896e8dfb5686c258b697a30e2d37b3d42d44b6",
+      "original_sha256": "bede7cead2656b368f0e994aff775d67a98698b148907f751b1d7598c84e0ac5",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-0.json.gz",
+      "sha256": "9aa4c319cbc9d0c76ff4b4f0a7da73db0f6e8a35725e3153e345962c252eafe9",
+      "original_sha256": "c9c085bfb83d41b41b59c4eeed49a492889c65e9c0d01f540e6925cc21f81f9a",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-1.json.gz",
+      "sha256": "bd6a1f3feee991126ba0aedf109627a8cbc5fcc1406871fa949c3eadf741b824",
+      "original_sha256": "31187614b54be91adf93cceaffba99abf29905ced2d1852121babb0ca26da2a4",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-2.json.gz",
+      "sha256": "7844640ed8de44723291aa6618d9c03d1f4319f82f1922ee72e270bff1d5db65",
+      "original_sha256": "5e0f16fdd614cf0130a34fcd918b31415164da1933d5186eadabf94a120e3312",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-0-3.json.gz",
+      "sha256": "53cf040e75bcfebfd98075c002123101e77b158eabc61f04e23d4d1af91d0ab2",
+      "original_sha256": "2ee275160387269af4f1b6843b8b1168922416a85ab3ce845fa9777cf1d64dea",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-0.json.gz",
+      "sha256": "3613fdf956345ff3409d9763768bbeac28c919d7f43bcb1b32018054114e039d",
+      "original_sha256": "f681b5c33ac0a2cc18560d2d1323fd9865c2c5ff150580ac5c7dc1f1dc71099c",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-1.json.gz",
+      "sha256": "870c0d7288145b65a43930f45e6ca4f244b2ea3787d33ec725b07b33f3b03e08",
+      "original_sha256": "b5f1bf653d4541ee25ddfa1a9de02cc288807612e2103d08a68472ec7893d567",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-2.json.gz",
+      "sha256": "19ddb6ca9d6c8096dd9cef5b2bca9d17838f41fbc5c7b88d2659bf24baf9d329",
+      "original_sha256": "08d69fc5e38e484847dbc75634401d346cb409aaa1f677026c75076f00cea4aa",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-1-3.json.gz",
+      "sha256": "d49b22d42cb34e0f54df5ad56d86e96f40669fa879260b7e2c91ec662e71dd65",
+      "original_sha256": "38210cb2d4c297f0fe5e0c2ee006e72ea34efaef9d1aca08976eabb5e1b28d5f",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-0.json.gz",
+      "sha256": "d2ab39769685d94a5e069586ada69948d8c302ffd42e8d13182e53fac5e9ccb5",
+      "original_sha256": "488675a7d693a2ddda53dcb7d6b222a1df46e15242a025518402a7ed90bacb5e",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-1.json.gz",
+      "sha256": "862da41965aaafccebe803e41f857bdf899097d51de217cf97d197dd5cb410b6",
+      "original_sha256": "6a6527b6eac73e968c7c0776bb44012b73d48ce747164f2eec789478ff73271b",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-2.json.gz",
+      "sha256": "24e524773726c7091abb54012dee61178523cea75d8c8ced02c5180753ee67a9",
+      "original_sha256": "4531fcf34bd4ee35c25641e6ab21f0003705e41d9c43af81780d70c8327dfdb6",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/balanced-module-2-3.json.gz",
+      "sha256": "ce35c5c012e40f97e2de5954c4326489b127b32f8c2883ad35697c5c543b4f62",
+      "original_sha256": "bac75cdb1a288c7db5bc79402cd5aa79553b70a0597609e97994c9c8684fec8d",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-validation-cache-false.json.gz",
+      "sha256": "f8e5f33485cf33adc9a4c73c71e5274b6ae5917ed54cd53ee4b4181f9ff99a70",
+      "original_sha256": "4ee49c54a73c914e99d9d94b0d27797689c8ca15a7d7cab6a66c9eba3dcad6c0",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-validation-cache-true.json.gz",
+      "sha256": "c7fa05e06c429ccd79ce04e4a9f7e781219f15681b141e3cba605135ed8aad8e",
+      "original_sha256": "3f5bba657cd8134e39c318618032c6083809b5be8f888529d0ab7798d85f3f5a",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-allocations-faithful.json.gz",
+      "sha256": "c789e31c65a44e120b42081674c6be024420bfe2bbb443dfd75e76351011b5dd",
+      "original_sha256": "3b3479ae680e1bec60055109507fab3819d77f4dd745359db43bd39cf69bef52",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/v0.4.0-rc.3-allocations-annotated.json.gz",
+      "sha256": "c104510e5a0ef7455a7ec2b3f7f994db2deda6b1fb730c477eecf8eae1b25846",
+      "original_sha256": "7dd675d78e800b9ba9c9bca2a033c5e254b4054e211f087f2fe4b7d51728aaa7",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-validation-cache-false.json.gz",
+      "sha256": "295371fa57d26ed4f4b21ea27d6cc3c6d96be13f67366c7684f2fc8e9b16077c",
+      "original_sha256": "c5ffd977396c4abc4da1e3b137112db782c76e70d039908b4c8dbb7fd8677706",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-validation-cache-true.json.gz",
+      "sha256": "cc6bdd9ae351a3c91d81138b487c8b3b7dbd3f14467216b1b9a6e4f136715035",
+      "original_sha256": "ed57aa053d42015e92bbf4b7835be3c60753a3ae1d284e2ab42b805cccf84574",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-allocations-faithful.json.gz",
+      "sha256": "44fa49fe18d0516adda3ff7a60e7f457cf87398cc574cd019c07a58776961e26",
+      "original_sha256": "6b26cf6014f23fb3eaa3adb5d0ca52811ac5afb103391a3851af0fa2f72cece8",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-allocations-annotated.json.gz",
+      "sha256": "99b21168aaa4cd52c7f86c8c45f1882e0a279f4403b51bddd08e7fe6f3ed78bf",
+      "original_sha256": "12e660800b3475222cebcb4142711231d4567d5d35dd9c4c9d38a1f62c133e62",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-0.json.gz",
+      "sha256": "42a6a9664290e967767a5f82474e1858ad1444e1da09ea55083ba77acde6047e",
+      "original_sha256": "7306bb80ac3cba04bb46d821eaa603fcbf34d0210a6b6f4d47fa402afac4a3e4",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-1.json.gz",
+      "sha256": "e886496ab413da3d7322ef525d935a9bd8147ace26937e721af42b00320b522f",
+      "original_sha256": "13ba527b1ffa23c228b1bed28daa0a6c7c703e3a892b511403616d4fbd8c6657",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    },
+    {
+      "path": "performance-rc-raw/5b1316e78fa1-5a100bd4254e4a40a18466243d35c0f0/candidate-verified-source-2.json.gz",
+      "sha256": "6eacd87fe7e4802d2cea84a125ae90de4e4c77688dfaf63bf84e7c5dba8ce461",
+      "original_sha256": "3c9a2e20d57de4634b47378202f3096afb5c4e1c8339053ed1adc009bfbf3deb",
+      "normalization": "Only metadata strings beginning with the workspace path are rewritten to $workspace; source observations and timings are unchanged."
+    }
+  ],
+  "browser_raw_coverage": {
+    "included": 0,
+    "referenced": 4,
+    "status": "withheld_pending_provenance_publication_approval",
+    "reason": "Three raw browser reports contain extraneous capture-availability metadata. All four are withheld to avoid claiming a partially closed raw browser set. The aggregate is preserved unchanged; no source report was redacted or rewritten."
+  },
+  "native_workload_origin": {
+    "generator": "benchmarks/generate-scale.ps1",
+    "current_generator_sha256": "03f5897758025a0426109b336a54a084b261a4089994a3a653162664f5341cff",
+    "generator_identity_scope": "Current maintained generator identity, not a retroactive execution receipt",
+    "owned_workload_manifest_sha256": "30afc63a616d035d535a05f64e7094952d2fb68321da6bd18a0797233b083111",
+    "independent_inputs": 2000,
+    "large_function_updates": 4096,
+    "large_module_functions": 512,
+    "input_source_and_bytecode_hashes_rechecked": 2002,
+    "compiler_sha256": "870665fdc7e751eb266ea8beec2cda64762c9b6b689e8a466feedaaeefc8dd3d",
+    "compiler_flags": "LuauCompileFastpcall=true,DebugLuauUserDefinedClasses=false",
+    "compiler_revision": "12a6ba75883272c79b66b59815efef4c574196f6",
+    "fixture_provenance": "Every workload entry declares owned deterministic generator; current generator source constructs bounded arithmetic, branches, loops, captures and tables. This audit executes no program."
+  },
+  "browser_workload_origin": {
+    "driver": "scripts/test-browser.mjs",
+    "bytecode_fixture": "fixtures/runtime/verified.bc",
+    "fixture_sha256": "f670ba8ea603ba19a1430a7708917759e85c17b022f4b7b0901d1312a82e4b2f",
+    "positive_source": "local answer:number=42\nreturn answer",
+    "strict_negative_source": "local answer:number='wrong'\nreturn answer",
+    "selection": "The benchmark branch processes only these three controlled inputs; it never selects the optional retained-client fixture."
+  },
+  "privacy_audit": {
+    "scope": "The 37 included report members and decompressed gzip payloads",
+    "credential_signature_matches": 0,
+    "machine_path_matches": 0,
+    "private_client_metadata_matches": 0,
+    "limitation": "Bounded signature and semantic-origin inspection does not prove that arbitrary secrets cannot exist."
+  },
+  "integrity": "Original report bytes and mtime nanoseconds preserved. Native compressed reports already document their original workspace-metadata normalization; this packaging applies none. No measurements are rerun or retimestamped.",
+  "authority": "Local Windows performance measurements for the recorded binaries/assets. Separate from clean CI runtime, correctness, package, container and publication evidence."
+}
