@@ -20,7 +20,13 @@ $composePath=Join-Path $directoryPath 'compose.yaml'
 $release=Get-Content -LiteralPath (Join-Path $PSScriptRoot '../release.json') -Raw|ConvertFrom-Json
 if($release.container_image -cnotmatch '^ghcr\.io/[a-z0-9_.-]+/[a-z0-9_.-]+$'){throw 'release.json has no supported configured container destination'}
 $docker=(Get-Command $DockerExecutable -ErrorAction Stop).Source
-function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
+function Hash([string]$Path){
+    $stream=[IO.File]::OpenRead($Path)
+    try{
+        $algorithm=[Security.Cryptography.SHA256]::Create()
+        try{([BitConverter]::ToString($algorithm.ComputeHash($stream))).Replace('-','').ToLowerInvariant()}finally{$algorithm.Dispose()}
+    }finally{$stream.Dispose()}
+}
 function Protect-Path([string]$Path){
     if($env:OS -ne 'Windows_NT'){return}
     $identity=[Security.Principal.WindowsIdentity]::GetCurrent().User

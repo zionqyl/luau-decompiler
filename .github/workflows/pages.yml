@@ -8,6 +8,9 @@ on:
       - "evidence/**"
       - "scripts/setup.ps1"
       - "scripts/env.ps1"
+      - "scripts/install.ps1"
+      - "scripts/test-install.py"
+      - "deployment/start-server.ps1"
       - "tests/release-requirements-rc.json"
   pull_request:
     paths-ignore:
@@ -16,6 +19,9 @@ on:
       - "evidence/**"
       - "scripts/setup.ps1"
       - "scripts/env.ps1"
+      - "scripts/install.ps1"
+      - "scripts/test-install.py"
+      - "deployment/start-server.ps1"
       - "tests/release-requirements-rc.json"
   workflow_dispatch:
 permissions:

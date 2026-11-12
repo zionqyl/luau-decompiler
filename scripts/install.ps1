@@ -23,7 +23,13 @@ $pointerPath=Join-Path $root 'current'
 $lockPath=Join-Path $root '.install.lock'
 $activationPath=Join-Path $root '.luau-activation.json'
 $bootstrapPath=Join-Path $root '.luau-bootstrap.json'
-function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
+function Hash([string]$Path){
+    $stream=[IO.File]::OpenRead($Path)
+    try{
+        $algorithm=[Security.Cryptography.SHA256]::Create()
+        try{([BitConverter]::ToString($algorithm.ComputeHash($stream))).Replace('-','').ToLowerInvariant()}finally{$algorithm.Dispose()}
+    }finally{$stream.Dispose()}
+}
 function Hash-Bytes([byte[]]$Bytes){$algorithm=[Security.Cryptography.SHA256]::Create();try{([BitConverter]::ToString($algorithm.ComputeHash($Bytes))).Replace('-','').ToLowerInvariant()}finally{$algorithm.Dispose()}}
 function Emit-Json($Value){$text=$Value|ConvertTo-Json -Depth 20;[regex]::Replace($text,'[^\x00-\x7f]',{param($match)'\u'+([int][char]$match.Value).ToString('x4')})}
 function Atomic-Bytes([string]$Path,[byte[]]$Bytes){

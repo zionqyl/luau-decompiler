@@ -346,6 +346,25 @@ def main(failure_context=None):
             local(archive)
             assert current() == original
             record('idempotent_rerun')
+            restricted_modules = work / 'isolated module lookup'
+            restricted_modules.mkdir()
+            restricted_manager = work / 'installer-without-optional-module-functions.ps1'
+            source = installer.read_text(encoding='utf-8-sig')
+            assert source.count("$ErrorActionPreference='Stop'") == 1
+            restricted_source = source.split("$ErrorActionPreference='Stop'", 1)[0]
+            restricted_source += "$ErrorActionPreference='Stop'\n"
+            for module in ['Utility', 'Management']:
+                restricted_source += "Import-Module ([Reflection.Assembly]::Load('Microsoft.PowerShell.Commands."+module+", Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35').Location)\n"
+            restricted_source += "$PSModuleAutoLoadingPreference='None'\n"
+            restricted_source += "$env:PSModulePath='"+str(restricted_modules).replace("'", "''")+"'\n"
+            restricted_source += "if(Get-Command Get-FileHash -ErrorAction SilentlyContinue){throw 'Optional file-hash command unexpectedly available'}\n"
+            restricted_source += "& '"+str(installer).replace("'", "''")+"' @PSBoundParameters\n"
+            restricted_manager.write_text(restricted_source, encoding='utf-8-sig')
+            local(archive, manager=restricted_manager)
+            assert current() == original
+            assert json.loads(install(['-Doctor', '-Json'], manager=restricted_manager).stdout)['passed']
+            record('installer_stream_hashing_without_optional_file_hash_command', unavailable_command='Get-FileHash',
+                   module_auto_loading='None', scope='Controlled Windows PowerShell child; not an observation of the CI module environment')
             installed_diagnosis = install(['-Doctor', '-Json'])
             assert json.loads(installed_diagnosis.stdout)['passed']
             shim = subprocess.run([os.environ['COMSPEC'], '/d', '/c', str(managed / 'luau-decompile.cmd'), 'doctor', '--json'],
