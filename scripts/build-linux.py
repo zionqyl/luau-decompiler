@@ -112,7 +112,7 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
     (output / "README.md").write_text("# Luau decompiler runtime\n\nKeep bin, analyzer manifest, definitions and licenses together.\n\n```sh\n./bin/luau-decompile doctor --json\n./bin/luau-decompile decompile checks/verified.luau --policy verified-typed -o output.luau\n```\n\nThis is a runtime bundle; source and detailed evidence are separate. Linux execution must pass extracted runtime acceptance before publication.\n")
-    notices = output / "third-party-licenses"
+    notices = output / "licenses"
     notices.mkdir(exist_ok=True)
     for filename in ["LICENSE.txt", "lua_LICENSE.txt"]:
         shutil.copy2(upstream / filename, notices / ("Luau-" + filename))

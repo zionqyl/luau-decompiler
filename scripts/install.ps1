@@ -354,7 +354,7 @@ try{
     $expected=$ExpectedSha256
     if(-not $expected){$checksumPath=$archivePath+'.sha256';if(-not(Test-Path -LiteralPath $checksumPath)){throw 'Provide the publisher checksum sidecar or -ExpectedSha256'};$expected=((Get-Content -LiteralPath $checksumPath -Raw).Trim() -split '\s+')[0]}
     if($expected -cnotmatch '^[0-9a-fA-F]{64}$' -or (Hash $archivePath) -cne $expected.ToLowerInvariant()){throw 'Runtime archive checksum mismatch; the working installation was not changed'}
-    $expanded=Join-Path $stage 'expanded';New-Item -ItemType Directory -Path $expanded|Out-Null
+    $expanded=Join-Path $stage 'p';New-Item -ItemType Directory -Path $expanded|Out-Null
     $zip=[IO.Compression.ZipFile]::OpenRead($archivePath)
     try{
         $total=0L;$names=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)

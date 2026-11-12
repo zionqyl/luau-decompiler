@@ -12,6 +12,7 @@ try{
     $version=($metadata.packages|Where-Object{$_.name -ceq 'luau-decompiler'}).version
     if($gate.schema -ne 3 -or $gate.version -cne $version -or -not $gate.passed -or -not $gate.release_optimized -or $gate.oracle_protocol -cne 'LOBS/1' -or $gate.behavioral_passed -ne $gate.behavioral_cases){throw 'No matching complete optimized semantic gate; run release.ps1 without -PackageOnly'}
     $currentSources=@(Get-GateSourceFiles)
+    $installerInputs=@(Get-InstallerInputFiles $currentSources)
     $semanticSources=@(Get-SemanticInputFiles $currentSources)
     Assert-SemanticSnapshot $gate.semantic_input_files $currentSources
     $tools=Get-QualityToolProvenance
@@ -28,6 +29,8 @@ try{
     $documentationDelta=@(foreach($path in @(@($currentHashes.Keys)+@($oldHashes.Keys)|Sort-Object -Unique)){if($oldHashes[$path] -cne $currentHashes[$path]){[ordered]@{path=$path;previous_sha256=$oldHashes[$path];current_sha256=$currentHashes[$path]}}})
     $snapshot=[ordered]@{schema=1;version=$version;files=$currentSources;validated_semantic_inputs=$semanticSources;semantic_validation_started_utc=$gate.validation_started_utc;semantic_validation_finished_utc=$gate.validation_finished_utc;semantic_evidence_reused=[bool]$PackageOnly;documentation_changes_since_semantic_gate=$documentationDelta}
     $snapshot.non_native_changes_since_semantic_gate=$documentationDelta
+    $snapshot.installer_inputs=$installerInputs
+    $snapshot.installer_changes_since_native_gate=@($documentationDelta|Where-Object{$_.path -cin @('scripts/install.ps1','scripts/test-install.py')})
     $snapshot.documentation_changes_since_semantic_gate=@($documentationDelta|Where-Object{$_.path -match '\.md$'})
     $snapshot.browser_changes_since_native_gate=@($documentationDelta|Where-Object{$_.path -match '^browser-toolchain\.lock\.json$|^web/|^scripts/(build-browser\.py|test-browser\.mjs)$|^\.github/workflows/pages\.yml$'})
     $snapshotJson=$snapshot|ConvertTo-Json -Depth 8
@@ -55,6 +58,7 @@ try{
     }finally{$env:PATH=$previousPath}
     $acceptance=Get-Content -LiteralPath $acceptancePath -Raw|ConvertFrom-Json
     if(-not $acceptance.passed -or $acceptance.executable_sha256 -cne $cliHash){throw 'Final runtime acceptance identity mismatch'}
+    if($acceptance.harness_sha256 -cne (Get-FileHash -LiteralPath scripts/runtime-smoke.py -Algorithm SHA256).Hash.ToLowerInvariant()){throw 'Runtime acceptance harness identity mismatch'}
     $installerReportPath=Join-Path $evidence 'installer-acceptance.json'
     $installerArguments=@('--archive',$runtimeArchive,'--installer',(Join-Path $taskRoot 'scripts/install.ps1'),'--work-dir',(Join-Path $workspace 'installer-work'),'--report',$installerReportPath,'--registry-path')
     if($PreviousArchive){$installerArguments+=@('--previous-archive',(Resolve-Path -LiteralPath $PreviousArchive).Path)}
@@ -63,6 +67,8 @@ try{
     if($LASTEXITCODE -ne 0){throw 'Final runtime installer acceptance failed'}
     $installerAcceptance=Get-Content -LiteralPath $installerReportPath -Raw|ConvertFrom-Json
     if(-not $installerAcceptance.passed -or $installerAcceptance.archive_sha256 -cne $runtimeHash){throw 'Installer acceptance artifact identity mismatch'}
+    $installerHashes=@{};foreach($inputFile in $installerInputs){$installerHashes[$inputFile.path]=$inputFile.sha256;if((Get-FileHash -LiteralPath $inputFile.path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $inputFile.sha256){throw ('Installer input changed during packaging: '+$inputFile.path)}}
+    if($installerAcceptance.installer_sha256 -cne $installerHashes['scripts/install.ps1'] -or $installerAcceptance.harness_sha256 -cne $installerHashes['scripts/test-install.py'] -or $installerAcceptance.selection -cne 'complete installer scenarios'){throw 'Full installer acceptance does not match the packaged installer and current harness'}
     foreach($report in @($gate.validation_reports)+@($gate.measured_evidence)){
         if((Get-FileHash -LiteralPath $report.path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $report.sha256){throw ('Validated report changed: '+$report.path)}
         $path=Join-Path $evidence ('reports/'+$report.path);New-Item -ItemType Directory -Path (Split-Path -Parent $path) -Force|Out-Null;Copy-Item -LiteralPath $report.path -Destination $path
@@ -71,6 +77,8 @@ try{
     Copy-Item -LiteralPath artifacts/release-gate.json -Destination (Join-Path $evidence 'release-gate.json')
     [IO.File]::WriteAllText((Join-Path $evidence 'source-manifest.json'),$snapshotJson,[Text.UTF8Encoding]::new($false))
     $assessment=[ordered]@{schema=2;version=$version;status='windows_standalone_candidate_validated';executable_sha256=$cliHash;runtime_archive_sha256=$runtimeHash;source_archive_sha256=$sourceHash;semantic_gate_sha256=$provenance.semantic_gate_sha256;semantic_evidence_reused=[bool]$PackageOnly;semantic_validation_started_utc=$gate.validation_started_utc;semantic_validation_finished_utc=$gate.validation_finished_utc;extracted_runtime_acceptance=[ordered]@{passed=$acceptance.passed;harness_sha256=$acceptance.harness_sha256;report='runtime-acceptance.json';report_sha256=(Get-FileHash -LiteralPath $acceptancePath -Algorithm SHA256).Hash.ToLowerInvariant()};installer_acceptance=[ordered]@{passed=$installerAcceptance.passed;harness_sha256=$installerAcceptance.harness_sha256;report='installer-acceptance.json';report_sha256=(Get-FileHash -LiteralPath $installerReportPath -Algorithm SHA256).Hash.ToLowerInvariant()};documentation_changes_since_semantic_gate=$snapshot.documentation_changes_since_semantic_gate;browser_changes_since_native_gate=$snapshot.browser_changes_since_native_gate;platforms=[ordered]@{windows='passed_within_recorded_standalone_scope';linux='not_run';macos='not_run';mobile='not_run';container='not_run'};native_executor='Optional independent evidence retains its own observed outcomes and build/source identities; standalone acceptance does not certify live compatibility.';historical_evidence=[ordered]@{manifest='evidence/releases/0.4.0-rc.1-manifest.json';archive_sha256=(Get-Content evidence/releases/0.4.0-rc.1-manifest.json -Raw|ConvertFrom-Json).archive_sha256};limitations=@('Finite fixture/input coverage does not establish universal compatibility or absence of defects.','Strict analysis, useful annotations and behavioral observations remain independent facts.','Prebuilt release/image publication and actual Linux/container execution require their separately recorded prerequisites.')}
+    $assessment.installer_inputs=$installerInputs
+    $assessment.installer_changes_since_native_gate=$snapshot.installer_changes_since_native_gate
     [IO.File]::WriteAllText((Join-Path $evidence 'release-assessment.json'),($assessment|ConvertTo-Json -Depth 15),[Text.UTF8Encoding]::new($false))
     $evidenceArchive=Join-Path $archives ('luau-decompiler-'+$version+'-evidence.zip')
     $evidenceHash=Write-PortableZip $evidence $evidenceArchive

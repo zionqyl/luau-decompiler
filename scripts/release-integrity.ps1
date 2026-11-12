@@ -27,7 +27,13 @@ function Get-GateSourceFiles {
 }
 
 function Get-SemanticInputFiles($Files) {
-    @(Get-OrderedSourceFiles @($Files | Where-Object {$_.path -notmatch '\.md$' -and $_.path -cne 'browser-toolchain.lock.json' -and $_.path -notmatch '^web/' -and $_.path -notmatch '^scripts/(build-browser\.py|test-browser\.mjs)$' -and $_.path -notmatch '^\.github/workflows/pages\.yml$'}))
+    @(Get-OrderedSourceFiles @($Files | Where-Object {$_.path -notmatch '\.md$' -and $_.path -cne 'browser-toolchain.lock.json' -and $_.path -notmatch '^web/' -and $_.path -notmatch '^scripts/(build-browser\.py|test-browser\.mjs|install\.ps1|test-install\.py)$' -and $_.path -notmatch '^\.github/workflows/pages\.yml$'}))
+}
+
+function Get-InstallerInputFiles($Files) {
+    $inputs=@(Get-OrderedSourceFiles @($Files|Where-Object{$_.path -cin @('scripts/install.ps1','scripts/test-install.py')}))
+    if($inputs.Count -ne 2){throw 'Both installer and installer harness must be present in the complete source snapshot'}
+    return $inputs
 }
 
 function Assert-SemanticSnapshot($Expected,$Actual) {

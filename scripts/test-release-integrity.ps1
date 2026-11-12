@@ -26,6 +26,19 @@ $browserOnly=@([ordered]@{path='web/app/page.tsx';sha256='presentation'},[ordere
 Assert-SemanticSnapshot $semantic @($inputFiles+$browserOnly)
 if(@(Get-SemanticInputFiles @($inputFiles+[ordered]@{path='src/wasm_api.rs';sha256='shared-engine-boundary'})).Count -ne $semantic.Count+1){throw 'Shared Rust platform boundary was excluded from native identities'}
 $cases.Add(@{id='browser_only_changes_have_an_independent_gate_owner';passed=$true})
+$installerFiles=@([ordered]@{path='scripts/install.ps1';sha256='installer'},[ordered]@{path='scripts/test-install.py';sha256='installer-harness'})
+$completeSource=@($inputFiles+$installerFiles)
+Assert-SemanticSnapshot $semantic $completeSource
+$changedInstaller=@($inputFiles+[ordered]@{path='scripts/install.ps1';sha256='changed-installer'}+[ordered]@{path='scripts/test-install.py';sha256='changed-installer-harness'})
+Assert-SemanticSnapshot $semantic $changedInstaller
+if(@(Get-InstallerInputFiles $completeSource).Count -ne 2 -or @(Get-OrderedSourceFiles $completeSource).Count -ne $inputFiles.Count+2){throw 'Installer inputs were omitted from the complete packaging snapshot'}
+$cases.Add(@{id='installer_changes_have_an_independent_packaged_gate_owner';passed=$true})
+if((@(Get-InstallerInputFiles $changedInstaller).sha256 -join ',') -ceq (@(Get-InstallerInputFiles $completeSource).sha256 -join ',')){throw 'Packaging identities did not retain changed installer and harness bytes'}
+$cases.Add(@{id='packaging_snapshot_retains_installer_and_harness_changes';passed=$true})
+$missingInstallerRejected=$false
+try{Get-InstallerInputFiles @($inputFiles+$installerFiles[0])|Out-Null}catch{$missingInstallerRejected=$true}
+if(-not $missingInstallerRejected){throw 'Packaging snapshot accepted a missing installer harness'}
+$cases.Add(@{id='packaging_snapshot_rejects_missing_installer_harness';passed=$true})
 $unordered=@([ordered]@{path='z.rs';sha256='z'},[ordered]@{path='A.rs';sha256='A'},[ordered]@{path='a.rs';sha256='a'},[ordered]@{path='m.rs';sha256='m'})
 $ordered=@(Get-OrderedSourceFiles $unordered)
 if(($ordered.path -join ',') -cne 'A.rs,a.rs,m.rs,z.rs'){throw 'Source dictionaries were not sorted by ordinal path keys'}

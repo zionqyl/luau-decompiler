@@ -6,7 +6,7 @@ function Copy-RuntimeLicenses([string]$Root,[string]$Output,[string]$RustTarget)
     $visited=[Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
     $queue=[Collections.Generic.Queue[string]]::new();$queue.Enqueue($metadata.resolve.root)
     $records=[Collections.Generic.List[object]]::new()
-    $notices=Join-Path $Output 'third-party-licenses';New-Item -ItemType Directory -Path $notices -Force|Out-Null
+    $notices=Join-Path $Output 'licenses';New-Item -ItemType Directory -Path $notices -Force|Out-Null
     while($queue.Count){
         $id=$queue.Dequeue();if(-not $visited.Add($id)){continue}
         foreach($dependency in $nodes[$id].deps){$queue.Enqueue($dependency.pkg)}

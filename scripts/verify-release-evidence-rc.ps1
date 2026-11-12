@@ -135,6 +135,10 @@ function Assert-IndependentExecutorEvidence([string]$EvidenceRoot=$taskRoot,[str
     return [ordered]@{schema=1;version=$manifest.version;archive_manifest_sha256='ff9a5bc0e1fb969c1341bb2b313c6feffa430703f057d8f32307a8bdb3180a36';report_line_endings='Only CRLF to LF normalization is accepted for checked-in JSON; exact original bytes remain archived and hash-verified.';sources=$sourceMatches;reports=$results;live_compatibility_success=$false}
 }
 $tools=Get-QualityToolProvenance
+$packagingBoundaries=Read-FreshEvidence 'docs/results/release-integrity-v3.json'
+if(-not $packagingBoundaries.passed){throw 'Release boundary identity checks failed'}
+Assert-RequiredIdentities $requirements.packaging_boundary_case_ids $packagingBoundaries.results.id 'Installer packaging boundary cases'
+foreach($case in $packagingBoundaries.results){if(-not $case.passed){throw ('Release boundary case failed: '+$case.id)}}
 $analyzer=Read-FreshEvidence 'artifacts/analyzer-conformance/report.json'
 if(-not $analyzer.passed -or $analyzer.protocol -cne 'LQUAL/1' -or $analyzer.cases.Count -ne $requirements.analyzer_conformance_case_ids.Count -or $analyzer.analyzer_sha256 -cne $tools.analyzer_sha256 -or $analyzer.definitions_sha256 -cne $tools.definitions_sha256){throw 'Candidate analyzer conformance identities or tool provenance are incomplete.'}
 Assert-RequiredIdentities $requirements.analyzer_conformance_case_ids $analyzer.cases.id 'Candidate analyzer conformance cases'
