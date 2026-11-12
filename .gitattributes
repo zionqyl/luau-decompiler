@@ -12,6 +12,7 @@
 *.zip -text
 *.exe -text
 evidence/** -text
+licenses/toolchain/** -text
 fixtures/** -text
 tests/corpus/** -text
 tests/semantic-corpus/** -text
