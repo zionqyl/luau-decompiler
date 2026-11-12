@@ -1,0 +1,11 @@
+{
+  "scope": "Extracted local-review supplement integrity only; no engine, analyzer, submitted scripts or test cases executed",
+  "passed": true,
+  "archive_sha256": "46070201d38b09f675660adbc5a82df2c469c73a9f03201dd012b96c09cff868",
+  "members": 60,
+  "original_report_members": 58,
+  "paths_case_insensitively_unique": true,
+  "all_member_bytes_and_hashes_match": true,
+  "all_gzip_members_decompress": true,
+  "original_mtimes_retained_in_member_manifest": true
+}
