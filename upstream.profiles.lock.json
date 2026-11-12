@@ -1,0 +1,38 @@
+{
+  "repository": "https://github.com/luau-lang/luau.git",
+  "profiles": [
+    {
+      "tag": "0.726",
+      "revision": "86d2a9dcd7cef396b73b1585371723e169e69a41",
+      "upstream_declared_target_version": 7,
+      "compiler_default_bytecode_version": 11,
+      "tested_format_versions": [7, 8, 10, 11],
+      "directory": "luau-0.726",
+      "windows_release_sha256": "579ac889614d231cfc441d7bbdb1ad17bad4953cef8174b1ae24f47991e1de97",
+      "windows_compiler_sha256": "e8970602ed1c75fb00c01ad95324610ce4c493064cbc82fcebaa5fd2d2f237a1",
+      "windows_interpreter_sha256": "1ace6fdf3dd352e55b2c9383baad4c9e82a47b71a74dee1f01abde4e6344d384"
+    },
+    {
+      "tag": "0.730",
+      "revision": "5bc7f4b23756f69f4669b419fa9034f117ccd6fe",
+      "upstream_declared_target_version": 9,
+      "compiler_default_bytecode_version": 12,
+      "tested_format_versions": [9, 12],
+      "directory": "luau-0.730",
+      "windows_release_sha256": "692cee7366e474af312f50962b6ca055c36779aebdec8a1b0bef15f1ccf6d418",
+      "windows_compiler_sha256": "2d5a53c6d46cf74b8894a50670513f7790abef582ebbb7e629cb9194baffc0d0",
+      "windows_interpreter_sha256": "85ddb1c30a74a3bfebc470b45a8820cd80f03fd99da1b86ee38a4eff64e094a5"
+    },
+    {
+      "tag": "0.746",
+      "revision": "12a6ba75883272c79b66b59815efef4c574196f6",
+      "upstream_declared_target_version": 13,
+      "compiler_default_bytecode_version": 14,
+      "tested_format_versions": [13, 14],
+      "directory": "luau-modern",
+      "windows_release_sha256": "e149fdb4fe78a52ce457fbd40741484eaab1dbf9907e7f878c6d8a9a3dac2ddd",
+      "windows_compiler_sha256": "870665fdc7e751eb266ea8beec2cda64762c9b6b689e8a466feedaaeefc8dd3d",
+      "windows_interpreter_sha256": "225c8eb1a5b526f25835c7530cbedde6e3dc643f607e1c9b6b562c21e8766277"
+    }
+  ]
+}

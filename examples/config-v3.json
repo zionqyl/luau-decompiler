@@ -1,0 +1,15 @@
+{
+  "profile": "auto",
+  "bytecode_encoding": "upstream",
+  "control_flow": "auto",
+  "vector_constructor": null,
+  "naming": "camelCase",
+  "naming_options": {"use_debug_names": true, "infer_descriptive_names": true},
+  "name_overrides": {},
+  "indent": "    ",
+  "closures": {"entry_invocation": "single", "compiler_closure_sharing": false},
+  "formatting": {"line_width": 100, "multiline_calls": true, "multiline_tables": true, "blank_lines": true, "local_functions": true},
+  "typing": {"mode": "annotated", "verbosity": "extensive", "emit_strict": true, "aliases": true, "max_iterations": 8, "max_nodes": 1000000, "binding_types": {}, "globals": {}, "roblox_api": true},
+  "validation": {"mode": "check", "analyzer_path": null, "definitions_path": null, "max_workers": 2, "timeout_ms": 10000, "max_attempts": 3, "max_cache_bytes": 16777216, "project": {"entry": "main", "modules": {}, "requires": {}, "external_globals": {}, "instance_types": {}}},
+  "limits": {"max_bytes": 16777216, "max_strings": 100000, "max_string_bytes": 8388608, "max_protos": 10000, "max_instructions": 1000000, "max_constants": 1000000, "max_depth": 100, "max_blocks": 100000, "max_output_bytes": 67108864, "max_analysis_steps": 10000000}
+}

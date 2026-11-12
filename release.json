@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "repository": "zionqyl/luau-decompiler",
+  "release_api": "https://api.github.com/repos/zionqyl/luau-decompiler/releases",
+  "tag_prefix": "v",
+  "container_image": "ghcr.io/zionqyl/luau-decompiler",
+  "supported_install_targets": ["windows-x64"],
+  "publication": "Release assets and container images require the publication workflow; configuration does not establish publication."
+}

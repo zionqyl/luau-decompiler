@@ -1,0 +1,257 @@
+{
+    "schema":  1,
+    "fixture_package":  "luau-decompiler-v0.3.0-native-r1",
+    "normal_engine_test_status":  "not_run",
+    "missing_environment":  "No connected Roblox Studio/test-place publishing environment; no controlled published-place native client run.",
+    "distinct_native_programs_planned":  14,
+    "module_scripts_planned":  11,
+    "local_scripts_planned":  2,
+    "client_run_scripts_planned":  1,
+    "runtime_inputs_per_program":  3,
+    "behavioral_comparisons_planned":  42,
+    "timing_repetitions_planned":  0,
+    "compiled_fixture_observations":  0,
+    "native_programs_verified":  0,
+    "cases":  [
+                  {
+                      "id":  "CaptureCounter",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.CaptureCounter",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.CaptureCounter",
+                      "source_file":  "CaptureCounter.luau",
+                      "source_sha256":  "770f4edf8d779c68e48d709aac76eb976b2aa9d1a8c232d4dab1ed1c5e1babea",
+                      "source_bytes":  103,
+                      "probe":  "stateful_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "ClientMethods",
+                      "class":  "Script",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.ClientMethods",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.ClientMethods",
+                      "source_file":  "ClientMethods.luau",
+                      "source_sha256":  "c7962b4a818363cbd827aeee0a0e543675a22b090e2515f5942602b69cb84317",
+                      "source_bytes":  297,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "LargeFunction",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.LargeFunction",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.LargeFunction",
+                      "source_file":  "LargeFunction.luau",
+                      "source_sha256":  "941f3dd3bdb87aed269ee04d091c19c711d641f9c8682e9138ac09c0963e8cdd",
+                      "source_bytes":  27276,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "LargeModule",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.LargeModule",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.LargeModule",
+                      "source_file":  "LargeModule.luau",
+                      "source_sha256":  "1de7ddb822627c800832ca8e7734166895cd7c55e879992ecf6dbeaaeff1ecbe",
+                      "source_bytes":  10085,
+                      "probe":  "large_module",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "LocalBinary",
+                      "class":  "LocalScript",
+                      "storage_path":  "StarterPlayer.StarterPlayerScripts.DecompilerV3Fixtures.LocalBinary",
+                      "runtime_path":  "Players.LocalPlayer.PlayerScripts.DecompilerV3Fixtures.LocalBinary",
+                      "source_file":  "LocalBinary.luau",
+                      "source_sha256":  "d39306e53c5e4b145c29fca744e46143373ffe5bb9bf091f34867aeeda16f399",
+                      "source_bytes":  107,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "LocalLoop",
+                      "class":  "LocalScript",
+                      "storage_path":  "StarterPlayer.StarterPlayerScripts.DecompilerV3Fixtures.LocalLoop",
+                      "runtime_path":  "Players.LocalPlayer.PlayerScripts.DecompilerV3Fixtures.LocalLoop",
+                      "source_file":  "LocalLoop.luau",
+                      "source_sha256":  "5ac43312f43ddbdcd2df642aac46137e2f990a04f3a8092b0d281f67398d105b",
+                      "source_bytes":  151,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "LoopMutation",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.LoopMutation",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.LoopMutation",
+                      "source_file":  "LoopMutation.luau",
+                      "source_sha256":  "3cb51f9fc5a2c9df13e7882899c34f47e4fe869f82d4afb1bcc22216d6443e58",
+                      "source_bytes":  413,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "ModuleDependency",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.ModuleDependency",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.ModuleDependency",
+                      "source_file":  "ModuleDependency.luau",
+                      "source_sha256":  "787328b61d1404dc7a1dda4cae05a1f33d20530eab5dae03d02e746b7575383b",
+                      "source_bytes":  62,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "ModuleInterface",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.ModuleInterface",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.ModuleInterface",
+                      "source_file":  "ModuleInterface.luau",
+                      "source_sha256":  "c81fde5fd63301024ec42e1abdae56bba652fb101ca8f077993a06a5652de027",
+                      "source_bytes":  204,
+                      "probe":  "module_interface",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "OwnedMethods",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.OwnedMethods",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.OwnedMethods",
+                      "source_file":  "OwnedMethods.luau",
+                      "source_sha256":  "6471205a4d57f76d5e1eb28270f0bfe8192c71750cc9ed316759552d8e3319dd",
+                      "source_bytes":  292,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "ProtectedCalls",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.ProtectedCalls",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.ProtectedCalls",
+                      "source_file":  "ProtectedCalls.luau",
+                      "source_sha256":  "2c4f5c5b4d4919f243105211e0a9b3e0226b4724e644b37bc42d35b631d1a67b",
+                      "source_bytes":  391,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "RequireDependency",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.RequireDependency",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.RequireDependency",
+                      "source_file":  "RequireDependency.luau",
+                      "source_sha256":  "25ec8b13f5f14587959d279f396eebfb73e54b3af61e0fc242795dcf30e057f1",
+                      "source_bytes":  158,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "ScalarBinary",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.ScalarBinary",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.ScalarBinary",
+                      "source_file":  "ScalarBinary.luau",
+                      "source_sha256":  "8bd683ddded9a5ced08f7e9e9a5ccc242d56e23ac4018878c38b0c182366b504",
+                      "source_bytes":  124,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  },
+                  {
+                      "id":  "VectorValues",
+                      "class":  "ModuleScript",
+                      "storage_path":  "ReplicatedStorage.DecompilerV3Fixtures.VectorValues",
+                      "runtime_path":  "ReplicatedStorage.DecompilerV3Fixtures.VectorValues",
+                      "source_file":  "VectorValues.luau",
+                      "source_sha256":  "8b9cae8806c782f6e68a562c27f039e0e7580267d1512530ca78d7420c35551f",
+                      "source_bytes":  174,
+                      "probe":  "scalar_function",
+                      "inputs":  [
+                                     -3,
+                                     0,
+                                     7
+                                 ],
+                      "normal_engine_compilation":  "not_run",
+                      "native_extraction":  "not_run"
+                  }
+              ],
+    "fixture_plan_sha256":  "5852e9ed4aa979b1791f6e5b7397b137f88ae1f9b7e63f92fe8cf3e963b00704",
+    "place_xml_sha256":  "5be223f0255ae397680b5e649900f7027a53471d4757f2aec94dbcca859af989"
+}

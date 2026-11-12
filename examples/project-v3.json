@@ -1,0 +1,9 @@
+{
+  "entry": "main",
+  "modules": {
+    "Shared/Scale": "--!strict\nexport type Options = {factor: number}\nlocal function scale(value: number, options: Options): number\n    return value * options.factor\nend\nreturn {scale = scale}\n"
+  },
+  "requires": {"./Shared/Scale": "Shared/Scale"},
+  "external_globals": {},
+  "instance_types": {}
+}

@@ -1,0 +1,17 @@
+/target/
+/.tools/
+/vendor/
+/artifacts/
+/fuzz/target/
+/dist/
+/docs/results/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+*.profraw
+*.profdata
+/.vscode/
+/.idea/
+*.tmp

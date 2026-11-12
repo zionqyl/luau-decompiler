@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "observed_date": "2026-11-11",
+  "executor": "Madium",
+  "executor_build": "2.0.0",
+  "roblox_build": "0.747.0.7471481",
+  "platform": "Windows",
+  "architecture": "not independently exposed",
+  "getter": "getfunctionbytecode",
+  "compiler_path": "executor loadstring; not normal Roblox script pipeline",
+  "encoding": "roblox_opcode227; explicit decode verified separately",
+  "transport": "getter capture; HTTP adapter results separately reported",
+  "cases": [
+    {
+      "id": "varargs",
+      "source": "return function(first, ...) return first, ... end",
+      "ok": true,
+      "kind": "string",
+      "hex": "0d030000011e03010001000004a301000052010000dd020000820100000000010000000000"
+    },
+    {
+      "id": "guarded",
+      "source": "return function(value) if value<0 then error(string.char(0,255),0) end return value,nil end",
+      "ok": true,
+      "kind": "string",
+      "hex": "0d0303056572726f7206737472696e67046368617200016b050100000000118c01000060000c0001000000a4010100000000408c030000812a0304020000006f040200a4020500001030809f0203028c0300009f01030152010000c6020000820103000603010400000040020000000000e06f4003020303040010308000010000000000"
+    },
+    {
+      "id": "fixed",
+      "source": "return function(value) return value+1 end",
+      "ok": true,
+      "kind": "string",
+      "hex": "0d030000011f0201000000000295010000820102000102000000000000f03f00010000000000"
+    },
+    {
+      "id": "stateful",
+      "source": "return function(state,delta) state.value+=delta;return state.value,nil end",
+      "ok": true,
+      "kind": "string",
+      "hex": "0d03010576616c7565000134040200000000094d0200cc0000000043020201300200cc000000004d0200cc00000000c60300008202030001030100010000000000"
+    },
+    {
+      "id": "captured",
+      "source": "local state={value=3};return function(value) state.value+=value;return state.value end",
+      "ok": true,
+      "kind": "string",
+      "hex": "0d03010576616c75650002380301010000000afb0100004d0201cc0000000043020200300201cc00000000fb0100004d0101cc00000000820102000103010001000000001f02000000000004c6010000d90000001200010082000200000100000000000001"
+    }
+  ]
+}

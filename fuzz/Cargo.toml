@@ -1,0 +1,26 @@
+[package]
+name = "luau-decompiler-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+luau-decompiler = { path = ".." }
+
+[[bin]]
+name = "bytecode"
+path = "fuzz_targets/bytecode.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "source"
+path = "fuzz_targets/source.rs"
+test = false
+doc = false
+bench = false

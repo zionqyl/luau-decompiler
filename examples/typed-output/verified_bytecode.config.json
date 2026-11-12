@@ -1,0 +1,13 @@
+{
+    "output_policy":  "verified_typed",
+    "naming":  "camelCase",
+    "input_format":  "luau_bytecode",
+    "formatting":  {
+                       "line_width":  100
+                   },
+    "typing":  {
+                   "binding_types":  {
+
+                                     }
+               }
+}

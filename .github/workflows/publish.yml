@@ -1,0 +1,223 @@
+name: publish-validated-release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag matching Cargo.toml
+        required: true
+        type: string
+  workflow_run:
+    workflows: [correctness-and-packages]
+    types: [completed]
+permissions:
+  contents: read
+concurrency:
+  group: publish-${{ inputs.tag || github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+jobs:
+  check-request:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      commit: ${{ steps.version.outputs.commit }}
+      tag: ${{ steps.version.outputs.tag }}
+      publish: ${{ steps.version.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || inputs.tag }}
+      - id: version
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
+          EXPECTED_REPOSITORY: ${{ github.repository }}
+          AUTOMATIC_PUBLICATION: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,re,subprocess,tomllib
+          version=tomllib.loads(pathlib.Path('Cargo.toml').read_text())['package']['version']
+          tag=os.environ.get('REQUESTED_TAG') or 'v'+version
+          automatic=os.environ['AUTOMATIC_PUBLICATION']=='true'
+          release=json.loads(pathlib.Path('release.json').read_text())
+          if not re.fullmatch(r'v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?',tag) or tag!='v'+version:
+              raise SystemExit('The requested tag must exactly match the Cargo package version')
+          if release['repository'].lower()!=os.environ['EXPECTED_REPOSITORY'].lower():
+              raise SystemExit('release.json does not identify this repository')
+          commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          ref='refs/tags/'+tag
+          found=subprocess.run(['git','ls-remote','--exit-code','origin',ref],text=True,capture_output=True)
+          if found.returncode not in (0,2):
+              raise SystemExit('Unable to check immutable release tag')
+          matching=found.returncode==0
+          if matching:
+              subprocess.run(['git','fetch','--depth','1','origin',ref+':'+ref],check=True)
+              matching=subprocess.check_output(['git','rev-parse',ref+'^{commit}'],text=True).strip()==commit
+          if not automatic and not matching:
+              raise SystemExit('Release tag differs from the validated source commit')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+              output.write('version='+version+'\n')
+              output.write('commit='+commit+'\n')
+              output.write('tag='+tag+'\n')
+              output.write('publish='+str(matching).lower()+'\n')
+          if not matching:
+              print('No matching immutable release tag; no release will be published')
+          PY
+  validate:
+    if: github.event_name == 'workflow_dispatch'
+    needs: check-request
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.check-request.outputs.commit }}
+  publish:
+    if: always() && !cancelled() && needs.check-request.result == 'success' && needs.check-request.outputs.publish == 'true' && (needs.validate.result == 'success' || needs.validate.result == 'skipped')
+    needs: [check-request, validate]
+    runs-on: ubuntu-24.04
+    environment: release
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    env:
+      RELEASE_VERSION: ${{ needs.check-request.outputs.version }}
+      RELEASE_TAG: ${{ needs.check-request.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.check-request.outputs.commit }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release-evidence
+          path: artifacts/windows
+          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-runtime-candidate-evidence
+          path: artifacts/linux
+          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          github-token: ${{ github.token }}
+      - name: Refuse replacement of an existing release
+        run: |
+          git fetch origin "refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG"
+          test "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" = "$(git rev-parse HEAD)"
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            printf '%s\n' 'An existing release must not be overwritten' >&2
+            exit 1
+          fi
+      - name: Verify downloaded assets and the tested image
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          for directory in ('windows','linux'):
+              sidecars=list(pathlib.Path('artifacts',directory).rglob('*.sha256'))
+              if not sidecars:
+                  raise SystemExit('No integrity sidecars for '+directory)
+              for sidecar in sidecars:
+                  expected,name=sidecar.read_text().strip().split(None,1)
+                  asset=sidecar.parent/pathlib.PurePosixPath(name.strip().lstrip('*')).name
+                  if hashlib.sha256(asset.read_bytes()).hexdigest()!=expected:
+                      raise SystemExit('Artifact digest mismatch: '+str(asset))
+          report=json.loads(pathlib.Path('artifacts/linux/linux-runtime-smoke.json').read_text())
+          container=json.loads(pathlib.Path('artifacts/linux/container-validation.json').read_text())
+          if not report['passed'] or not container['passed']:
+              raise SystemExit('Linux runtime or actual container validation did not pass')
+          import subprocess
+          if container['source_revision']!=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip():
+              raise SystemExit('Tested container source does not match the resolved release commit')
+          PY
+      - name: Prepare durable release assets and publication receipt
+        run: |
+          mkdir -p artifacts/publish
+          find artifacts/windows -type f -name 'luau-decompiler-*' -exec cp '{}' artifacts/publish/ ';'
+          cp artifacts/linux/luau-decompiler-linux-candidate.tar.gz "artifacts/publish/luau-decompiler-$RELEASE_VERSION-linux-x64.tar.gz"
+          cp artifacts/linux/linux-runtime-smoke.json "artifacts/publish/luau-decompiler-$RELEASE_VERSION-linux-validation.json"
+          cp artifacts/linux/container-validation.json "artifacts/publish/luau-decompiler-$RELEASE_VERSION-container-validation.json"
+          cp artifacts/linux/tested-container-image.json "artifacts/publish/luau-decompiler-$RELEASE_VERSION-container-image.json"
+          cp scripts/install.ps1 artifacts/publish/install.ps1
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess
+          directory=pathlib.Path('artifacts/publish')
+          files=[]
+          for path in sorted(directory.iterdir()):
+              if path.suffix=='.sha256':
+                  continue
+              digest=hashlib.sha256(path.read_bytes()).hexdigest()
+              path.with_name(path.name+'.sha256').write_text(digest+'  '+path.name+'\n')
+              files.append({'name':path.name,'bytes':path.stat().st_size,'sha256':digest})
+          receipt={'schema':1,'version':os.environ['RELEASE_VERSION'],'tag':os.environ['RELEASE_TAG'],'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'workflow_run':os.environ['GITHUB_RUN_ID'],'container_publication':'Separate publication.json is created only after anonymous pull succeeds','assets':files}
+          path=directory/'runtime-publication.json'
+          path.write_text(json.dumps(receipt,indent=2)+'\n')
+          path.with_name(path.name+'.sha256').write_text(hashlib.sha256(path.read_bytes()).hexdigest()+'  '+path.name+'\n')
+          PY
+      - name: Publish permanent release evidence and runtime assets
+        run: |
+          options=()
+          case "$RELEASE_VERSION" in *-*) options+=(--prerelease) ;; esac
+          gh release create "$RELEASE_TAG" --verify-tag --title "Luau decompiler $RELEASE_VERSION" --notes 'Validated runtime, source and evidence assets are separate. See runtime-publication.json and the versioned evidence bundle for exact checks and remaining limits.' "${options[@]}" artifacts/publish/*
+  publish-image:
+    needs: [check-request, publish]
+    if: always() && !cancelled() && needs.check-request.result == 'success' && needs.publish.result == 'success'
+    runs-on: ubuntu-24.04
+    environment: release
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      packages: write
+      actions: read
+    env:
+      RELEASE_VERSION: ${{ needs.check-request.outputs.version }}
+      RELEASE_TAG: ${{ needs.check-request.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.check-request.outputs.commit }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux-runtime-candidate-evidence
+          path: artifacts/linux
+          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify the exact successful container boundary
+        run: |
+          python3 - <<'PY'
+          import json,pathlib,subprocess
+          report=json.loads(pathlib.Path('artifacts/linux/container-validation.json').read_text())
+          if not report['passed'] or report['source_revision']!=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip():
+              raise SystemExit('Container acceptance does not match the release commit')
+          PY
+          docker load --input artifacts/linux/tested-container-image.tar
+          expected=$(python3 -c 'import json;print(json.load(open("artifacts/linux/tested-container-image.json"))[0]["Id"])')
+          test "$(docker image inspect luau-decompiler-ci --format '{{.Id}}')" = "$expected"
+      - name: Publish the exact tested image and verify anonymous access
+        env:
+          REGISTRY_TOKEN: ${{ github.token }}
+          REGISTRY_ACTOR: ${{ github.actor }}
+        run: |
+          image=$(python3 -c 'import json;print(json.load(open("release.json"))["container_image"])')
+          printf '%s' "$REGISTRY_TOKEN" | docker login ghcr.io --username "$REGISTRY_ACTOR" --password-stdin
+          docker tag luau-decompiler-ci "$image:$RELEASE_VERSION"
+          docker push "$image:$RELEASE_VERSION"
+          digest=$(docker image inspect "$image:$RELEASE_VERSION" --format '{{range .RepoDigests}}{{println .}}{{end}}' | grep -F "$image@sha256:" | head -n 1)
+          test -n "$digest"
+          anonymous="$RUNNER_TEMP/luau-anonymous-$GITHUB_RUN_ID"
+          mkdir -m 700 "$anonymous"
+          docker --config "$anonymous" pull "$digest"
+          printf '%s\n' "$digest" > artifacts/published-image.txt
+      - name: Publish verified container receipt without changing runtime assets
+        run: |
+          gh release download "$RELEASE_TAG" --pattern runtime-publication.json --dir artifacts
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess
+          runtime=pathlib.Path('artifacts/runtime-publication.json')
+          prior=json.loads(runtime.read_text())
+          commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          if prior['version']!=os.environ['RELEASE_VERSION'] or prior['source_commit']!=commit:
+              raise SystemExit('Runtime and container publication source/version differ')
+          receipt={'schema':1,'version':os.environ['RELEASE_VERSION'],'tag':os.environ['RELEASE_TAG'],'source_commit':commit,'workflow_run':os.environ['GITHUB_RUN_ID'],'image':pathlib.Path('artifacts/published-image.txt').read_text().strip(),'image_policy':'Exact image from successful canonical container acceptance; anonymous digest pull passed','runtime_receipt':{'asset':'runtime-publication.json','sha256':hashlib.sha256(runtime.read_bytes()).hexdigest()}}
+          path=pathlib.Path('artifacts/publication.json')
+          path.write_text(json.dumps(receipt,indent=2)+'\n')
+          path.with_name('publication.json.sha256').write_text(hashlib.sha256(path.read_bytes()).hexdigest()+'  publication.json\n')
+          PY
+          gh release upload "$RELEASE_TAG" artifacts/publication.json artifacts/publication.json.sha256

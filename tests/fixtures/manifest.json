@@ -1,0 +1,2519 @@
+{
+    "upstream_tag":  "0.654",
+    "upstream_revision":  "8cc289fae430d9b0c22bde209fe5cf2d01751ff1",
+    "bytecode_version":  6,
+    "compiler_sha256":  "4300a366fd96d51e1d104ab459e4c9eba6a5d0dfa9fdea2b5ced07065381a69b",
+    "fixtures":  [
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "arithmetic.O0.D0.bc",
+                         "bytes":  271,
+                         "sha256":  "c5be1cf9ea145a9640464883c5458ffd11d6f24c13b95fa68f1205cad3e5bf19"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "arithmetic.O0.D1.bc",
+                         "bytes":  338,
+                         "sha256":  "5a85c897a2be2ea72ff2fa822095f96ae2c5f2aa369e38e03edf22bfe0651e68"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "arithmetic.O0.D2.bc",
+                         "bytes":  436,
+                         "sha256":  "c3982a83b584b6627647691ad73a4110dcde9f8a1f8e633125751cde12452b5d"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "arithmetic.O1.D0.bc",
+                         "bytes":  242,
+                         "sha256":  "fe0e4a01d74e4ef82e22f5e6e0ef2dcdd95655165a5d9a69a601e3a8fc91fb81"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "arithmetic.O1.D1.bc",
+                         "bytes":  306,
+                         "sha256":  "ccd7f1f990d553cea987f41e72f83386c186292b0629bc38c7a123dcb6bdab6a"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "arithmetic.O1.D2.bc",
+                         "bytes":  404,
+                         "sha256":  "800d7f3634201f3736128948789b5f9ad36dd92a55c10494fecf5fbbc85a356a"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "arithmetic.O2.D0.bc",
+                         "bytes":  316,
+                         "sha256":  "fdf8dfb7433147347c7599f62252c21192936bffe81bdde94bbb5fe9ba805d43"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "arithmetic.O2.D1.bc",
+                         "bytes":  393,
+                         "sha256":  "bbafa474a4b8acaa92b6f4aa46ef7626ba665b72645ac2d25a0a5a7bf9d17c0e"
+                     },
+                     {
+                         "source":  "arithmetic.luau",
+                         "source_sha256":  "2e6c0ec846aa52233f63f2a9052262ad4ecafa982a67a67eb316b4915e5afcdc",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "arithmetic.O2.D2.bc",
+                         "bytes":  491,
+                         "sha256":  "ea6bc67cb54f101de56de61d2dacebe61ab222a6bf79b211e8c92b4905de576c"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "binding_scopes_v2.O0.D0.bc",
+                         "bytes":  253,
+                         "sha256":  "206d353d07466bd16bcc926b3cd943110507770ed350a608db00e21626432300"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "binding_scopes_v2.O0.D1.bc",
+                         "bytes":  314,
+                         "sha256":  "cd7c20360c0e7b88e9c9b6083f3c7cab36df1f6bd886c7098856df43f77f8ded"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "binding_scopes_v2.O0.D2.bc",
+                         "bytes":  382,
+                         "sha256":  "c0138cdc9018d442ae787c88828b833eb97abefdca0e772b24f1231315f37eb1"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "binding_scopes_v2.O1.D0.bc",
+                         "bytes":  230,
+                         "sha256":  "47126210860ad5bad1653aab508f9f4f2bb1cb9b4c0da2d921e423f5ef0128d3"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "binding_scopes_v2.O1.D1.bc",
+                         "bytes":  289,
+                         "sha256":  "47bdffcfd8beab4766bd640b30afd1c5a3970cf90de2dcdf37051a37cfae8881"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "binding_scopes_v2.O1.D2.bc",
+                         "bytes":  357,
+                         "sha256":  "c6f97e60dde5dceb8fe4ced995763ff27d154d52acbb7f58274e1536d7493939"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "binding_scopes_v2.O2.D0.bc",
+                         "bytes":  246,
+                         "sha256":  "f919a77227b40e3915f951dd9e2b906418d102f74da107ba1e59e66291e6b6e9"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "binding_scopes_v2.O2.D1.bc",
+                         "bytes":  309,
+                         "sha256":  "0c6b3c5701bfe645cc049e9b49e557ae8f8b476804cd19006ad881ce24002758"
+                     },
+                     {
+                         "source":  "binding_scopes_v2.luau",
+                         "source_sha256":  "6f9d3205f1a8c32caa542080f824911756f94be943b2516edba5fb0c6886887a",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "binding_scopes_v2.O2.D2.bc",
+                         "bytes":  385,
+                         "sha256":  "e5b9b07b48fe2c0b819429ae02e5b992ab23355866dba237968992db2ef6f395"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "boolean_comparisons.O0.D0.bc",
+                         "bytes":  549,
+                         "sha256":  "9dd66a323b29a6cfb458682203d7b5c271ce53462108a48f585a67742acd5040"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "boolean_comparisons.O0.D1.bc",
+                         "bytes":  674,
+                         "sha256":  "0e380678af779965851cb46e77c0d104f2fdb115a8fe340f49789254ccbfb5e5"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "boolean_comparisons.O0.D2.bc",
+                         "bytes":  710,
+                         "sha256":  "391d91cc6f95e4ab0dbc3763cd5179effffbeb0ca983c368c524b5f9a7426300"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "boolean_comparisons.O1.D0.bc",
+                         "bytes":  502,
+                         "sha256":  "dee775609cdf3d798d3df84bc2dacdb40a93fb75436a1f85f6fc79e6a1a696eb"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "boolean_comparisons.O1.D1.bc",
+                         "bytes":  622,
+                         "sha256":  "a229cc2e1e6ab737e63de9075874a0ae928d16247d318c41f7e58429a0f23098"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "boolean_comparisons.O1.D2.bc",
+                         "bytes":  658,
+                         "sha256":  "45867d4ed36329602fa4836ec95aa0936729b9580f5b457a60bb340dc431df9c"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "boolean_comparisons.O2.D0.bc",
+                         "bytes":  599,
+                         "sha256":  "0e1b2aeb3cfb89c974d4107321f1e4cc076ab9ad2b939da90bcd35ed9bd54fcb"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "boolean_comparisons.O2.D1.bc",
+                         "bytes":  738,
+                         "sha256":  "976e16ad6496af7983de2370abfd5c8dcbf91b8be334b6a15316cb8db4cce7c8"
+                     },
+                     {
+                         "source":  "boolean_comparisons.luau",
+                         "source_sha256":  "383e9433abdf65df92380c4535b33bba2e1436c5f6b9f26848550e9d122fc730",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "boolean_comparisons.O2.D2.bc",
+                         "bytes":  778,
+                         "sha256":  "376a0d016b937e2bb2954767df653106b2ffdb7cefc4717697768d8887d12f96"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "branches.O0.D0.bc",
+                         "bytes":  296,
+                         "sha256":  "30f98b40903baa05525c2dc3c05b6e8c75492e42baccb360b578d1b21c4c18b8"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "branches.O0.D1.bc",
+                         "bytes":  358,
+                         "sha256":  "f1dbc1d7f7f9c1e4c46ef0cdc2674be2c61abbc298a125c449b43b6864f81806"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "branches.O0.D2.bc",
+                         "bytes":  395,
+                         "sha256":  "7b1e89821d22fa77947c83dff387e6be059232a76f3ad191ab8b9a1dd51d9496"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "branches.O1.D0.bc",
+                         "bytes":  267,
+                         "sha256":  "924f5284795a7021d8483ef95a59b05753b741343d2138fbea546a383557803d"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "branches.O1.D1.bc",
+                         "bytes":  329,
+                         "sha256":  "97465b0cf6211a6554ddf188b894b22ad542e6ee88de8e6d9fad986286436c1f"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "branches.O1.D2.bc",
+                         "bytes":  366,
+                         "sha256":  "a4a3f1188abb7cd24cd95824151fe1722dae2c148056012f1bf32315a950a258"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "branches.O2.D0.bc",
+                         "bytes":  235,
+                         "sha256":  "0c475df9a618814a057071339c6b83086e9bc3e9b3735626dd78493ded7c0722"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "branches.O2.D1.bc",
+                         "bytes":  287,
+                         "sha256":  "06687ef9584689daf9224988f1b70806e7c259d05df6fb41f6dced22b11dc668"
+                     },
+                     {
+                         "source":  "branches.luau",
+                         "source_sha256":  "15eb39d7d5f36262be1ce016722a82dc7eeececfc0168d81d486bba0daa89b6b",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "branches.O2.D2.bc",
+                         "bytes":  344,
+                         "sha256":  "ef426b7e8ec7681ed9409ef9415a621db39b6b26f671d904b0db25124d79a2c6"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "close_scopes.O0.D0.bc",
+                         "bytes":  372,
+                         "sha256":  "0ebb07c316cfb41856f61fadfad88c9058379933fdfa5ab36cf88f6871fe8094"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "close_scopes.O0.D1.bc",
+                         "bytes":  446,
+                         "sha256":  "24d49fd383a228761a158406391ccf80006dac8e523c9576bf94cb83e1ba70a5"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "close_scopes.O0.D2.bc",
+                         "bytes":  515,
+                         "sha256":  "c796ae9ffcdcbee75b7286a78e3479eb8ebae044a99b8e657d7be4fad6a0dc18"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "close_scopes.O1.D0.bc",
+                         "bytes":  259,
+                         "sha256":  "ffcaba13564c1afc7c330c3ff8ec38ad39e459d42c26a12aaf6e67e6e370c018"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "close_scopes.O1.D1.bc",
+                         "bytes":  321,
+                         "sha256":  "106027e82b843109ac6269e4bbb84b82121df563fd211dab027c1867846b1b13"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "close_scopes.O1.D2.bc",
+                         "bytes":  405,
+                         "sha256":  "320d82a51018aa5cc0eb31d3a7397745d562637f308a0105e416cde64f9bc9bf"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "close_scopes.O2.D0.bc",
+                         "bytes":  259,
+                         "sha256":  "ffcaba13564c1afc7c330c3ff8ec38ad39e459d42c26a12aaf6e67e6e370c018"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "close_scopes.O2.D1.bc",
+                         "bytes":  321,
+                         "sha256":  "106027e82b843109ac6269e4bbb84b82121df563fd211dab027c1867846b1b13"
+                     },
+                     {
+                         "source":  "close_scopes.luau",
+                         "source_sha256":  "d2a824243deb64d02ee2b7fd9f24c61e369d7400bb6ebe6960713e1e1eca45d7",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "close_scopes.O2.D2.bc",
+                         "bytes":  405,
+                         "sha256":  "320d82a51018aa5cc0eb31d3a7397745d562637f308a0105e416cde64f9bc9bf"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "closure_identity.O0.D0.bc",
+                         "bytes":  575,
+                         "sha256":  "1af0cc70ae12cef9952a40da6305bf3c63792da3309447d04bc746e5519b26bb"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "closure_identity.O0.D1.bc",
+                         "bytes":  723,
+                         "sha256":  "09f6a9ecd7e1018609f5d9e0d749af6c238a676b03e9873c713178ffa6314b63"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "closure_identity.O0.D2.bc",
+                         "bytes":  854,
+                         "sha256":  "db43dcaf5c8b046804d1d5d20f0115749d45aa8cf531cd0f9714fa33423cfddb"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "closure_identity.O1.D0.bc",
+                         "bytes":  587,
+                         "sha256":  "f606348e8f200ce8bd85d21285708779128d504e335148aadffa698d975e085a"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "closure_identity.O1.D1.bc",
+                         "bytes":  739,
+                         "sha256":  "fdba748ff50f8978cfadb7a95bfe1ba4f2e5f390ab5a6fac378089c0de4d65e0"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "closure_identity.O1.D2.bc",
+                         "bytes":  870,
+                         "sha256":  "0038052f6af7331db5dfb469bb95619296d902503be09a397ad5feb833f5972f"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "closure_identity.O2.D0.bc",
+                         "bytes":  563,
+                         "sha256":  "e18439f0c4d398f4cbd7bb0ec2d6510dcb172682b8d201b37d2097776a39822d"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "closure_identity.O2.D1.bc",
+                         "bytes":  708,
+                         "sha256":  "cf84ad74c2acfc0d69be2f7c1cc97ac65ad6fe48089037dc5672a73315badcf7"
+                     },
+                     {
+                         "source":  "closure_identity.luau",
+                         "source_sha256":  "2bbaf2d6530062aafb53d7c5758c8dd62f69d02632fe4b077bbc7ae4018494a4",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "closure_identity.O2.D2.bc",
+                         "bytes":  859,
+                         "sha256":  "8cc7152d80aae71704268d22ff766a7936339ff91e79ac9858b784c681640b5b"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "closures.O0.D0.bc",
+                         "bytes":  396,
+                         "sha256":  "d69b0b1dec1a8aa413f3533b2a4529d7211a15d1dc238a66ea15a1cd1cc4ca25"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "closures.O0.D1.bc",
+                         "bytes":  500,
+                         "sha256":  "02a09c05e014875feebd7a6d0c2f24625033a75de6c9f9f5273c24ea07f66f37"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "closures.O0.D2.bc",
+                         "bytes":  618,
+                         "sha256":  "2e2164d52abb2f311a494b5188c36f9ba1d95355675b23f827ebfd15834237b8"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "closures.O1.D0.bc",
+                         "bytes":  343,
+                         "sha256":  "de21659ed09dad65b253f1ef8a7c77b235008068102bbf1b57a45a3fcc8337a1"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "closures.O1.D1.bc",
+                         "bytes":  441,
+                         "sha256":  "fade1a74b0ae28985be4e4196ce6f67e70c156cb05dd83a9cad89a1a5835ab51"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "closures.O1.D2.bc",
+                         "bytes":  559,
+                         "sha256":  "bd4ea4cdb23552cc4829f11d4a868dbae0c079ada655f7c544f3acf00ae6012c"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "closures.O2.D0.bc",
+                         "bytes":  348,
+                         "sha256":  "db4af84ee4a2132cce619c8a04118ab4d040ad95568f035399e2b24ddd7917d9"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "closures.O2.D1.bc",
+                         "bytes":  447,
+                         "sha256":  "3c394ad89c0af0039f417e48dfb831444b0d900732882cb9324aeb63eab5439e"
+                     },
+                     {
+                         "source":  "closures.luau",
+                         "source_sha256":  "2737ea6a46e770c4bded57962edc1554b58aab1ed3d517261f91766afbd261c9",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "closures.O2.D2.bc",
+                         "bytes":  569,
+                         "sha256":  "617e698c96b7f53de748b3ff07849067d5092a4c8e98cb5ff2630e468c2c5c23"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "complex_loop_exits_v2.O0.D0.bc",
+                         "bytes":  242,
+                         "sha256":  "92857f6b143370e769cdc6ad368192d77c11e1e3d6e3ea4c4ace3948f51bf054"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "complex_loop_exits_v2.O0.D1.bc",
+                         "bytes":  287,
+                         "sha256":  "fa5c073f13ddea3bfaf7326f11e5713d30e2356b03453cd36540f7401c181122"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "complex_loop_exits_v2.O0.D2.bc",
+                         "bytes":  317,
+                         "sha256":  "170381f88dbbfe86c64b92938e7dd833c220ded54fa6fc45beac944ffc6a32f4"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "complex_loop_exits_v2.O1.D0.bc",
+                         "bytes":  191,
+                         "sha256":  "e948eed2caa7b215f29392690c764d7996992fb3955a7d30ca989a365617b6b9"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "complex_loop_exits_v2.O1.D1.bc",
+                         "bytes":  230,
+                         "sha256":  "72401a2aa18a7cb24edb96c9f2f414327eec34059c0bafa3d500c5a3b36bdc43"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "complex_loop_exits_v2.O1.D2.bc",
+                         "bytes":  260,
+                         "sha256":  "7ea7131a5701893c08e6450a32a8fd141902ebe5fc77ac30aa7b6ae8b9ea4f84"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "complex_loop_exits_v2.O2.D0.bc",
+                         "bytes":  191,
+                         "sha256":  "e948eed2caa7b215f29392690c764d7996992fb3955a7d30ca989a365617b6b9"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "complex_loop_exits_v2.O2.D1.bc",
+                         "bytes":  230,
+                         "sha256":  "72401a2aa18a7cb24edb96c9f2f414327eec34059c0bafa3d500c5a3b36bdc43"
+                     },
+                     {
+                         "source":  "complex_loop_exits_v2.luau",
+                         "source_sha256":  "ac58972b427b7a0d89f40faea282925b085550cbdb119bb7f720ac71d196eea4",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "complex_loop_exits_v2.O2.D2.bc",
+                         "bytes":  260,
+                         "sha256":  "7ea7131a5701893c08e6450a32a8fd141902ebe5fc77ac30aa7b6ae8b9ea4f84"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "evaluation_order.O0.D0.bc",
+                         "bytes":  489,
+                         "sha256":  "34307c582416fb7fad568afb71c7d7257b5139da22d5fa04df0adc06ffa9e48d"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "evaluation_order.O0.D1.bc",
+                         "bytes":  597,
+                         "sha256":  "c107885453dd2a14952edd21e4bcf1a0d3c9b5b86df4641bc08ef0455536d845"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "evaluation_order.O0.D2.bc",
+                         "bytes":  663,
+                         "sha256":  "c10672c5f576c2a8cdb3ee01056c4ed7f1aaddd32d2c74854c609c0cf81a4ed4"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "evaluation_order.O1.D0.bc",
+                         "bytes":  457,
+                         "sha256":  "ca0828903d09247d43dc01ae8363e9d1994c7f08fe30475da7a0d7f572d93461"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "evaluation_order.O1.D1.bc",
+                         "bytes":  559,
+                         "sha256":  "311140d389c5cee534c2ab6d4388e83c6467d83d1baf115504d394e5fad0ab7c"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "evaluation_order.O1.D2.bc",
+                         "bytes":  625,
+                         "sha256":  "30efb15dbbb3f7ac49679fe6b28d4d62037468e8ce86ca8b638d13e0bc847845"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "evaluation_order.O2.D0.bc",
+                         "bytes":  486,
+                         "sha256":  "32324125023ac24f567d0d87cb19c6e6371f5e19e84a70f26bea098d0c0e9f71"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "evaluation_order.O2.D1.bc",
+                         "bytes":  593,
+                         "sha256":  "fb256f2a0c57c2998820719db1a89c13119172825b640b3a59caf94f8aeddaf5"
+                     },
+                     {
+                         "source":  "evaluation_order.luau",
+                         "source_sha256":  "94ae1e78c59fa1571064f21b7bbdb8ba07943663fae91e29ad525cb639de55b1",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "evaluation_order.O2.D2.bc",
+                         "bytes":  659,
+                         "sha256":  "0441879fef845580c94dc393c052320141936bf36bcece5f538d0b8b83fd3bea"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "generic_for.O0.D0.bc",
+                         "bytes":  432,
+                         "sha256":  "8ba328b326918c097c0beb929bc9a716519dfacc791fb351198ff585bc15b8a2"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "generic_for.O0.D1.bc",
+                         "bytes":  520,
+                         "sha256":  "f1d778f26548dda6cea19d42640cad9b5454efb97edc16f3b57e0a0c6af9b480"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "generic_for.O0.D2.bc",
+                         "bytes":  613,
+                         "sha256":  "b48315f63e325ed0c963bf80bfd7c5baec0cb7e1624fe7c51cedb151c55e21c7"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "generic_for.O1.D0.bc",
+                         "bytes":  393,
+                         "sha256":  "3c932d4fb096a3ac7af3e97d091a4d2ebeeba2d8ca61fd41fe8639a4921a1acf"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "generic_for.O1.D1.bc",
+                         "bytes":  480,
+                         "sha256":  "a0387ff82087d7b1a71a480cd87fe5c486abc57ef532ef86e16d87f33f281220"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "generic_for.O1.D2.bc",
+                         "bytes":  573,
+                         "sha256":  "324ef78b26a5255112d33bba8855b08fb2e5f95d0d08189a6f6a6ed56fe12490"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "generic_for.O2.D0.bc",
+                         "bytes":  393,
+                         "sha256":  "3c932d4fb096a3ac7af3e97d091a4d2ebeeba2d8ca61fd41fe8639a4921a1acf"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "generic_for.O2.D1.bc",
+                         "bytes":  480,
+                         "sha256":  "a0387ff82087d7b1a71a480cd87fe5c486abc57ef532ef86e16d87f33f281220"
+                     },
+                     {
+                         "source":  "generic_for.luau",
+                         "source_sha256":  "944951b876bd2f54ed74fa5afe29da743ec1125b340309a3ff5a047f91387001",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "generic_for.O2.D2.bc",
+                         "bytes":  573,
+                         "sha256":  "324ef78b26a5255112d33bba8855b08fb2e5f95d0d08189a6f6a6ed56fe12490"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "hash_table_layout.O0.D0.bc",
+                         "bytes":  540,
+                         "sha256":  "57f8aeef5714873bcee651a5c1f03768e0a9c589323b0e7fd66ca3518abe5639"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "hash_table_layout.O0.D1.bc",
+                         "bytes":  623,
+                         "sha256":  "af032d83ab09336ef1231cdc04b21b86036d44641a0aff5f26a20ee366c2f7b8"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "hash_table_layout.O0.D2.bc",
+                         "bytes":  668,
+                         "sha256":  "d72c3b53dd6102404f19b3f05d8443a00ee5dab31e30131479235bca87056105"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "hash_table_layout.O1.D0.bc",
+                         "bytes":  477,
+                         "sha256":  "4880dad9a42176ed80e62c0c12d02a667528bea08848c7d09a93ffdb1a410511"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "hash_table_layout.O1.D1.bc",
+                         "bytes":  555,
+                         "sha256":  "7288bcaf5542f3bc1e0f5e42e01360989288cde2dc5c63198af9422064586405"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "hash_table_layout.O1.D2.bc",
+                         "bytes":  600,
+                         "sha256":  "6e344f6cb6cd041daad590afa29b07de17f46f98f92dec299510d78ba93a338e"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "hash_table_layout.O2.D0.bc",
+                         "bytes":  477,
+                         "sha256":  "4880dad9a42176ed80e62c0c12d02a667528bea08848c7d09a93ffdb1a410511"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "hash_table_layout.O2.D1.bc",
+                         "bytes":  555,
+                         "sha256":  "7288bcaf5542f3bc1e0f5e42e01360989288cde2dc5c63198af9422064586405"
+                     },
+                     {
+                         "source":  "hash_table_layout.luau",
+                         "source_sha256":  "e7c9608e84e816643248588e67ba1d3fb7cc55497641aa7eb11a6e8a6a5cea4e",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "hash_table_layout.O2.D2.bc",
+                         "bytes":  600,
+                         "sha256":  "6e344f6cb6cd041daad590afa29b07de17f46f98f92dec299510d78ba93a338e"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "loops_edges.O0.D0.bc",
+                         "bytes":  350,
+                         "sha256":  "af2a57f268964b228c80ca0036e39061ed5fc960ceef80625f8c70d2054d358b"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "loops_edges.O0.D1.bc",
+                         "bytes":  421,
+                         "sha256":  "b9aad4824cbdd4765397cdee0c9286d32b73a8243f494ec5bfb49293e75cff6e"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "loops_edges.O0.D2.bc",
+                         "bytes":  465,
+                         "sha256":  "7c0db1a1f1f25e32ba5ca09fbbebcb89ddb8808021ec338e660726f73a8f75a1"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "loops_edges.O1.D0.bc",
+                         "bytes":  275,
+                         "sha256":  "15aeb0fec7763309f33f9af4dd808ceb150bb751177aa8e97899ecbefe32b8ab"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "loops_edges.O1.D1.bc",
+                         "bytes":  339,
+                         "sha256":  "1bd77d3b995c57a7f0aef4236b87f7e71e70a08991dfcd520b0c96a106ce03f8"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "loops_edges.O1.D2.bc",
+                         "bytes":  383,
+                         "sha256":  "b827715de559052ee224683dd76123f618c153005803e874ebff33601a92f6db"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "loops_edges.O2.D0.bc",
+                         "bytes":  284,
+                         "sha256":  "e9828961e8329200ed48aa7fe494f0493d98906112c67f9442f7f697abe965dc"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "loops_edges.O2.D1.bc",
+                         "bytes":  348,
+                         "sha256":  "df31e14f5e5b7db5aea304f7de29b967a7589ef690b436833361a0abaf4e40f3"
+                     },
+                     {
+                         "source":  "loops_edges.luau",
+                         "source_sha256":  "4b1241e3c7788a71145309c1e66a7b3aa5efd7de40c12bde80cce3ff56bb054e",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "loops_edges.O2.D2.bc",
+                         "bytes":  386,
+                         "sha256":  "b3b09d82913b6c9a91f8a473c87b94179ba6ba800ce37feb481c2fd85dcd4818"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "many_functions.O0.D0.bc",
+                         "bytes":  1089,
+                         "sha256":  "337da8411c629c62ef277474562146977d62362af0fead84b54a84b113bf61c3"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "many_functions.O0.D1.bc",
+                         "bytes":  1307,
+                         "sha256":  "a05265fc6a98deb4d0f2643032358c804c69d1fe84f66f469ce4b3bbd1da3935"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "many_functions.O0.D2.bc",
+                         "bytes":  1454,
+                         "sha256":  "a3cde34d3a8f720c7265d56045233e67a6dcbcd152545cb36a7a21541eba14ea"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "many_functions.O1.D0.bc",
+                         "bytes":  834,
+                         "sha256":  "6d64d73a58713a031659182684f71a01b2c4ebd8580f3061bd27c1e5eaa86d40"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "many_functions.O1.D1.bc",
+                         "bytes":  1016,
+                         "sha256":  "9d26189297947bc6f79522062d21ff264b50af86115121b1197308df36c06128"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "many_functions.O1.D2.bc",
+                         "bytes":  1163,
+                         "sha256":  "39cf73a7d98ea79aab5e589765948e9a1ff17266204e83649f9decf5b6e08e05"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "many_functions.O2.D0.bc",
+                         "bytes":  834,
+                         "sha256":  "6d64d73a58713a031659182684f71a01b2c4ebd8580f3061bd27c1e5eaa86d40"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "many_functions.O2.D1.bc",
+                         "bytes":  1016,
+                         "sha256":  "9d26189297947bc6f79522062d21ff264b50af86115121b1197308df36c06128"
+                     },
+                     {
+                         "source":  "many_functions.luau",
+                         "source_sha256":  "983f4c6812b0c473d1a3d7bfcd6e442026d86943a6850fbfe5bb6e650c3710ae",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "many_functions.O2.D2.bc",
+                         "bytes":  1163,
+                         "sha256":  "39cf73a7d98ea79aab5e589765948e9a1ff17266204e83649f9decf5b6e08e05"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "metamethods.O0.D0.bc",
+                         "bytes":  1159,
+                         "sha256":  "f5f2f5fe60d1592ef2b85616d3a2e3a0550d601a1a23dbb5983d29c0202ea41b"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "metamethods.O0.D1.bc",
+                         "bytes":  1400,
+                         "sha256":  "8c376d2337dc8a641a80ec0184968f1d2e9e522cf9528850df50f015e2bf5c8e"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "metamethods.O0.D2.bc",
+                         "bytes":  1606,
+                         "sha256":  "71ae911073aed7b48390f1638b18b93ac01c1922dca01cdc2940bd59ebf6f21d"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "metamethods.O1.D0.bc",
+                         "bytes":  1164,
+                         "sha256":  "474620994eb07ebf036dd3df0a1dcddceb36c03bf5ddba2d9f476f315f3f5ce2"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "metamethods.O1.D1.bc",
+                         "bytes":  1408,
+                         "sha256":  "ab83463b618894b10b4f539f94c25fe72d752c3adcc98de983444bbdef8c6ebc"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "metamethods.O1.D2.bc",
+                         "bytes":  1614,
+                         "sha256":  "867151977016f29483d4d964f76fc42094e33b5993a160b3e37ea49a06d44df8"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "metamethods.O2.D0.bc",
+                         "bytes":  1332,
+                         "sha256":  "376cb064cdf2d4f7072de733b942c4707c815457b576134a530efaecdc2af611"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "metamethods.O2.D1.bc",
+                         "bytes":  1600,
+                         "sha256":  "0444ceedd237fab5057445ec4db059c2591845047e7e48b9b836993741dd35d8"
+                     },
+                     {
+                         "source":  "metamethods.luau",
+                         "source_sha256":  "b5dfe8c89d82636a9332ef6387e57c945b10129f9674ea71b616e32ccc3d09a1",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "metamethods.O2.D2.bc",
+                         "bytes":  1814,
+                         "sha256":  "d93174f9dfb511a4e96d60b5350f4972af75646eac568c630e1da515a3707e75"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "methods.O0.D0.bc",
+                         "bytes":  400,
+                         "sha256":  "c7d46888c6338ffaef220a60f0c63027f7cfd247d4484bb20aadb01e58f2a9e1"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "methods.O0.D1.bc",
+                         "bytes":  473,
+                         "sha256":  "8cdf59d606c3cd1fa1a5c55b654eaa5d55e2b3eea7ce25e2ea968e17c995f802"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "methods.O0.D2.bc",
+                         "bytes":  565,
+                         "sha256":  "a54828d27794af64cfff4e707c07acf2cdc728adbd5e841212817c5f9f5c70cc"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "methods.O1.D0.bc",
+                         "bytes":  382,
+                         "sha256":  "729ea8537eb4f08b5bcbc7ff766257a7f351651e8c8ffc4840cf115780284954"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "methods.O1.D1.bc",
+                         "bytes":  457,
+                         "sha256":  "1bb01f46b0edc19bf519ec08f836da22edfd45433f1c2702a1834c78f3ad3c5d"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "methods.O1.D2.bc",
+                         "bytes":  549,
+                         "sha256":  "85c809f50ec804f6e49b0b96d6d37644b70103ed9ee8682e142f397a9c06ef1e"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "methods.O2.D0.bc",
+                         "bytes":  382,
+                         "sha256":  "729ea8537eb4f08b5bcbc7ff766257a7f351651e8c8ffc4840cf115780284954"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "methods.O2.D1.bc",
+                         "bytes":  457,
+                         "sha256":  "1bb01f46b0edc19bf519ec08f836da22edfd45433f1c2702a1834c78f3ad3c5d"
+                     },
+                     {
+                         "source":  "methods.luau",
+                         "source_sha256":  "ea23500b16cf5f2ac0fffe5ac6d49ed5c9f05f664c49914d475081a57ebe636e",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "methods.O2.D2.bc",
+                         "bytes":  549,
+                         "sha256":  "85c809f50ec804f6e49b0b96d6d37644b70103ed9ee8682e142f397a9c06ef1e"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "mixed_table_multret.O0.D0.bc",
+                         "bytes":  462,
+                         "sha256":  "09ef0fa45b414c263d5c24af4799b6a2d6a1a565cb10f46c4a4a9843bc082c18"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "mixed_table_multret.O0.D1.bc",
+                         "bytes":  559,
+                         "sha256":  "f1d6f40da1726a3f84f56c2a787a3a7da7eeffcac736b3e5494eb35f2793aeee"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "mixed_table_multret.O0.D2.bc",
+                         "bytes":  581,
+                         "sha256":  "f60c4a691e831a2e19852419ae865e0a500c4a6f83545493b22fe0d9a8afd3f9"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "mixed_table_multret.O1.D0.bc",
+                         "bytes":  328,
+                         "sha256":  "14beba02031f2cee785245016018a7f8cb417173fb958dd705ecd6748c7fcb84"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "mixed_table_multret.O1.D1.bc",
+                         "bytes":  414,
+                         "sha256":  "ad18b8c20878bafb31b96f068a54894453777b0772950118a6862b190e61fe06"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "mixed_table_multret.O1.D2.bc",
+                         "bytes":  436,
+                         "sha256":  "bae53aae390db9ea2974d6091e2dffd2a782c2ace945a78d4cadc124b97063dd"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "mixed_table_multret.O2.D0.bc",
+                         "bytes":  328,
+                         "sha256":  "14beba02031f2cee785245016018a7f8cb417173fb958dd705ecd6748c7fcb84"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "mixed_table_multret.O2.D1.bc",
+                         "bytes":  414,
+                         "sha256":  "ad18b8c20878bafb31b96f068a54894453777b0772950118a6862b190e61fe06"
+                     },
+                     {
+                         "source":  "mixed_table_multret.luau",
+                         "source_sha256":  "e60295382463b68e5b706181d04488bebca296130c43cda4de66c918cb0d713a",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "mixed_table_multret.O2.D2.bc",
+                         "bytes":  436,
+                         "sha256":  "bae53aae390db9ea2974d6091e2dffd2a782c2ace945a78d4cadc124b97063dd"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "multiple_table_batches.O0.D0.bc",
+                         "bytes":  1326,
+                         "sha256":  "7ef081c4ce66dbe92415c7515de9d2c86e9710e06fa754ef917ff0e534998966"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "multiple_table_batches.O0.D1.bc",
+                         "bytes":  1471,
+                         "sha256":  "ee2e30e2f167e5068950865b6626c53dd729d1a6c0bd915320ffbb83e2695536"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "multiple_table_batches.O0.D2.bc",
+                         "bytes":  1483,
+                         "sha256":  "50ba873bb19f8024fe72901ad3e2b0ea6a993237a1bdc24a1a557156b6ef2acd"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "multiple_table_batches.O1.D0.bc",
+                         "bytes":  520,
+                         "sha256":  "e4aaabfc7cf2c5080d539f7704d37187f802f1bbc64b67149cc777e752af8248"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "multiple_table_batches.O1.D1.bc",
+                         "bytes":  653,
+                         "sha256":  "8b4082afffd97119e4185c0661e87ee49e5b376efd4e73c6157be01eb6db9f52"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "multiple_table_batches.O1.D2.bc",
+                         "bytes":  665,
+                         "sha256":  "94d370dd51218f7ae61d8f1f4d13ad426656c1faa7aef4be0ffd5f33e0a6cf82"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "multiple_table_batches.O2.D0.bc",
+                         "bytes":  520,
+                         "sha256":  "e4aaabfc7cf2c5080d539f7704d37187f802f1bbc64b67149cc777e752af8248"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "multiple_table_batches.O2.D1.bc",
+                         "bytes":  653,
+                         "sha256":  "8b4082afffd97119e4185c0661e87ee49e5b376efd4e73c6157be01eb6db9f52"
+                     },
+                     {
+                         "source":  "multiple_table_batches.luau",
+                         "source_sha256":  "57bd844601d9c6713493120f7b1656531c795e5fd19354f83e70382e96599062",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "multiple_table_batches.O2.D2.bc",
+                         "bytes":  665,
+                         "sha256":  "94d370dd51218f7ae61d8f1f4d13ad426656c1faa7aef4be0ffd5f33e0a6cf82"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "names_strings.O0.D0.bc",
+                         "bytes":  282,
+                         "sha256":  "467e890d4fd7914e938afbcf819cf8f7448ec1395871eb1691fb43401454427b"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "names_strings.O0.D1.bc",
+                         "bytes":  323,
+                         "sha256":  "45ffb81cfa4f08ed5400f0a672a06a76effcec9533a2df57375854b3677da4be"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "names_strings.O0.D2.bc",
+                         "bytes":  380,
+                         "sha256":  "3b95b672a313ef0c11a6547c6b1275d42947aa30f917435aec5706eb5f48bd49"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "names_strings.O1.D0.bc",
+                         "bytes":  240,
+                         "sha256":  "c0ccb3993044f7d3594a747f1a2f8111d3135bffb9fa6c9af5041e3bd5adc524"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "names_strings.O1.D1.bc",
+                         "bytes":  277,
+                         "sha256":  "2fa81bb94d8c97a563c674220cd8dafbc7608953310366cccb423311729d1add"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "names_strings.O1.D2.bc",
+                         "bytes":  354,
+                         "sha256":  "991041899a66b49d99ebd256d84e68b60a34fd9a421565e2a32267aa30a66b54"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "names_strings.O2.D0.bc",
+                         "bytes":  240,
+                         "sha256":  "c0ccb3993044f7d3594a747f1a2f8111d3135bffb9fa6c9af5041e3bd5adc524"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "names_strings.O2.D1.bc",
+                         "bytes":  277,
+                         "sha256":  "2fa81bb94d8c97a563c674220cd8dafbc7608953310366cccb423311729d1add"
+                     },
+                     {
+                         "source":  "names_strings.luau",
+                         "source_sha256":  "9a8c6e9e2edbd3617094e908c48b43cdd0ab9289f5fa723eb3ce3d78fba1fa8c",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "names_strings.O2.D2.bc",
+                         "bytes":  354,
+                         "sha256":  "991041899a66b49d99ebd256d84e68b60a34fd9a421565e2a32267aa30a66b54"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "nil_holes.O0.D0.bc",
+                         "bytes":  325,
+                         "sha256":  "1ca3d127e134eb93908495c9ff70406aeb7764bba07482ca3050d78929579b22"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "nil_holes.O0.D1.bc",
+                         "bytes":  391,
+                         "sha256":  "b3f86f3710a75597ceb2752b984fcaad992d4bf46759601f007419508f03f572"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "nil_holes.O0.D2.bc",
+                         "bytes":  417,
+                         "sha256":  "e758c1fe4af76ce37c23d819d24c6bb3b05ac31b09a5459a18c9b86bdf2084aa"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "nil_holes.O1.D0.bc",
+                         "bytes":  264,
+                         "sha256":  "43296adf720178a41ed53cccd06c60a25cc057fb05c12757e976181ee7ad358e"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "nil_holes.O1.D1.bc",
+                         "bytes":  327,
+                         "sha256":  "904f010e4e671dfb8ae4bc523274aa97e19f1f7fadd74a68e8198907068564cc"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "nil_holes.O1.D2.bc",
+                         "bytes":  353,
+                         "sha256":  "9fd43c57625d7c3d41475eaa832c975726fb6523eab073a6e3bf3e629931e0e0"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "nil_holes.O2.D0.bc",
+                         "bytes":  264,
+                         "sha256":  "43296adf720178a41ed53cccd06c60a25cc057fb05c12757e976181ee7ad358e"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "nil_holes.O2.D1.bc",
+                         "bytes":  327,
+                         "sha256":  "904f010e4e671dfb8ae4bc523274aa97e19f1f7fadd74a68e8198907068564cc"
+                     },
+                     {
+                         "source":  "nil_holes.luau",
+                         "source_sha256":  "c4cac6af86c576bf79d84f1030c25ebd3debb5709d3a0c0834c74923a45c9ebc",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "nil_holes.O2.D2.bc",
+                         "bytes":  353,
+                         "sha256":  "9fd43c57625d7c3d41475eaa832c975726fb6523eab073a6e3bf3e629931e0e0"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "numeric_for.O0.D0.bc",
+                         "bytes":  243,
+                         "sha256":  "a32a6e10496c7335e2c7655a079d5ebb5f4b5df474a34f632c178d83352165b6"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "numeric_for.O0.D1.bc",
+                         "bytes":  284,
+                         "sha256":  "cde1631b1cab02f0cfe5139e7ea7a72853eb8ea76eef397c123998595a66d47b"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "numeric_for.O0.D2.bc",
+                         "bytes":  318,
+                         "sha256":  "17dd99f8a1094e8d7abb456e0df2e8c57ed1268cd5c3c3c86f3a00c5cb313eb6"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "numeric_for.O1.D0.bc",
+                         "bytes":  191,
+                         "sha256":  "72a46853d0f7c9787308e00520ab74a47fbbdd9dcac6008be948d1d8a1738bd1"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "numeric_for.O1.D1.bc",
+                         "bytes":  229,
+                         "sha256":  "727204f833b8847fc9b0047b23832756488b9fe7002e3d198c38f3cab029b943"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "numeric_for.O1.D2.bc",
+                         "bytes":  263,
+                         "sha256":  "75bdddc3d50652ca8b0bfcade7862ce21408a5bd7e1d7c42a0d536a8ce06cc08"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "numeric_for.O2.D0.bc",
+                         "bytes":  187,
+                         "sha256":  "adfb04fbb6b96cd94885e3585ef6769c2566a53cdd65d6dc9eeeabedaa0bd0c1"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "numeric_for.O2.D1.bc",
+                         "bytes":  215,
+                         "sha256":  "e5d4465bb74aead25d93b068d79760e987641d6c1f00a6ee6ff6c4fa816cec33"
+                     },
+                     {
+                         "source":  "numeric_for.luau",
+                         "source_sha256":  "58ee5770c095b9705f18415cedafe09e373c0f76964c95f74d6aaca604abf78b",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "numeric_for.O2.D2.bc",
+                         "bytes":  237,
+                         "sha256":  "6a76cb54049749f3ad86d021aa13e92aec942603e1c471590782be051cb0c979"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "opcode_edges.O0.D0.bc",
+                         "bytes":  397,
+                         "sha256":  "3667f37b7111857be166df9fa6d93e4e2d393df434513e33091665d929bd04d9"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "opcode_edges.O0.D1.bc",
+                         "bytes":  500,
+                         "sha256":  "d10f167a7b050068809bcacc8480bb7fc2f243801ecd1dcf54a9a6ee0217b2aa"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "opcode_edges.O0.D2.bc",
+                         "bytes":  538,
+                         "sha256":  "c4596081f83ad9f294d7f127a65b7047a65f80f74eaab0f94971ee5670f73274"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "opcode_edges.O1.D0.bc",
+                         "bytes":  334,
+                         "sha256":  "896fa68433e895044db82b2cc3bdf336c32fce15725dc3667c06047c1d0934a5"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "opcode_edges.O1.D1.bc",
+                         "bytes":  428,
+                         "sha256":  "0a5f8d72074d7f0651fcb569c07d376c3e96ad3dcd82d5734d8acd68c43a0b55"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "opcode_edges.O1.D2.bc",
+                         "bytes":  466,
+                         "sha256":  "bbbffff0842ea08bb9a9ebb6f7ca4ca90f9a6c09053c485efa2a1cab76b7d631"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "opcode_edges.O2.D0.bc",
+                         "bytes":  334,
+                         "sha256":  "896fa68433e895044db82b2cc3bdf336c32fce15725dc3667c06047c1d0934a5"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "opcode_edges.O2.D1.bc",
+                         "bytes":  428,
+                         "sha256":  "0a5f8d72074d7f0651fcb569c07d376c3e96ad3dcd82d5734d8acd68c43a0b55"
+                     },
+                     {
+                         "source":  "opcode_edges.luau",
+                         "source_sha256":  "fcdc4a271a05c50ec138bb7494010d9598f36ddc391c64b2caae472c651626ea",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "opcode_edges.O2.D2.bc",
+                         "bytes":  466,
+                         "sha256":  "bbbffff0842ea08bb9a9ebb6f7ca4ca90f9a6c09053c485efa2a1cab76b7d631"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "oracle_binary_effects.O0.D0.bc",
+                         "bytes":  185,
+                         "sha256":  "66a6f2d71c2e8cb2ece220b3b8c5d28dd0afb64e47225ed45acf4a63c460371f"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "oracle_binary_effects.O0.D1.bc",
+                         "bytes":  211,
+                         "sha256":  "11d19f1b714b80a1ea0d15a13e80fa59813688927ff5a83cf5fba5ae35b27732"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "oracle_binary_effects.O0.D2.bc",
+                         "bytes":  211,
+                         "sha256":  "11d19f1b714b80a1ea0d15a13e80fa59813688927ff5a83cf5fba5ae35b27732"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "oracle_binary_effects.O1.D0.bc",
+                         "bytes":  186,
+                         "sha256":  "4076645cd71aa1e4b5771872029c108f63fbd186a22cabad278b9676704730ab"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "oracle_binary_effects.O1.D1.bc",
+                         "bytes":  212,
+                         "sha256":  "3ad730b1eeb82c8774ccaea1f8d6ebb4ae3c2b97f8db2a1c539d360ea36406c0"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "oracle_binary_effects.O1.D2.bc",
+                         "bytes":  212,
+                         "sha256":  "3ad730b1eeb82c8774ccaea1f8d6ebb4ae3c2b97f8db2a1c539d360ea36406c0"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "oracle_binary_effects.O2.D0.bc",
+                         "bytes":  186,
+                         "sha256":  "4076645cd71aa1e4b5771872029c108f63fbd186a22cabad278b9676704730ab"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "oracle_binary_effects.O2.D1.bc",
+                         "bytes":  212,
+                         "sha256":  "3ad730b1eeb82c8774ccaea1f8d6ebb4ae3c2b97f8db2a1c539d360ea36406c0"
+                     },
+                     {
+                         "source":  "oracle_binary_effects.luau",
+                         "source_sha256":  "7b92a39a8d9d678eedc9b27c7a2d1d919db83112d190f80e5bc100db7d47d63b",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "oracle_binary_effects.O2.D2.bc",
+                         "bytes":  212,
+                         "sha256":  "3ad730b1eeb82c8774ccaea1f8d6ebb4ae3c2b97f8db2a1c539d360ea36406c0"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "oracle_error_bytes.O0.D0.bc",
+                         "bytes":  129,
+                         "sha256":  "ce2bfa342e2d4f3cd61cb9d6a22b3229a8388fb3b852a05aaf6ff908dd122bc7"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "oracle_error_bytes.O0.D1.bc",
+                         "bytes":  146,
+                         "sha256":  "0eda60800c850e618dbb3402257625aaf6363a1a2b214605c9dbba449f426ce8"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "oracle_error_bytes.O0.D2.bc",
+                         "bytes":  146,
+                         "sha256":  "0eda60800c850e618dbb3402257625aaf6363a1a2b214605c9dbba449f426ce8"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "oracle_error_bytes.O1.D0.bc",
+                         "bytes":  130,
+                         "sha256":  "82eae3516c1879cbf2431e20a390a971ce424e2c6ac4ba1fedb40d3919a14054"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "oracle_error_bytes.O1.D1.bc",
+                         "bytes":  147,
+                         "sha256":  "b3a2bfcdbe1544e79a925c4c55ed44ee27f7ef7b5bbaac18c3f7a60dd590581a"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "oracle_error_bytes.O1.D2.bc",
+                         "bytes":  147,
+                         "sha256":  "b3a2bfcdbe1544e79a925c4c55ed44ee27f7ef7b5bbaac18c3f7a60dd590581a"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "oracle_error_bytes.O2.D0.bc",
+                         "bytes":  130,
+                         "sha256":  "82eae3516c1879cbf2431e20a390a971ce424e2c6ac4ba1fedb40d3919a14054"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "oracle_error_bytes.O2.D1.bc",
+                         "bytes":  147,
+                         "sha256":  "b3a2bfcdbe1544e79a925c4c55ed44ee27f7ef7b5bbaac18c3f7a60dd590581a"
+                     },
+                     {
+                         "source":  "oracle_error_bytes.luau",
+                         "source_sha256":  "68d944919041563b9889d0e56c6c125ca23f4fa08dc058e462ef1ab9d651ad60",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "oracle_error_bytes.O2.D2.bc",
+                         "bytes":  147,
+                         "sha256":  "b3a2bfcdbe1544e79a925c4c55ed44ee27f7ef7b5bbaac18c3f7a60dd590581a"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "oracle_inputs.O0.D0.bc",
+                         "bytes":  351,
+                         "sha256":  "db1d15e22207d2e1a2ca341c1b873f48855a280d23fc004714dca1907fadbb9e"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "oracle_inputs.O0.D1.bc",
+                         "bytes":  415,
+                         "sha256":  "e7803b5432261533d68076b93b1a4e0c1978bd8281c33e7caf6a71f5f3dd9555"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "oracle_inputs.O0.D2.bc",
+                         "bytes":  452,
+                         "sha256":  "79bbe9bc965b63af29ba24cddaed9377b6ffc734caa24e0246d5f6c8e9351778"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "oracle_inputs.O1.D0.bc",
+                         "bytes":  358,
+                         "sha256":  "a6aa8ef65dec69c3485d42d491e2660247df790ae6cb600d44ec6700db2b2379"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "oracle_inputs.O1.D1.bc",
+                         "bytes":  421,
+                         "sha256":  "60ee6eae071cf0b6d809edc145af37de9384168b80e71b2fc33ed2fdada279b6"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "oracle_inputs.O1.D2.bc",
+                         "bytes":  458,
+                         "sha256":  "46700fec10b159509987449d9dee5cf17a97ef748b03f216abb6fc9dfc365f0b"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "oracle_inputs.O2.D0.bc",
+                         "bytes":  358,
+                         "sha256":  "a6aa8ef65dec69c3485d42d491e2660247df790ae6cb600d44ec6700db2b2379"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "oracle_inputs.O2.D1.bc",
+                         "bytes":  421,
+                         "sha256":  "60ee6eae071cf0b6d809edc145af37de9384168b80e71b2fc33ed2fdada279b6"
+                     },
+                     {
+                         "source":  "oracle_inputs.luau",
+                         "source_sha256":  "d5dd4058cef636d08794df145b5cf633df5c05b605494944ec9a9a83917cd91f",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "oracle_inputs.O2.D2.bc",
+                         "bytes":  458,
+                         "sha256":  "46700fec10b159509987449d9dee5cf17a97ef748b03f216abb6fc9dfc365f0b"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "recursive.O0.D0.bc",
+                         "bytes":  382,
+                         "sha256":  "bd3fea575054e40292f33a3e03046329f8dc746e1a4767b6fb285b2e25f8fc75"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "recursive.O0.D1.bc",
+                         "bytes":  479,
+                         "sha256":  "a58cf3c6562063458b77517a128cbc5074f287d26b824840644193fea87c7814"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "recursive.O0.D2.bc",
+                         "bytes":  545,
+                         "sha256":  "96af0b7e2698fb5e50bad467e19e1e99be4f12dc6fb5642b5e0bad79e0e4cd5b"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "recursive.O1.D0.bc",
+                         "bytes":  336,
+                         "sha256":  "dbe38de7d9e59cfb2890425cf4c09a595780df62580430677144f07670426c07"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "recursive.O1.D1.bc",
+                         "bytes":  431,
+                         "sha256":  "3a1e118a6e69475f14ebd23daea88245786d73a02fda18a99de76d52a5a4d263"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "recursive.O1.D2.bc",
+                         "bytes":  497,
+                         "sha256":  "4bf2c4feea92e5804f48da46500b67168721cf864a727ea63b5b541a7480047d"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "recursive.O2.D0.bc",
+                         "bytes":  363,
+                         "sha256":  "2d5d0c3b56274eeb0b6a4f74a718dbd53b6ac4e18b56742de5e266659d9262b0"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "recursive.O2.D1.bc",
+                         "bytes":  464,
+                         "sha256":  "e92e181eaafcae260435c1c063868b9508239b3bb6fcacb9820d9e13e81f5482"
+                     },
+                     {
+                         "source":  "recursive.luau",
+                         "source_sha256":  "e13c045734547ebfbbba4837bdc1aba47a9189a8411dbc710b3071c6df8e7244",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "recursive.O2.D2.bc",
+                         "bytes":  538,
+                         "sha256":  "f7c66c082e12bf76cd05721952c359bc31f99be0461d58a68ca91a4fc64fae7c"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "short_circuit.O0.D0.bc",
+                         "bytes":  449,
+                         "sha256":  "bdf088a2aa275361c8fa269202df675a05d824e9759fee82aa10c4cc00b47a24"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "short_circuit.O0.D1.bc",
+                         "bytes":  537,
+                         "sha256":  "6c2c0663b1443f40b7579dcd89b19dbb17f09d50bc80bd1710595a9927704c13"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "short_circuit.O0.D2.bc",
+                         "bytes":  593,
+                         "sha256":  "66ca69faa70e23072719338e843dc9958b167ee05a728955bc66daca6110edc9"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "short_circuit.O1.D0.bc",
+                         "bytes":  413,
+                         "sha256":  "d30668f6ac3b4d1c128b9bbb0a8286397e18f436e6fead1bd4a461e420df074f"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "short_circuit.O1.D1.bc",
+                         "bytes":  498,
+                         "sha256":  "601eab75d0f2bead927fb2483fc994d712059aed2c0c5398406268525e56b2f6"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "short_circuit.O1.D2.bc",
+                         "bytes":  554,
+                         "sha256":  "53e2d9c725e04176c8dbc1ea501e5fae4e5e6246bf2e7c412e97a8ef46515724"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "short_circuit.O2.D0.bc",
+                         "bytes":  458,
+                         "sha256":  "fb3b9fc1f7831b5928ef28793454809158ce2409ce84b1d993e385adf71efb61"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "short_circuit.O2.D1.bc",
+                         "bytes":  552,
+                         "sha256":  "9a4158bde9ff13ec8cd1f60147a8f7ec9fc804e16cdfdff138401a355fbf3ab1"
+                     },
+                     {
+                         "source":  "short_circuit.luau",
+                         "source_sha256":  "b5b9c6efd5e45056edc24dd347e0a44bca38c753fb77c0760f3cb3bea2fd0b43",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "short_circuit.O2.D2.bc",
+                         "bytes":  608,
+                         "sha256":  "338a9c9d9f5ef5a1b7bff3e1bf1c5cf10cdc1e529560ecb8832e7886d541205a"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "tables.O0.D0.bc",
+                         "bytes":  440,
+                         "sha256":  "c6384c7d8ca89fa8eed1afb66a689c255126f2f240d26ac9b6baeb89002b1807"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "tables.O0.D1.bc",
+                         "bytes":  521,
+                         "sha256":  "bb644e2234c8e9cc903a94bc0a6477602cb042383c4b65f21f4172ffbbf3cdc8"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "tables.O0.D2.bc",
+                         "bytes":  539,
+                         "sha256":  "f9e71b2a6285e57406eb361dcd015dbeeb3ff800e02158105414139fb080158d"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "tables.O1.D0.bc",
+                         "bytes":  296,
+                         "sha256":  "8e2f40236e846fd4bfb225f6bc614d6470853b53317ead9446684559f4100b20"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "tables.O1.D1.bc",
+                         "bytes":  364,
+                         "sha256":  "522e45e9c2e88015baf98c6c9bff55851d5842525c760314b15a6c93cdba1059"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "tables.O1.D2.bc",
+                         "bytes":  382,
+                         "sha256":  "ae7695e0aa3106581f00208979a881d908bd00e12fc99f771c7725b96da1f9fb"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "tables.O2.D0.bc",
+                         "bytes":  296,
+                         "sha256":  "8e2f40236e846fd4bfb225f6bc614d6470853b53317ead9446684559f4100b20"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "tables.O2.D1.bc",
+                         "bytes":  364,
+                         "sha256":  "522e45e9c2e88015baf98c6c9bff55851d5842525c760314b15a6c93cdba1059"
+                     },
+                     {
+                         "source":  "tables.luau",
+                         "source_sha256":  "f2bf32d71f17a7bdf0d79a108b07b839eed561ed5b3de1664557b1bb767acb26",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "tables.O2.D2.bc",
+                         "bytes":  382,
+                         "sha256":  "ae7695e0aa3106581f00208979a881d908bd00e12fc99f771c7725b96da1f9fb"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "type_fastcalls.O0.D0.bc",
+                         "bytes":  430,
+                         "sha256":  "7e987ced2f12e0443386b1df1fbde88dc792f458685f99430467457cb726d81f"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "type_fastcalls.O0.D1.bc",
+                         "bytes":  508,
+                         "sha256":  "34eaa0adf9c23969b11ad35a476196dffa6c6e0f66d883b4fd1e27def9136ee3"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "type_fastcalls.O0.D2.bc",
+                         "bytes":  531,
+                         "sha256":  "e8baee7a65545e6e6a31f294d4fbfc7dff7aacb8ebdd9d8a13f59757ca441d13"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "type_fastcalls.O1.D0.bc",
+                         "bytes":  468,
+                         "sha256":  "9bffe0f995562ccd80995fdf7ce8e5c7d6896f8e38e7d21d80c2f2d7aab5e87c"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "type_fastcalls.O1.D1.bc",
+                         "bytes":  554,
+                         "sha256":  "abba3bc7a9a9e6d36e129aebc0ca96bd98c590de7658982691ac5862c8c9da06"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "type_fastcalls.O1.D2.bc",
+                         "bytes":  577,
+                         "sha256":  "ba6bf1175ab86530a752a68a4b1fb6aeaf0fa7ef42ef1f7089998034f59453bc"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "type_fastcalls.O2.D0.bc",
+                         "bytes":  468,
+                         "sha256":  "b9544e325560485735697648929251de83a9b46c1e93c1f618de951ac2061ff6"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "type_fastcalls.O2.D1.bc",
+                         "bytes":  554,
+                         "sha256":  "dedeb81ad446c737b0a2abba33857b636c894ade85d323320c873f3df8bd1f92"
+                     },
+                     {
+                         "source":  "type_fastcalls.luau",
+                         "source_sha256":  "e99f0ca516cdad3dfbc17be3f76b3b735810b28a8150af7e6f9d18d4d7d3878e",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "type_fastcalls.O2.D2.bc",
+                         "bytes":  577,
+                         "sha256":  "03032e62838f787443d1b08dce3f0686af05c3f1ac278faeeb6354bf1c1a0e7b"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "userdata_namecall.O0.D0.bc",
+                         "bytes":  432,
+                         "sha256":  "0a16b62cfcea41541703e5ba24a4e5cc1395cc026611b8dab5107bc25b6d52ac"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "userdata_namecall.O0.D1.bc",
+                         "bytes":  499,
+                         "sha256":  "2de68139c2593bdf6569ccfbdbb7e86cd369bca1b148b88c08f76d7109aafec4"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "userdata_namecall.O0.D2.bc",
+                         "bytes":  551,
+                         "sha256":  "ff007344845da2d55d2db94aacbb7cda62620314cc438c9312152750ca4ecdb6"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "userdata_namecall.O1.D0.bc",
+                         "bytes":  438,
+                         "sha256":  "3ea6118afb2503642023e9207f5e361973f78e141f59922e35cead0f70f6ca8d"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "userdata_namecall.O1.D1.bc",
+                         "bytes":  507,
+                         "sha256":  "02258fd75f623abfc72d6e4f21e6efa308902b8912280f093cf1a684dddfc5a2"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "userdata_namecall.O1.D2.bc",
+                         "bytes":  559,
+                         "sha256":  "1e1e81ec94351bb0128fb28b4eb60ab1af00c18c41918a825bf20705e2d06656"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "userdata_namecall.O2.D0.bc",
+                         "bytes":  438,
+                         "sha256":  "3ea6118afb2503642023e9207f5e361973f78e141f59922e35cead0f70f6ca8d"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "userdata_namecall.O2.D1.bc",
+                         "bytes":  507,
+                         "sha256":  "02258fd75f623abfc72d6e4f21e6efa308902b8912280f093cf1a684dddfc5a2"
+                     },
+                     {
+                         "source":  "userdata_namecall.luau",
+                         "source_sha256":  "c3dd3948b13c3242fb263113bf4a095352aa13358cb9888c690001cac69c897b",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "userdata_namecall.O2.D2.bc",
+                         "bytes":  559,
+                         "sha256":  "1e1e81ec94351bb0128fb28b4eb60ab1af00c18c41918a825bf20705e2d06656"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "varargs_multret.O0.D0.bc",
+                         "bytes":  474,
+                         "sha256":  "7453fe76769a338a8a2a1bfd243e234fcaab34b62012c613f850a9da9326e991"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "varargs_multret.O0.D1.bc",
+                         "bytes":  593,
+                         "sha256":  "cf0eab5d81ca07dfc69bc876a905bad31e803f4ab75c6af606aabdc7d6519859"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "varargs_multret.O0.D2.bc",
+                         "bytes":  657,
+                         "sha256":  "a135c945a1a104506887e81a9dbe009f35d122cd562377872de54d7491729f1c"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "varargs_multret.O1.D0.bc",
+                         "bytes":  417,
+                         "sha256":  "2b62ac575cc7d89772b24784111c39460b86d3bf9576b05564d6980d382532e1"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "varargs_multret.O1.D1.bc",
+                         "bytes":  530,
+                         "sha256":  "24c7ca195978e5cc1f46cb9d80cd9d52d151160552831df74cbdf88184ae7b63"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "varargs_multret.O1.D2.bc",
+                         "bytes":  594,
+                         "sha256":  "7872188e9ff0c7bea965d0599689d4f6f49645c3a5214087104541cd7386ce22"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "varargs_multret.O2.D0.bc",
+                         "bytes":  417,
+                         "sha256":  "2b62ac575cc7d89772b24784111c39460b86d3bf9576b05564d6980d382532e1"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "varargs_multret.O2.D1.bc",
+                         "bytes":  530,
+                         "sha256":  "24c7ca195978e5cc1f46cb9d80cd9d52d151160552831df74cbdf88184ae7b63"
+                     },
+                     {
+                         "source":  "varargs_multret.luau",
+                         "source_sha256":  "08ee68042e8a2e9f745df003bf16b9db65ac474439811dfc69a3a965cb689151",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "varargs_multret.O2.D2.bc",
+                         "bytes":  594,
+                         "sha256":  "7872188e9ff0c7bea965d0599689d4f6f49645c3a5214087104541cd7386ce22"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  0,
+                         "debug":  0,
+                         "bytecode":  "while_repeat.O0.D0.bc",
+                         "bytes":  193,
+                         "sha256":  "3808cd372264630a7ef980aef444afdc25e855090074815a1d287f0582fc5d9d"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  0,
+                         "debug":  1,
+                         "bytecode":  "while_repeat.O0.D1.bc",
+                         "bytes":  226,
+                         "sha256":  "2e51eca521081d3616c018ce9bc9604936398bc5e4b51b8a65291694579ea82b"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  0,
+                         "debug":  2,
+                         "bytecode":  "while_repeat.O0.D2.bc",
+                         "bytes":  248,
+                         "sha256":  "419084f2a3bf8d87ecc755c8f672c3275d7d32fe499ac07bf30feef15924f137"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  1,
+                         "debug":  0,
+                         "bytecode":  "while_repeat.O1.D0.bc",
+                         "bytes":  164,
+                         "sha256":  "870c19c64e0790b01111a3e25f8d5973d342168ba44e7df4dbdcbae8635e5508"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  1,
+                         "debug":  1,
+                         "bytecode":  "while_repeat.O1.D1.bc",
+                         "bytes":  193,
+                         "sha256":  "9bcf3d28c934774f85049720811809ccfc44cbc188603cd46ad57d29a2f7bb2e"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  1,
+                         "debug":  2,
+                         "bytecode":  "while_repeat.O1.D2.bc",
+                         "bytes":  215,
+                         "sha256":  "e3c4ad3a73f54e2191a58e51dcf8b4edba3c2559eb7bdb31bb7c9ca98b848f11"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  2,
+                         "debug":  0,
+                         "bytecode":  "while_repeat.O2.D0.bc",
+                         "bytes":  164,
+                         "sha256":  "870c19c64e0790b01111a3e25f8d5973d342168ba44e7df4dbdcbae8635e5508"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  2,
+                         "debug":  1,
+                         "bytecode":  "while_repeat.O2.D1.bc",
+                         "bytes":  193,
+                         "sha256":  "9bcf3d28c934774f85049720811809ccfc44cbc188603cd46ad57d29a2f7bb2e"
+                     },
+                     {
+                         "source":  "while_repeat.luau",
+                         "source_sha256":  "1348c2cfa0f9a6d0f080223edbad6aac164cb0a90ca44e75518b856f3aae84e9",
+                         "optimization":  2,
+                         "debug":  2,
+                         "bytecode":  "while_repeat.O2.D2.bc",
+                         "bytes":  215,
+                         "sha256":  "e3c4ad3a73f54e2191a58e51dcf8b4edba3c2559eb7bdb31bb7c9ca98b848f11"
+                     }
+                 ]
+}

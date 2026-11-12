@@ -1,0 +1,21 @@
+* text=auto
+*.rs text eol=lf
+*.luau text eol=lf
+*.lua text eol=lf
+*.ps1 text eol=lf
+*.py text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.bc -text
+*.gz -text
+*.zip -text
+*.exe -text
+evidence/** -text
+fixtures/** -text
+tests/corpus/** -text
+tests/semantic-corpus/** -text
+tests/fixtures/** -text
+tests/profile-fixtures/** -text
+examples/Murder[[:space:]]Mystery[[:space:]]2/**/*.luau linguist-generated=true
+examples/typed-output/*.luau linguist-generated=true

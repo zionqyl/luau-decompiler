@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "version": "0.3.0",
+  "scope": "Immutable observed failed live attempt and its exact delivered historical sources; no current executor compatibility claim",
+  "archive": {
+    "path": "dist/luau-decompiler-0.3.0-windows-x64.zip",
+    "sha256": "2878c8040c14d1187f6aed0335bbbad8ee173c4317e709f84e364e017b027a0f"
+  },
+  "report": {
+    "path": "docs/results/madium-live-v3.json",
+    "sha256": "ded3910a0b7c59c68410935a2dfb1159fcefe3882470290ea9981024ec982503",
+    "archive_entry": "release-package-0.3.0-1645493c9e6b4ba59edb0799adcd3a99/docs/results/madium-live-v3.json",
+    "normalized_lf_sha256": "9ca33145522fa9a8bb8202bca56b529c31b292a64304461f85342dedc4e98358",
+    "archive_file": {
+      "id": "report",
+      "original_path": "docs/results/madium-live-v3.json",
+      "compressed_path": "fixtures/historical/v0.3/report.gz",
+      "uncompressed_bytes": 21821,
+      "source_sha256": "ded3910a0b7c59c68410935a2dfb1159fcefe3882470290ea9981024ec982503",
+      "compressed_sha256": "20e6620070b613332091cf6873f7c3f70fd4314a7b1b70baddc9451ee1a6f53c",
+      "current_source": false
+    }
+  },
+  "sources": [
+    {
+      "id": "adapter",
+      "original_path": "adapter/decompile.luau",
+      "archive_entry": "release-package-0.3.0-1645493c9e6b4ba59edb0799adcd3a99/adapter/decompile.luau",
+      "compressed_path": "fixtures/historical/v0.3/decompile.luau.gz",
+      "uncompressed_bytes": 28500,
+      "source_sha256": "ea0c6a239bd46c6f437665104ae5670e394bbeac278e40003b926bae5b166fbb",
+      "compressed_sha256": "a925761fc238aa40a32d56c451c897d0536e8942254aba2ca2df68bd4a7777c1"
+    },
+    {
+      "id": "harness",
+      "original_path": "adapter/live-test-v3.luau",
+      "archive_entry": "release-package-0.3.0-1645493c9e6b4ba59edb0799adcd3a99/adapter/live-test-v3.luau",
+      "compressed_path": "fixtures/historical/v0.3/live-test-v3.luau.gz",
+      "uncompressed_bytes": 12496,
+      "source_sha256": "9995ad66893e16d93c01e34ce137f0730af177a9ca7b6a76c1715ed63a0f3a3b",
+      "compressed_sha256": "11d3ef6957e94f8c1b933c61a537988f0f88499b43b8ad605bde69c14311a90e"
+    }
+  ]
+}

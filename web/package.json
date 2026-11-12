@@ -1,0 +1,30 @@
+{
+  "name": "luau-decompiler-browser",
+  "version": "0.4.0-rc.4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build --webpack",
+    "typecheck": "tsc --noEmit",
+    "test:browser": "node ../scripts/test-browser.mjs",
+    "test:unit": "node --experimental-strip-types --test --test-isolation=none tests/*.test.ts",
+    "format": "prettier --config .prettierrc.json --write \"{app,components,lib,worker}/**/*.{ts,tsx,css}\" \"tests/*.{ts,mjs}\" bundle-worker.mjs next.config.mjs ../scripts/test-browser.mjs",
+    "format:check": "prettier --config .prettierrc.json --check \"{app,components,lib,worker}/**/*.{ts,tsx,css}\" \"tests/*.{ts,mjs}\" bundle-worker.mjs next.config.mjs ../scripts/test-browser.mjs"
+  },
+  "dependencies": {
+    "fflate": "0.8.2",
+    "geist": "1.9.2",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.57.0",
+    "@types/node": "24.10.0",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "esbuild": "0.27.0",
+    "prettier": "3.7.4",
+    "typescript": "5.9.3"
+  }
+}

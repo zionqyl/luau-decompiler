@@ -1,0 +1,232 @@
+{
+  "schema": 1,
+  "version": "0.4.0-rc.1",
+  "scope": "Retained independent native observations and failed HTTP attempt; source and executable equality with a later build are reported separately",
+  "reports": [
+    {
+      "id": "live",
+      "path": "docs/results/madium-live-rc.json",
+      "sha256": "8876dc5eacf55120652d105bdea1527d4038658b8ee6abf79166ce6687424793",
+      "executable_sha256": "763455807e701b2095546ad2fa65cda0e2dabccc43dfced9838f9baeb6d25d7e",
+      "normalized_lf_sha256": "e1148d6b3294f386d373e8d3f3aa2f1e48090570680674773fde053b0a29552b",
+      "archive_id": "live_report"
+    },
+    {
+      "id": "native",
+      "path": "docs/results/native-functions-rc.json",
+      "sha256": "5c8ddc438cd7401e6fd0d814578773fbad6dca2fa64444bb99c2345d20806b5d",
+      "executable_sha256": "763455807e701b2095546ad2fa65cda0e2dabccc43dfced9838f9baeb6d25d7e",
+      "normalized_lf_sha256": "68b8d392a3a4c8c8149eceb9ed26f042f7e25f507d7833dfaf051350a7edf067",
+      "archive_id": "native_report"
+    }
+  ],
+  "files": [
+    {
+      "id": "adapter",
+      "original_path": "adapter/decompile.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/adapter.gz",
+      "uncompressed_bytes": 30513,
+      "source_sha256": "fa6cea82440721d943429c54fc75bbc4dee5ddb428589d10bf5bf44a50894de3",
+      "compressed_sha256": "99e5c2d4512ca3467182e69cde9ec1530df55cb134e0ebaf8df504ec6fda6690",
+      "current_source": true
+    },
+    {
+      "id": "observer",
+      "original_path": "adapter/live-test-v3.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/observer.gz",
+      "uncompressed_bytes": 12244,
+      "source_sha256": "b32bc54e2cc82bd333296bbf8645547795d208449a35d2717122c086da99fdfa",
+      "compressed_sha256": "a42d2f0b85943aad98bf00ec48ece5451f6e1fae499c7dc1e5b71f9e03fa69c9",
+      "current_source": true
+    },
+    {
+      "id": "native_harness",
+      "original_path": "adapter/function-dump-test-rc.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/native_harness.gz",
+      "uncompressed_bytes": 2805,
+      "source_sha256": "739cf277bf688a4b59df4995c0e7f88ac414a47259009738057a00239c44c935",
+      "compressed_sha256": "237edc980fe767187de86d5a5796ad70db9fc9321e48d1233749ffd6323240cc",
+      "current_source": true
+    },
+    {
+      "id": "live_generator",
+      "original_path": "scripts/record-live-rc.ps1",
+      "compressed_path": "fixtures/observations/rc-20261111/live_generator.gz",
+      "uncompressed_bytes": 2700,
+      "source_sha256": "bf944ad2ad536e81b98c7df313794a4357bbbab8f85355050b9579dbc10881ac",
+      "compressed_sha256": "0b282d95123e22e39372ee5b94e959fb0108f76e3074dad68c78718630f724b6",
+      "current_source": true
+    },
+    {
+      "id": "native_generator",
+      "original_path": "scripts/record-native-rc.ps1",
+      "compressed_path": "fixtures/observations/rc-20261111/native_generator.gz",
+      "uncompressed_bytes": 6511,
+      "source_sha256": "b9ae9787b20c1029d9e6232bb81b223965cfebb5e61ace20dd811b7c311d6ffe",
+      "compressed_sha256": "d69f7d2d974fa134b4db1dc36a792e6571c0dc20b3ee438c5ad84666ca51bf7c",
+      "current_source": true
+    },
+    {
+      "id": "function_fixtures",
+      "original_path": "tests/function-dumps-rc.json",
+      "compressed_path": "fixtures/observations/rc-20261111/function_fixtures.gz",
+      "uncompressed_bytes": 2145,
+      "source_sha256": "78b4abc7655dda2ad87482d936fff2e5784da84e94b716ccb76e49c38d3975fd",
+      "compressed_sha256": "03e3848801a78d50fd5aacebd1b0ce1de8fa5886206fc2f8c5b5bb5d66bc9755",
+      "current_source": true
+    },
+    {
+      "id": "live_driver",
+      "original_path": "artifacts/rc-live-final/driver-redacted.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/live_driver.gz",
+      "uncompressed_bytes": 31860,
+      "source_sha256": "387f10f32da340afb4429ad6733ef59745fbccbf47c1beb0c77c3d29a1f72566",
+      "compressed_sha256": "606e48bd8bd1c11bef68f4f177661bb7968ab93b57314dd10fbf58177dcd898b",
+      "current_source": false
+    },
+    {
+      "id": "live_capture",
+      "original_path": "artifacts/rc-live-final/raw-result.json",
+      "compressed_path": "fixtures/observations/rc-20261111/live_capture.gz",
+      "uncompressed_bytes": 1106,
+      "source_sha256": "06bea81c87fbd6b50f9e1c7c0df6d21389f36dc3047d8e657bfd7b80543137e2",
+      "compressed_sha256": "2d00cc4447595cb989b10b0ae233cd98caedcbcc1c4a7939b6fafac1dd386b49",
+      "current_source": false
+    },
+    {
+      "id": "live_host_capabilities",
+      "original_path": "artifacts/rc-live-final/host-capabilities.json",
+      "compressed_path": "fixtures/observations/rc-20261111/live_host_capabilities.gz",
+      "uncompressed_bytes": 14226,
+      "source_sha256": "8c7516ea5f405d2834f28d2e09c8cc69249dbaa279169b8e70822ad676fe7732",
+      "compressed_sha256": "e44f3358acfc89820522c6153784003d895cafb833cfee4a3b79c33a437700b5",
+      "current_source": false
+    },
+    {
+      "id": "native_driver",
+      "original_path": "artifacts/rc-native-functions/driver-final.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/native_driver.gz",
+      "uncompressed_bytes": 17323,
+      "source_sha256": "9dccab69e6b69f35ddc07c3e00fbeee069b056089768b1f6894ad6b9e65de63e",
+      "compressed_sha256": "4fb53894049f4ac518280121a205dcd152a6126e5a41d21e27f09fc6b220cda6",
+      "current_source": false
+    },
+    {
+      "id": "native_config",
+      "original_path": "artifacts/rc-native-functions/config.json",
+      "compressed_path": "fixtures/observations/rc-20261111/native_config.gz",
+      "uncompressed_bytes": 121,
+      "source_sha256": "e9b09c2f97dbeba0ec71cea2704c4eeb85311d72aa3d2d0c697b8c26345c05d1",
+      "compressed_sha256": "0e54a2244ffd84f3e02287f2721920603421ddfc08a0f028acf37c15ea28505a",
+      "current_source": false
+    },
+    {
+      "id": "native_observations",
+      "original_path": "artifacts/rc-native-functions/native-result.json",
+      "compressed_path": "fixtures/observations/rc-20261111/native_observations.gz",
+      "uncompressed_bytes": 5051,
+      "source_sha256": "9d9746985737917f750f1c6028cd441048f2cbf839b8f346491a30defcea7ccf",
+      "compressed_sha256": "e47c812d4218d076aec7c40324d8d8a0536ad2dfb3de2cb7b91e5d6ca5eeb8a7",
+      "current_source": false
+    },
+    {
+      "id": "native_varargs_output",
+      "original_path": "artifacts/rc-native-functions/varargs.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/native_varargs_output.gz",
+      "uncompressed_bytes": 64,
+      "source_sha256": "79dce873a10376f04e4e8c0f2e88239592d18f180e8a8c6a4580256000ccbe0d",
+      "compressed_sha256": "f29dccf33c9af2439522677558472488eeb2c83294c243a19824c25fd172ca84",
+      "current_source": false
+    },
+    {
+      "id": "native_guarded_output",
+      "original_path": "artifacts/rc-native-functions/guarded.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/native_guarded_output.gz",
+      "uncompressed_bytes": 239,
+      "source_sha256": "f51d5ff6e18bfccb9e08c281f1ca5600fe32099d3cd6b8af2ba88b4f2df2d3de",
+      "compressed_sha256": "251b4aa22550ccc9649bd49abe24c3ca441d759f64c5ee43739e8f64dc115163",
+      "current_source": false
+    },
+    {
+      "id": "native_fixed_output",
+      "original_path": "artifacts/rc-native-functions/fixed.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/native_fixed_output.gz",
+      "uncompressed_bytes": 58,
+      "source_sha256": "f99c332a13e4fba09150d8e3669323aa4bf500edfb2ad9915a9c2db25d5e23f9",
+      "compressed_sha256": "8f5dfd1c743204a8da5b0d75aa9c7be4886d411c67907fdf480c3777cf1406dc",
+      "current_source": false
+    },
+    {
+      "id": "native_stateful_output",
+      "original_path": "artifacts/rc-native-functions/stateful.luau",
+      "compressed_path": "fixtures/observations/rc-20261111/native_stateful_output.gz",
+      "uncompressed_bytes": 159,
+      "source_sha256": "3a9e04224da0916945e13d52b1fdb1cf0943e722bc88d415468acacb16d7388a",
+      "compressed_sha256": "3ad4b4f4fe09fd23a15100943492b7e7f2488ef7f2fce2dc2baf4f5f6d410985",
+      "current_source": false
+    },
+    {
+      "id": "native_varargs_diagnostic",
+      "original_path": "artifacts/rc-native-functions/varargs.stderr",
+      "compressed_path": "fixtures/observations/rc-20261111/native_varargs_diagnostic.gz",
+      "uncompressed_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressed_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "current_source": false
+    },
+    {
+      "id": "native_guarded_diagnostic",
+      "original_path": "artifacts/rc-native-functions/guarded.stderr",
+      "compressed_path": "fixtures/observations/rc-20261111/native_guarded_diagnostic.gz",
+      "uncompressed_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressed_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "current_source": false
+    },
+    {
+      "id": "native_fixed_diagnostic",
+      "original_path": "artifacts/rc-native-functions/fixed.stderr",
+      "compressed_path": "fixtures/observations/rc-20261111/native_fixed_diagnostic.gz",
+      "uncompressed_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressed_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "current_source": false
+    },
+    {
+      "id": "native_stateful_diagnostic",
+      "original_path": "artifacts/rc-native-functions/stateful.stderr",
+      "compressed_path": "fixtures/observations/rc-20261111/native_stateful_diagnostic.gz",
+      "uncompressed_bytes": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressed_sha256": "9ceffb7310338057cfe71a4ae1e2c98d2c485d81cdef906532a801f457a38d64",
+      "current_source": false
+    },
+    {
+      "id": "native_captured_diagnostic",
+      "original_path": "artifacts/rc-native-functions/captured.stderr",
+      "compressed_path": "fixtures/observations/rc-20261111/native_captured_diagnostic.gz",
+      "uncompressed_bytes": 139,
+      "source_sha256": "181030cf19d137a0df0c2f51f0930ebf1fb202336380169ef489cb9f441be60c",
+      "compressed_sha256": "d3f9f5c7267b0b701b7f78c14f357e0bc4e315da0b1c845b24e3459a307fbbc7",
+      "current_source": false
+    },
+    {
+      "id": "live_report",
+      "original_path": "docs/results/madium-live-rc.json",
+      "compressed_path": "fixtures/observations/rc-20261111/live_report.gz",
+      "uncompressed_bytes": 3128,
+      "source_sha256": "8876dc5eacf55120652d105bdea1527d4038658b8ee6abf79166ce6687424793",
+      "compressed_sha256": "b5e6b7879d5256df7a96ce5601a85beedc4e8795230ae369215e0e38a4e3ad5b",
+      "current_source": false
+    },
+    {
+      "id": "native_report",
+      "original_path": "docs/results/native-functions-rc.json",
+      "compressed_path": "fixtures/observations/rc-20261111/native_report.gz",
+      "uncompressed_bytes": 20096,
+      "source_sha256": "5c8ddc438cd7401e6fd0d814578773fbad6dca2fa64444bb99c2345d20806b5d",
+      "compressed_sha256": "9e147ebdc65851f641b7cb924732f1dbef505a131c3f9ec44b200c7faf244fb5",
+      "current_source": false
+    }
+  ]
+}

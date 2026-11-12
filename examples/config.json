@@ -1,0 +1,21 @@
+{
+  "naming": "snake_case",
+  "indent": "    ",
+  "profile": "auto",
+  "bytecode_encoding": "upstream",
+  "control_flow": "auto",
+  "vector_constructor": null,
+  "name_overrides": {},
+  "limits": {
+    "max_bytes": 16777216,
+    "max_strings": 100000,
+    "max_string_bytes": 8388608,
+    "max_protos": 10000,
+    "max_instructions": 1000000,
+    "max_constants": 1000000,
+    "max_depth": 100,
+    "max_blocks": 100000,
+    "max_output_bytes": 67108864,
+    "max_analysis_steps": 10000000
+  }
+}

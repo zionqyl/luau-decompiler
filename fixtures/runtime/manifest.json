@@ -1,0 +1,16 @@
+{
+    "source":  "verified.luau",
+    "bytecode_sha256":  "f670ba8ea603ba19a1430a7708917759e85c17b022f4b7b0901d1312a82e4b2f",
+    "bytecode":  "verified.bc",
+    "profile":  "luau-v14",
+    "flags":  [
+                  "--binary",
+                  "-O0",
+                  "-g2",
+                  "-t1"
+              ],
+    "compiler_sha256":  "870665fdc7e751eb266ea8beec2cda64762c9b6b689e8a466feedaaeefc8dd3d",
+    "expected_result":  42,
+    "schema":  1,
+    "source_sha256":  "b0925f5524a854eeb1c35ef0bf70873d6aa40135ed6d041e05b33c3bb26c6f70"
+}

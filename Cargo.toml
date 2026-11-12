@@ -1,0 +1,43 @@
+[package]
+name = "luau-decompiler"
+version = "0.4.0-rc.4"
+edition = "2021"
+rust-version = "1.85"
+license = "MIT"
+description = "Validated Luau bytecode reconstruction and bounded typed source processing"
+readme = "README.md"
+repository = "https://github.com/zionqyl/luau-decompiler"
+keywords = ["luau", "decompiler", "roblox", "bytecode"]
+categories = ["development-tools", "compilers"]
+exclude = [".tools/**", "vendor/**", "artifacts/**", "dist/**", "fuzz/target/**", ".agents/**", ".codex/**", "docs/results/**", ".env", ".env.*", "**/__pycache__/**", "web/node_modules/**", "web/.next/**", "web/out/**", "web/public/runtime/**", "web/test-results/**", "examples/Murder Mystery 2/**"]
+
+[lib]
+name = "luau_decompiler"
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "luau-decompile"
+path = "src/main.rs"
+
+[features]
+coverage-harness = []
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rayon = "1.10"
+mio = { version = "=1.2.4", default-features = false, features = ["os-poll", "net"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "=0.2.130"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "unwind"
+
+[workspace]
+exclude = ["fuzz"]

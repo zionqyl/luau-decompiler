@@ -1,0 +1,8 @@
+{
+  "profile": "luau-v14",
+  "bytecode_encoding": "roblox_opcode227",
+  "control_flow": "auto",
+  "naming": "camelCase",
+  "indent": "    ",
+  "name_overrides": {}
+}

@@ -1,0 +1,1631 @@
+<?xml version="1.0" encoding="utf-8"?>
+<roblox version="4">
+  <Item class="Workspace" referent="RBX00000001">
+    <Properties>
+      <string name="Name">Workspace</string>
+    </Properties>
+  </Item>
+  <Item class="ReplicatedStorage" referent="RBX00000002">
+    <Properties>
+      <string name="Name">ReplicatedStorage</string>
+    </Properties>
+    <Item class="Folder" referent="RBX00000003">
+      <Properties>
+        <string name="Name">DecompilerV3Fixtures</string>
+      </Properties>
+      <Item class="StringValue" referent="RBX00000004">
+        <Properties>
+          <string name="Name">FixturePlan</string>
+          <string name="Value">5852e9ed4aa979b1791f6e5b7397b137f88ae1f9b7e63f92fe8cf3e963b00704</string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000008">
+        <Properties>
+          <string name="Name">CaptureCounter</string>
+          <ProtectedString name="Source"><![CDATA[local count = 0
+return function(delta: number)
+    count += delta
+    return count, nil, "counter"
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="Script" referent="RBX00000009">
+        <Properties>
+          <string name="Name">ClientMethods</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    local owned = Instance.new("Part")
+    owned.Name = "DecompilerV3UnparentedPart"
+    owned.Position = Vector3.new(seed, 2, 3)
+    local position = owned:GetPivot().Position
+    local class = owned.ClassName
+    owned:Destroy()
+    return position, class, nil
+end
+]]></ProtectedString>
+          <bool name="Disabled">true</bool>
+          <token name="RunContext">2</token>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000010">
+        <Properties>
+          <string name="Name">LargeFunction</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    local value = seed
+    value = value + 2 - 1
+    value = value + 3 - 2
+    value = value + 4 - 3
+    value = value + 5 - 4
+    value = value + 6 - 5
+    value = value + 7 - 6
+    value = value + 8 - 7
+    value = value + 9 - 8
+    value = value + 10 - 9
+    value = value + 11 - 10
+    value = value + 12 - 0
+    value = value + 13 - 1
+    value = value + 14 - 2
+    value = value + 15 - 3
+    value = value + 16 - 4
+    value = value + 17 - 5
+    value = value + 1 - 6
+    value = value + 2 - 7
+    value = value + 3 - 8
+    value = value + 4 - 9
+    value = value + 5 - 10
+    value = value + 6 - 0
+    value = value + 7 - 1
+    value = value + 8 - 2
+    value = value + 9 - 3
+    value = value + 10 - 4
+    value = value + 11 - 5
+    value = value + 12 - 6
+    value = value + 13 - 7
+    value = value + 14 - 8
+    value = value + 15 - 9
+    value = value + 16 - 10
+    value = value + 17 - 0
+    value = value + 1 - 1
+    value = value + 2 - 2
+    value = value + 3 - 3
+    value = value + 4 - 4
+    value = value + 5 - 5
+    value = value + 6 - 6
+    value = value + 7 - 7
+    value = value + 8 - 8
+    value = value + 9 - 9
+    value = value + 10 - 10
+    value = value + 11 - 0
+    value = value + 12 - 1
+    value = value + 13 - 2
+    value = value + 14 - 3
+    value = value + 15 - 4
+    value = value + 16 - 5
+    value = value + 17 - 6
+    value = value + 1 - 7
+    value = value + 2 - 8
+    value = value + 3 - 9
+    value = value + 4 - 10
+    value = value + 5 - 0
+    value = value + 6 - 1
+    value = value + 7 - 2
+    value = value + 8 - 3
+    value = value + 9 - 4
+    value = value + 10 - 5
+    value = value + 11 - 6
+    value = value + 12 - 7
+    value = value + 13 - 8
+    value = value + 14 - 9
+    value = value + 15 - 10
+    value = value + 16 - 0
+    value = value + 17 - 1
+    value = value + 1 - 2
+    value = value + 2 - 3
+    value = value + 3 - 4
+    value = value + 4 - 5
+    value = value + 5 - 6
+    value = value + 6 - 7
+    value = value + 7 - 8
+    value = value + 8 - 9
+    value = value + 9 - 10
+    value = value + 10 - 0
+    value = value + 11 - 1
+    value = value + 12 - 2
+    value = value + 13 - 3
+    value = value + 14 - 4
+    value = value + 15 - 5
+    value = value + 16 - 6
+    value = value + 17 - 7
+    value = value + 1 - 8
+    value = value + 2 - 9
+    value = value + 3 - 10
+    value = value + 4 - 0
+    value = value + 5 - 1
+    value = value + 6 - 2
+    value = value + 7 - 3
+    value = value + 8 - 4
+    value = value + 9 - 5
+    value = value + 10 - 6
+    value = value + 11 - 7
+    value = value + 12 - 8
+    value = value + 13 - 9
+    value = value + 14 - 10
+    value = value + 15 - 0
+    value = value + 16 - 1
+    value = value + 17 - 2
+    value = value + 1 - 3
+    value = value + 2 - 4
+    value = value + 3 - 5
+    value = value + 4 - 6
+    value = value + 5 - 7
+    value = value + 6 - 8
+    value = value + 7 - 9
+    value = value + 8 - 10
+    value = value + 9 - 0
+    value = value + 10 - 1
+    value = value + 11 - 2
+    value = value + 12 - 3
+    value = value + 13 - 4
+    value = value + 14 - 5
+    value = value + 15 - 6
+    value = value + 16 - 7
+    value = value + 17 - 8
+    value = value + 1 - 9
+    value = value + 2 - 10
+    value = value + 3 - 0
+    value = value + 4 - 1
+    value = value + 5 - 2
+    value = value + 6 - 3
+    value = value + 7 - 4
+    value = value + 8 - 5
+    value = value + 9 - 6
+    value = value + 10 - 7
+    value = value + 11 - 8
+    value = value + 12 - 9
+    value = value + 13 - 10
+    value = value + 14 - 0
+    value = value + 15 - 1
+    value = value + 16 - 2
+    value = value + 17 - 3
+    value = value + 1 - 4
+    value = value + 2 - 5
+    value = value + 3 - 6
+    value = value + 4 - 7
+    value = value + 5 - 8
+    value = value + 6 - 9
+    value = value + 7 - 10
+    value = value + 8 - 0
+    value = value + 9 - 1
+    value = value + 10 - 2
+    value = value + 11 - 3
+    value = value + 12 - 4
+    value = value + 13 - 5
+    value = value + 14 - 6
+    value = value + 15 - 7
+    value = value + 16 - 8
+    value = value + 17 - 9
+    value = value + 1 - 10
+    value = value + 2 - 0
+    value = value + 3 - 1
+    value = value + 4 - 2
+    value = value + 5 - 3
+    value = value + 6 - 4
+    value = value + 7 - 5
+    value = value + 8 - 6
+    value = value + 9 - 7
+    value = value + 10 - 8
+    value = value + 11 - 9
+    value = value + 12 - 10
+    value = value + 13 - 0
+    value = value + 14 - 1
+    value = value + 15 - 2
+    value = value + 16 - 3
+    value = value + 17 - 4
+    value = value + 1 - 5
+    value = value + 2 - 6
+    value = value + 3 - 7
+    value = value + 4 - 8
+    value = value + 5 - 9
+    value = value + 6 - 10
+    value = value + 7 - 0
+    value = value + 8 - 1
+    value = value + 9 - 2
+    value = value + 10 - 3
+    value = value + 11 - 4
+    value = value + 12 - 5
+    value = value + 13 - 6
+    value = value + 14 - 7
+    value = value + 15 - 8
+    value = value + 16 - 9
+    value = value + 17 - 10
+    value = value + 1 - 0
+    value = value + 2 - 1
+    value = value + 3 - 2
+    value = value + 4 - 3
+    value = value + 5 - 4
+    value = value + 6 - 5
+    value = value + 7 - 6
+    value = value + 8 - 7
+    value = value + 9 - 8
+    value = value + 10 - 9
+    value = value + 11 - 10
+    value = value + 12 - 0
+    value = value + 13 - 1
+    value = value + 14 - 2
+    value = value + 15 - 3
+    value = value + 16 - 4
+    value = value + 17 - 5
+    value = value + 1 - 6
+    value = value + 2 - 7
+    value = value + 3 - 8
+    value = value + 4 - 9
+    value = value + 5 - 10
+    value = value + 6 - 0
+    value = value + 7 - 1
+    value = value + 8 - 2
+    value = value + 9 - 3
+    value = value + 10 - 4
+    value = value + 11 - 5
+    value = value + 12 - 6
+    value = value + 13 - 7
+    value = value + 14 - 8
+    value = value + 15 - 9
+    value = value + 16 - 10
+    value = value + 17 - 0
+    value = value + 1 - 1
+    value = value + 2 - 2
+    value = value + 3 - 3
+    value = value + 4 - 4
+    value = value + 5 - 5
+    value = value + 6 - 6
+    value = value + 7 - 7
+    value = value + 8 - 8
+    value = value + 9 - 9
+    value = value + 10 - 10
+    value = value + 11 - 0
+    value = value + 12 - 1
+    value = value + 13 - 2
+    value = value + 14 - 3
+    value = value + 15 - 4
+    value = value + 16 - 5
+    value = value + 17 - 6
+    value = value + 1 - 7
+    value = value + 2 - 8
+    value = value + 3 - 9
+    value = value + 4 - 10
+    value = value + 5 - 0
+    value = value + 6 - 1
+    value = value + 7 - 2
+    value = value + 8 - 3
+    value = value + 9 - 4
+    value = value + 10 - 5
+    value = value + 11 - 6
+    value = value + 12 - 7
+    value = value + 13 - 8
+    value = value + 14 - 9
+    value = value + 15 - 10
+    value = value + 16 - 0
+    value = value + 17 - 1
+    value = value + 1 - 2
+    value = value + 2 - 3
+    value = value + 3 - 4
+    value = value + 4 - 5
+    value = value + 5 - 6
+    value = value + 6 - 7
+    value = value + 7 - 8
+    value = value + 8 - 9
+    value = value + 9 - 10
+    value = value + 10 - 0
+    value = value + 11 - 1
+    value = value + 12 - 2
+    value = value + 13 - 3
+    value = value + 14 - 4
+    value = value + 15 - 5
+    value = value + 16 - 6
+    value = value + 17 - 7
+    value = value + 1 - 8
+    value = value + 2 - 9
+    value = value + 3 - 10
+    value = value + 4 - 0
+    value = value + 5 - 1
+    value = value + 6 - 2
+    value = value + 7 - 3
+    value = value + 8 - 4
+    value = value + 9 - 5
+    value = value + 10 - 6
+    value = value + 11 - 7
+    value = value + 12 - 8
+    value = value + 13 - 9
+    value = value + 14 - 10
+    value = value + 15 - 0
+    value = value + 16 - 1
+    value = value + 17 - 2
+    value = value + 1 - 3
+    value = value + 2 - 4
+    value = value + 3 - 5
+    value = value + 4 - 6
+    value = value + 5 - 7
+    value = value + 6 - 8
+    value = value + 7 - 9
+    value = value + 8 - 10
+    value = value + 9 - 0
+    value = value + 10 - 1
+    value = value + 11 - 2
+    value = value + 12 - 3
+    value = value + 13 - 4
+    value = value + 14 - 5
+    value = value + 15 - 6
+    value = value + 16 - 7
+    value = value + 17 - 8
+    value = value + 1 - 9
+    value = value + 2 - 10
+    value = value + 3 - 0
+    value = value + 4 - 1
+    value = value + 5 - 2
+    value = value + 6 - 3
+    value = value + 7 - 4
+    value = value + 8 - 5
+    value = value + 9 - 6
+    value = value + 10 - 7
+    value = value + 11 - 8
+    value = value + 12 - 9
+    value = value + 13 - 10
+    value = value + 14 - 0
+    value = value + 15 - 1
+    value = value + 16 - 2
+    value = value + 17 - 3
+    value = value + 1 - 4
+    value = value + 2 - 5
+    value = value + 3 - 6
+    value = value + 4 - 7
+    value = value + 5 - 8
+    value = value + 6 - 9
+    value = value + 7 - 10
+    value = value + 8 - 0
+    value = value + 9 - 1
+    value = value + 10 - 2
+    value = value + 11 - 3
+    value = value + 12 - 4
+    value = value + 13 - 5
+    value = value + 14 - 6
+    value = value + 15 - 7
+    value = value + 16 - 8
+    value = value + 17 - 9
+    value = value + 1 - 10
+    value = value + 2 - 0
+    value = value + 3 - 1
+    value = value + 4 - 2
+    value = value + 5 - 3
+    value = value + 6 - 4
+    value = value + 7 - 5
+    value = value + 8 - 6
+    value = value + 9 - 7
+    value = value + 10 - 8
+    value = value + 11 - 9
+    value = value + 12 - 10
+    value = value + 13 - 0
+    value = value + 14 - 1
+    value = value + 15 - 2
+    value = value + 16 - 3
+    value = value + 17 - 4
+    value = value + 1 - 5
+    value = value + 2 - 6
+    value = value + 3 - 7
+    value = value + 4 - 8
+    value = value + 5 - 9
+    value = value + 6 - 10
+    value = value + 7 - 0
+    value = value + 8 - 1
+    value = value + 9 - 2
+    value = value + 10 - 3
+    value = value + 11 - 4
+    value = value + 12 - 5
+    value = value + 13 - 6
+    value = value + 14 - 7
+    value = value + 15 - 8
+    value = value + 16 - 9
+    value = value + 17 - 10
+    value = value + 1 - 0
+    value = value + 2 - 1
+    value = value + 3 - 2
+    value = value + 4 - 3
+    value = value + 5 - 4
+    value = value + 6 - 5
+    value = value + 7 - 6
+    value = value + 8 - 7
+    value = value + 9 - 8
+    value = value + 10 - 9
+    value = value + 11 - 10
+    value = value + 12 - 0
+    value = value + 13 - 1
+    value = value + 14 - 2
+    value = value + 15 - 3
+    value = value + 16 - 4
+    value = value + 17 - 5
+    value = value + 1 - 6
+    value = value + 2 - 7
+    value = value + 3 - 8
+    value = value + 4 - 9
+    value = value + 5 - 10
+    value = value + 6 - 0
+    value = value + 7 - 1
+    value = value + 8 - 2
+    value = value + 9 - 3
+    value = value + 10 - 4
+    value = value + 11 - 5
+    value = value + 12 - 6
+    value = value + 13 - 7
+    value = value + 14 - 8
+    value = value + 15 - 9
+    value = value + 16 - 10
+    value = value + 17 - 0
+    value = value + 1 - 1
+    value = value + 2 - 2
+    value = value + 3 - 3
+    value = value + 4 - 4
+    value = value + 5 - 5
+    value = value + 6 - 6
+    value = value + 7 - 7
+    value = value + 8 - 8
+    value = value + 9 - 9
+    value = value + 10 - 10
+    value = value + 11 - 0
+    value = value + 12 - 1
+    value = value + 13 - 2
+    value = value + 14 - 3
+    value = value + 15 - 4
+    value = value + 16 - 5
+    value = value + 17 - 6
+    value = value + 1 - 7
+    value = value + 2 - 8
+    value = value + 3 - 9
+    value = value + 4 - 10
+    value = value + 5 - 0
+    value = value + 6 - 1
+    value = value + 7 - 2
+    value = value + 8 - 3
+    value = value + 9 - 4
+    value = value + 10 - 5
+    value = value + 11 - 6
+    value = value + 12 - 7
+    value = value + 13 - 8
+    value = value + 14 - 9
+    value = value + 15 - 10
+    value = value + 16 - 0
+    value = value + 17 - 1
+    value = value + 1 - 2
+    value = value + 2 - 3
+    value = value + 3 - 4
+    value = value + 4 - 5
+    value = value + 5 - 6
+    value = value + 6 - 7
+    value = value + 7 - 8
+    value = value + 8 - 9
+    value = value + 9 - 10
+    value = value + 10 - 0
+    value = value + 11 - 1
+    value = value + 12 - 2
+    value = value + 13 - 3
+    value = value + 14 - 4
+    value = value + 15 - 5
+    value = value + 16 - 6
+    value = value + 17 - 7
+    value = value + 1 - 8
+    value = value + 2 - 9
+    value = value + 3 - 10
+    value = value + 4 - 0
+    value = value + 5 - 1
+    value = value + 6 - 2
+    value = value + 7 - 3
+    value = value + 8 - 4
+    value = value + 9 - 5
+    value = value + 10 - 6
+    value = value + 11 - 7
+    value = value + 12 - 8
+    value = value + 13 - 9
+    value = value + 14 - 10
+    value = value + 15 - 0
+    value = value + 16 - 1
+    value = value + 17 - 2
+    value = value + 1 - 3
+    value = value + 2 - 4
+    value = value + 3 - 5
+    value = value + 4 - 6
+    value = value + 5 - 7
+    value = value + 6 - 8
+    value = value + 7 - 9
+    value = value + 8 - 10
+    value = value + 9 - 0
+    value = value + 10 - 1
+    value = value + 11 - 2
+    value = value + 12 - 3
+    value = value + 13 - 4
+    value = value + 14 - 5
+    value = value + 15 - 6
+    value = value + 16 - 7
+    value = value + 17 - 8
+    value = value + 1 - 9
+    value = value + 2 - 10
+    value = value + 3 - 0
+    value = value + 4 - 1
+    value = value + 5 - 2
+    value = value + 6 - 3
+    value = value + 7 - 4
+    value = value + 8 - 5
+    value = value + 9 - 6
+    value = value + 10 - 7
+    value = value + 11 - 8
+    value = value + 12 - 9
+    value = value + 13 - 10
+    value = value + 14 - 0
+    value = value + 15 - 1
+    value = value + 16 - 2
+    value = value + 17 - 3
+    value = value + 1 - 4
+    value = value + 2 - 5
+    value = value + 3 - 6
+    value = value + 4 - 7
+    value = value + 5 - 8
+    value = value + 6 - 9
+    value = value + 7 - 10
+    value = value + 8 - 0
+    value = value + 9 - 1
+    value = value + 10 - 2
+    value = value + 11 - 3
+    value = value + 12 - 4
+    value = value + 13 - 5
+    value = value + 14 - 6
+    value = value + 15 - 7
+    value = value + 16 - 8
+    value = value + 17 - 9
+    value = value + 1 - 10
+    value = value + 2 - 0
+    value = value + 3 - 1
+    value = value + 4 - 2
+    value = value + 5 - 3
+    value = value + 6 - 4
+    value = value + 7 - 5
+    value = value + 8 - 6
+    value = value + 9 - 7
+    value = value + 10 - 8
+    value = value + 11 - 9
+    value = value + 12 - 10
+    value = value + 13 - 0
+    value = value + 14 - 1
+    value = value + 15 - 2
+    value = value + 16 - 3
+    value = value + 17 - 4
+    value = value + 1 - 5
+    value = value + 2 - 6
+    value = value + 3 - 7
+    value = value + 4 - 8
+    value = value + 5 - 9
+    value = value + 6 - 10
+    value = value + 7 - 0
+    value = value + 8 - 1
+    value = value + 9 - 2
+    value = value + 10 - 3
+    value = value + 11 - 4
+    value = value + 12 - 5
+    value = value + 13 - 6
+    value = value + 14 - 7
+    value = value + 15 - 8
+    value = value + 16 - 9
+    value = value + 17 - 10
+    value = value + 1 - 0
+    value = value + 2 - 1
+    value = value + 3 - 2
+    value = value + 4 - 3
+    value = value + 5 - 4
+    value = value + 6 - 5
+    value = value + 7 - 6
+    value = value + 8 - 7
+    value = value + 9 - 8
+    value = value + 10 - 9
+    value = value + 11 - 10
+    value = value + 12 - 0
+    value = value + 13 - 1
+    value = value + 14 - 2
+    value = value + 15 - 3
+    value = value + 16 - 4
+    value = value + 17 - 5
+    value = value + 1 - 6
+    value = value + 2 - 7
+    value = value + 3 - 8
+    value = value + 4 - 9
+    value = value + 5 - 10
+    value = value + 6 - 0
+    value = value + 7 - 1
+    value = value + 8 - 2
+    value = value + 9 - 3
+    value = value + 10 - 4
+    value = value + 11 - 5
+    value = value + 12 - 6
+    value = value + 13 - 7
+    value = value + 14 - 8
+    value = value + 15 - 9
+    value = value + 16 - 10
+    value = value + 17 - 0
+    value = value + 1 - 1
+    value = value + 2 - 2
+    value = value + 3 - 3
+    value = value + 4 - 4
+    value = value + 5 - 5
+    value = value + 6 - 6
+    value = value + 7 - 7
+    value = value + 8 - 8
+    value = value + 9 - 9
+    value = value + 10 - 10
+    value = value + 11 - 0
+    value = value + 12 - 1
+    value = value + 13 - 2
+    value = value + 14 - 3
+    value = value + 15 - 4
+    value = value + 16 - 5
+    value = value + 17 - 6
+    value = value + 1 - 7
+    value = value + 2 - 8
+    value = value + 3 - 9
+    value = value + 4 - 10
+    value = value + 5 - 0
+    value = value + 6 - 1
+    value = value + 7 - 2
+    value = value + 8 - 3
+    value = value + 9 - 4
+    value = value + 10 - 5
+    value = value + 11 - 6
+    value = value + 12 - 7
+    value = value + 13 - 8
+    value = value + 14 - 9
+    value = value + 15 - 10
+    value = value + 16 - 0
+    value = value + 17 - 1
+    value = value + 1 - 2
+    value = value + 2 - 3
+    value = value + 3 - 4
+    value = value + 4 - 5
+    value = value + 5 - 6
+    value = value + 6 - 7
+    value = value + 7 - 8
+    value = value + 8 - 9
+    value = value + 9 - 10
+    value = value + 10 - 0
+    value = value + 11 - 1
+    value = value + 12 - 2
+    value = value + 13 - 3
+    value = value + 14 - 4
+    value = value + 15 - 5
+    value = value + 16 - 6
+    value = value + 17 - 7
+    value = value + 1 - 8
+    value = value + 2 - 9
+    value = value + 3 - 10
+    value = value + 4 - 0
+    value = value + 5 - 1
+    value = value + 6 - 2
+    value = value + 7 - 3
+    value = value + 8 - 4
+    value = value + 9 - 5
+    value = value + 10 - 6
+    value = value + 11 - 7
+    value = value + 12 - 8
+    value = value + 13 - 9
+    value = value + 14 - 10
+    value = value + 15 - 0
+    value = value + 16 - 1
+    value = value + 17 - 2
+    value = value + 1 - 3
+    value = value + 2 - 4
+    value = value + 3 - 5
+    value = value + 4 - 6
+    value = value + 5 - 7
+    value = value + 6 - 8
+    value = value + 7 - 9
+    value = value + 8 - 10
+    value = value + 9 - 0
+    value = value + 10 - 1
+    value = value + 11 - 2
+    value = value + 12 - 3
+    value = value + 13 - 4
+    value = value + 14 - 5
+    value = value + 15 - 6
+    value = value + 16 - 7
+    value = value + 17 - 8
+    value = value + 1 - 9
+    value = value + 2 - 10
+    value = value + 3 - 0
+    value = value + 4 - 1
+    value = value + 5 - 2
+    value = value + 6 - 3
+    value = value + 7 - 4
+    value = value + 8 - 5
+    value = value + 9 - 6
+    value = value + 10 - 7
+    value = value + 11 - 8
+    value = value + 12 - 9
+    value = value + 13 - 10
+    value = value + 14 - 0
+    value = value + 15 - 1
+    value = value + 16 - 2
+    value = value + 17 - 3
+    value = value + 1 - 4
+    value = value + 2 - 5
+    value = value + 3 - 6
+    value = value + 4 - 7
+    value = value + 5 - 8
+    value = value + 6 - 9
+    value = value + 7 - 10
+    value = value + 8 - 0
+    value = value + 9 - 1
+    value = value + 10 - 2
+    value = value + 11 - 3
+    value = value + 12 - 4
+    value = value + 13 - 5
+    value = value + 14 - 6
+    value = value + 15 - 7
+    value = value + 16 - 8
+    value = value + 17 - 9
+    value = value + 1 - 10
+    value = value + 2 - 0
+    value = value + 3 - 1
+    value = value + 4 - 2
+    value = value + 5 - 3
+    value = value + 6 - 4
+    value = value + 7 - 5
+    value = value + 8 - 6
+    value = value + 9 - 7
+    value = value + 10 - 8
+    value = value + 11 - 9
+    value = value + 12 - 10
+    value = value + 13 - 0
+    value = value + 14 - 1
+    value = value + 15 - 2
+    value = value + 16 - 3
+    value = value + 17 - 4
+    value = value + 1 - 5
+    value = value + 2 - 6
+    value = value + 3 - 7
+    value = value + 4 - 8
+    value = value + 5 - 9
+    value = value + 6 - 10
+    value = value + 7 - 0
+    value = value + 8 - 1
+    value = value + 9 - 2
+    value = value + 10 - 3
+    value = value + 11 - 4
+    value = value + 12 - 5
+    value = value + 13 - 6
+    value = value + 14 - 7
+    value = value + 15 - 8
+    value = value + 16 - 9
+    value = value + 17 - 10
+    value = value + 1 - 0
+    value = value + 2 - 1
+    value = value + 3 - 2
+    value = value + 4 - 3
+    value = value + 5 - 4
+    value = value + 6 - 5
+    value = value + 7 - 6
+    value = value + 8 - 7
+    value = value + 9 - 8
+    value = value + 10 - 9
+    value = value + 11 - 10
+    value = value + 12 - 0
+    value = value + 13 - 1
+    value = value + 14 - 2
+    value = value + 15 - 3
+    value = value + 16 - 4
+    value = value + 17 - 5
+    value = value + 1 - 6
+    value = value + 2 - 7
+    value = value + 3 - 8
+    value = value + 4 - 9
+    value = value + 5 - 10
+    value = value + 6 - 0
+    value = value + 7 - 1
+    value = value + 8 - 2
+    value = value + 9 - 3
+    value = value + 10 - 4
+    value = value + 11 - 5
+    value = value + 12 - 6
+    value = value + 13 - 7
+    value = value + 14 - 8
+    value = value + 15 - 9
+    value = value + 16 - 10
+    value = value + 17 - 0
+    value = value + 1 - 1
+    value = value + 2 - 2
+    value = value + 3 - 3
+    value = value + 4 - 4
+    value = value + 5 - 5
+    value = value + 6 - 6
+    value = value + 7 - 7
+    value = value + 8 - 8
+    value = value + 9 - 9
+    value = value + 10 - 10
+    value = value + 11 - 0
+    value = value + 12 - 1
+    value = value + 13 - 2
+    value = value + 14 - 3
+    value = value + 15 - 4
+    value = value + 16 - 5
+    value = value + 17 - 6
+    value = value + 1 - 7
+    value = value + 2 - 8
+    value = value + 3 - 9
+    value = value + 4 - 10
+    value = value + 5 - 0
+    value = value + 6 - 1
+    value = value + 7 - 2
+    value = value + 8 - 3
+    value = value + 9 - 4
+    value = value + 10 - 5
+    value = value + 11 - 6
+    value = value + 12 - 7
+    value = value + 13 - 8
+    value = value + 14 - 9
+    value = value + 15 - 10
+    value = value + 16 - 0
+    value = value + 17 - 1
+    value = value + 1 - 2
+    value = value + 2 - 3
+    value = value + 3 - 4
+    value = value + 4 - 5
+    value = value + 5 - 6
+    value = value + 6 - 7
+    value = value + 7 - 8
+    value = value + 8 - 9
+    value = value + 9 - 10
+    value = value + 10 - 0
+    value = value + 11 - 1
+    value = value + 12 - 2
+    value = value + 13 - 3
+    value = value + 14 - 4
+    value = value + 15 - 5
+    value = value + 16 - 6
+    value = value + 17 - 7
+    value = value + 1 - 8
+    value = value + 2 - 9
+    value = value + 3 - 10
+    value = value + 4 - 0
+    value = value + 5 - 1
+    value = value + 6 - 2
+    value = value + 7 - 3
+    value = value + 8 - 4
+    value = value + 9 - 5
+    value = value + 10 - 6
+    value = value + 11 - 7
+    value = value + 12 - 8
+    value = value + 13 - 9
+    value = value + 14 - 10
+    value = value + 15 - 0
+    value = value + 16 - 1
+    value = value + 17 - 2
+    value = value + 1 - 3
+    value = value + 2 - 4
+    value = value + 3 - 5
+    value = value + 4 - 6
+    value = value + 5 - 7
+    value = value + 6 - 8
+    value = value + 7 - 9
+    value = value + 8 - 10
+    value = value + 9 - 0
+    value = value + 10 - 1
+    value = value + 11 - 2
+    value = value + 12 - 3
+    value = value + 13 - 4
+    value = value + 14 - 5
+    value = value + 15 - 6
+    value = value + 16 - 7
+    value = value + 17 - 8
+    value = value + 1 - 9
+    value = value + 2 - 10
+    value = value + 3 - 0
+    value = value + 4 - 1
+    value = value + 5 - 2
+    value = value + 6 - 3
+    value = value + 7 - 4
+    value = value + 8 - 5
+    value = value + 9 - 6
+    value = value + 10 - 7
+    value = value + 11 - 8
+    value = value + 12 - 9
+    value = value + 13 - 10
+    value = value + 14 - 0
+    value = value + 15 - 1
+    value = value + 16 - 2
+    value = value + 17 - 3
+    value = value + 1 - 4
+    value = value + 2 - 5
+    value = value + 3 - 6
+    value = value + 4 - 7
+    value = value + 5 - 8
+    value = value + 6 - 9
+    value = value + 7 - 10
+    value = value + 8 - 0
+    value = value + 9 - 1
+    value = value + 10 - 2
+    value = value + 11 - 3
+    value = value + 12 - 4
+    value = value + 13 - 5
+    value = value + 14 - 6
+    value = value + 15 - 7
+    value = value + 16 - 8
+    value = value + 17 - 9
+    value = value + 1 - 10
+    value = value + 2 - 0
+    value = value + 3 - 1
+    value = value + 4 - 2
+    value = value + 5 - 3
+    value = value + 6 - 4
+    value = value + 7 - 5
+    value = value + 8 - 6
+    value = value + 9 - 7
+    value = value + 10 - 8
+    value = value + 11 - 9
+    value = value + 12 - 10
+    value = value + 13 - 0
+    value = value + 14 - 1
+    value = value + 15 - 2
+    value = value + 16 - 3
+    value = value + 17 - 4
+    value = value + 1 - 5
+    value = value + 2 - 6
+    value = value + 3 - 7
+    value = value + 4 - 8
+    value = value + 5 - 9
+    value = value + 6 - 10
+    value = value + 7 - 0
+    value = value + 8 - 1
+    value = value + 9 - 2
+    value = value + 10 - 3
+    value = value + 11 - 4
+    value = value + 12 - 5
+    value = value + 13 - 6
+    value = value + 14 - 7
+    value = value + 15 - 8
+    value = value + 16 - 9
+    value = value + 17 - 10
+    value = value + 1 - 0
+    value = value + 2 - 1
+    value = value + 3 - 2
+    value = value + 4 - 3
+    value = value + 5 - 4
+    value = value + 6 - 5
+    value = value + 7 - 6
+    value = value + 8 - 7
+    value = value + 9 - 8
+    value = value + 10 - 9
+    value = value + 11 - 10
+    value = value + 12 - 0
+    value = value + 13 - 1
+    value = value + 14 - 2
+    value = value + 15 - 3
+    value = value + 16 - 4
+    value = value + 17 - 5
+    value = value + 1 - 6
+    value = value + 2 - 7
+    value = value + 3 - 8
+    value = value + 4 - 9
+    value = value + 5 - 10
+    value = value + 6 - 0
+    value = value + 7 - 1
+    value = value + 8 - 2
+    value = value + 9 - 3
+    value = value + 10 - 4
+    value = value + 11 - 5
+    value = value + 12 - 6
+    value = value + 13 - 7
+    value = value + 14 - 8
+    value = value + 15 - 9
+    value = value + 16 - 10
+    value = value + 17 - 0
+    value = value + 1 - 1
+    value = value + 2 - 2
+    value = value + 3 - 3
+    value = value + 4 - 4
+    value = value + 5 - 5
+    value = value + 6 - 6
+    value = value + 7 - 7
+    value = value + 8 - 8
+    value = value + 9 - 9
+    value = value + 10 - 10
+    value = value + 11 - 0
+    value = value + 12 - 1
+    value = value + 13 - 2
+    value = value + 14 - 3
+    value = value + 15 - 4
+    value = value + 16 - 5
+    value = value + 17 - 6
+    value = value + 1 - 7
+    value = value + 2 - 8
+    value = value + 3 - 9
+    value = value + 4 - 10
+    value = value + 5 - 0
+    value = value + 6 - 1
+    value = value + 7 - 2
+    value = value + 8 - 3
+    value = value + 9 - 4
+    value = value + 10 - 5
+    value = value + 11 - 6
+    value = value + 12 - 7
+    value = value + 13 - 8
+    value = value + 14 - 9
+    value = value + 15 - 10
+    value = value + 16 - 0
+    value = value + 17 - 1
+    value = value + 1 - 2
+    value = value + 2 - 3
+    value = value + 3 - 4
+    value = value + 4 - 5
+    value = value + 5 - 6
+    value = value + 6 - 7
+    value = value + 7 - 8
+    value = value + 8 - 9
+    value = value + 9 - 10
+    value = value + 10 - 0
+    value = value + 11 - 1
+    value = value + 12 - 2
+    value = value + 13 - 3
+    value = value + 14 - 4
+    value = value + 15 - 5
+    value = value + 16 - 6
+    value = value + 17 - 7
+    value = value + 1 - 8
+    value = value + 2 - 9
+    value = value + 3 - 10
+    value = value + 4 - 0
+    value = value + 5 - 1
+    return value, nil
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000011">
+        <Properties>
+          <string name="Name">LargeModule</string>
+          <ProtectedString name="Source"><![CDATA[local module = {}
+function module.operation1(value: number)
+    return value * 1 + 1, nil
+end
+function module.operation2(value: number)
+    return value * 2 + 2, nil
+end
+function module.operation3(value: number)
+    return value * 3 + 3, nil
+end
+function module.operation4(value: number)
+    return value * 4 + 4, nil
+end
+function module.operation5(value: number)
+    return value * 5 + 5, nil
+end
+function module.operation6(value: number)
+    return value * 6 + 6, nil
+end
+function module.operation7(value: number)
+    return value * 7 + 7, nil
+end
+function module.operation8(value: number)
+    return value * 8 + 8, nil
+end
+function module.operation9(value: number)
+    return value * 9 + 9, nil
+end
+function module.operation10(value: number)
+    return value * 10 + 10, nil
+end
+function module.operation11(value: number)
+    return value * 11 + 11, nil
+end
+function module.operation12(value: number)
+    return value * 12 + 12, nil
+end
+function module.operation13(value: number)
+    return value * 13 + 0, nil
+end
+function module.operation14(value: number)
+    return value * 14 + 1, nil
+end
+function module.operation15(value: number)
+    return value * 15 + 2, nil
+end
+function module.operation16(value: number)
+    return value * 16 + 3, nil
+end
+function module.operation17(value: number)
+    return value * 17 + 4, nil
+end
+function module.operation18(value: number)
+    return value * 18 + 5, nil
+end
+function module.operation19(value: number)
+    return value * 19 + 6, nil
+end
+function module.operation20(value: number)
+    return value * 20 + 7, nil
+end
+function module.operation21(value: number)
+    return value * 21 + 8, nil
+end
+function module.operation22(value: number)
+    return value * 22 + 9, nil
+end
+function module.operation23(value: number)
+    return value * 23 + 10, nil
+end
+function module.operation24(value: number)
+    return value * 24 + 11, nil
+end
+function module.operation25(value: number)
+    return value * 25 + 12, nil
+end
+function module.operation26(value: number)
+    return value * 26 + 0, nil
+end
+function module.operation27(value: number)
+    return value * 27 + 1, nil
+end
+function module.operation28(value: number)
+    return value * 28 + 2, nil
+end
+function module.operation29(value: number)
+    return value * 29 + 3, nil
+end
+function module.operation30(value: number)
+    return value * 30 + 4, nil
+end
+function module.operation31(value: number)
+    return value * 31 + 5, nil
+end
+function module.operation32(value: number)
+    return value * 32 + 6, nil
+end
+function module.operation33(value: number)
+    return value * 33 + 7, nil
+end
+function module.operation34(value: number)
+    return value * 34 + 8, nil
+end
+function module.operation35(value: number)
+    return value * 35 + 9, nil
+end
+function module.operation36(value: number)
+    return value * 36 + 10, nil
+end
+function module.operation37(value: number)
+    return value * 37 + 11, nil
+end
+function module.operation38(value: number)
+    return value * 38 + 12, nil
+end
+function module.operation39(value: number)
+    return value * 39 + 0, nil
+end
+function module.operation40(value: number)
+    return value * 40 + 1, nil
+end
+function module.operation41(value: number)
+    return value * 41 + 2, nil
+end
+function module.operation42(value: number)
+    return value * 42 + 3, nil
+end
+function module.operation43(value: number)
+    return value * 43 + 4, nil
+end
+function module.operation44(value: number)
+    return value * 44 + 5, nil
+end
+function module.operation45(value: number)
+    return value * 45 + 6, nil
+end
+function module.operation46(value: number)
+    return value * 46 + 7, nil
+end
+function module.operation47(value: number)
+    return value * 47 + 8, nil
+end
+function module.operation48(value: number)
+    return value * 48 + 9, nil
+end
+function module.operation49(value: number)
+    return value * 49 + 10, nil
+end
+function module.operation50(value: number)
+    return value * 50 + 11, nil
+end
+function module.operation51(value: number)
+    return value * 51 + 12, nil
+end
+function module.operation52(value: number)
+    return value * 52 + 0, nil
+end
+function module.operation53(value: number)
+    return value * 53 + 1, nil
+end
+function module.operation54(value: number)
+    return value * 54 + 2, nil
+end
+function module.operation55(value: number)
+    return value * 55 + 3, nil
+end
+function module.operation56(value: number)
+    return value * 56 + 4, nil
+end
+function module.operation57(value: number)
+    return value * 57 + 5, nil
+end
+function module.operation58(value: number)
+    return value * 58 + 6, nil
+end
+function module.operation59(value: number)
+    return value * 59 + 7, nil
+end
+function module.operation60(value: number)
+    return value * 60 + 8, nil
+end
+function module.operation61(value: number)
+    return value * 61 + 9, nil
+end
+function module.operation62(value: number)
+    return value * 62 + 10, nil
+end
+function module.operation63(value: number)
+    return value * 63 + 11, nil
+end
+function module.operation64(value: number)
+    return value * 64 + 12, nil
+end
+function module.operation65(value: number)
+    return value * 65 + 0, nil
+end
+function module.operation66(value: number)
+    return value * 66 + 1, nil
+end
+function module.operation67(value: number)
+    return value * 67 + 2, nil
+end
+function module.operation68(value: number)
+    return value * 68 + 3, nil
+end
+function module.operation69(value: number)
+    return value * 69 + 4, nil
+end
+function module.operation70(value: number)
+    return value * 70 + 5, nil
+end
+function module.operation71(value: number)
+    return value * 71 + 6, nil
+end
+function module.operation72(value: number)
+    return value * 72 + 7, nil
+end
+function module.operation73(value: number)
+    return value * 73 + 8, nil
+end
+function module.operation74(value: number)
+    return value * 74 + 9, nil
+end
+function module.operation75(value: number)
+    return value * 75 + 10, nil
+end
+function module.operation76(value: number)
+    return value * 76 + 11, nil
+end
+function module.operation77(value: number)
+    return value * 77 + 12, nil
+end
+function module.operation78(value: number)
+    return value * 78 + 0, nil
+end
+function module.operation79(value: number)
+    return value * 79 + 1, nil
+end
+function module.operation80(value: number)
+    return value * 80 + 2, nil
+end
+function module.operation81(value: number)
+    return value * 81 + 3, nil
+end
+function module.operation82(value: number)
+    return value * 82 + 4, nil
+end
+function module.operation83(value: number)
+    return value * 83 + 5, nil
+end
+function module.operation84(value: number)
+    return value * 84 + 6, nil
+end
+function module.operation85(value: number)
+    return value * 85 + 7, nil
+end
+function module.operation86(value: number)
+    return value * 86 + 8, nil
+end
+function module.operation87(value: number)
+    return value * 87 + 9, nil
+end
+function module.operation88(value: number)
+    return value * 88 + 10, nil
+end
+function module.operation89(value: number)
+    return value * 89 + 11, nil
+end
+function module.operation90(value: number)
+    return value * 90 + 12, nil
+end
+function module.operation91(value: number)
+    return value * 91 + 0, nil
+end
+function module.operation92(value: number)
+    return value * 92 + 1, nil
+end
+function module.operation93(value: number)
+    return value * 93 + 2, nil
+end
+function module.operation94(value: number)
+    return value * 94 + 3, nil
+end
+function module.operation95(value: number)
+    return value * 95 + 4, nil
+end
+function module.operation96(value: number)
+    return value * 96 + 5, nil
+end
+function module.operation97(value: number)
+    return value * 97 + 6, nil
+end
+function module.operation98(value: number)
+    return value * 98 + 7, nil
+end
+function module.operation99(value: number)
+    return value * 99 + 8, nil
+end
+function module.operation100(value: number)
+    return value * 100 + 9, nil
+end
+function module.operation101(value: number)
+    return value * 101 + 10, nil
+end
+function module.operation102(value: number)
+    return value * 102 + 11, nil
+end
+function module.operation103(value: number)
+    return value * 103 + 12, nil
+end
+function module.operation104(value: number)
+    return value * 104 + 0, nil
+end
+function module.operation105(value: number)
+    return value * 105 + 1, nil
+end
+function module.operation106(value: number)
+    return value * 106 + 2, nil
+end
+function module.operation107(value: number)
+    return value * 107 + 3, nil
+end
+function module.operation108(value: number)
+    return value * 108 + 4, nil
+end
+function module.operation109(value: number)
+    return value * 109 + 5, nil
+end
+function module.operation110(value: number)
+    return value * 110 + 6, nil
+end
+function module.operation111(value: number)
+    return value * 111 + 7, nil
+end
+function module.operation112(value: number)
+    return value * 112 + 8, nil
+end
+function module.operation113(value: number)
+    return value * 113 + 9, nil
+end
+function module.operation114(value: number)
+    return value * 114 + 10, nil
+end
+function module.operation115(value: number)
+    return value * 115 + 11, nil
+end
+function module.operation116(value: number)
+    return value * 116 + 12, nil
+end
+function module.operation117(value: number)
+    return value * 117 + 0, nil
+end
+function module.operation118(value: number)
+    return value * 118 + 1, nil
+end
+function module.operation119(value: number)
+    return value * 119 + 2, nil
+end
+function module.operation120(value: number)
+    return value * 120 + 3, nil
+end
+function module.operation121(value: number)
+    return value * 121 + 4, nil
+end
+function module.operation122(value: number)
+    return value * 122 + 5, nil
+end
+function module.operation123(value: number)
+    return value * 123 + 6, nil
+end
+function module.operation124(value: number)
+    return value * 124 + 7, nil
+end
+function module.operation125(value: number)
+    return value * 125 + 8, nil
+end
+function module.operation126(value: number)
+    return value * 126 + 9, nil
+end
+function module.operation127(value: number)
+    return value * 127 + 10, nil
+end
+function module.operation128(value: number)
+    return value * 128 + 11, nil
+end
+return module
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000014">
+        <Properties>
+          <string name="Name">LoopMutation</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    local values = { first = seed, second = seed + 1 }
+    local alias = values
+    local total = 0
+    for index = 1, math.abs(seed) + 4 do
+        if index == 4 then break end
+        total += index
+    end
+    for _, value in { alias.first, alias.second } do
+        total += value
+    end
+    alias.second = total
+    return values.first, values.second, alias == values, nil
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000015">
+        <Properties>
+          <string name="Name">ModuleDependency</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    return seed * seed, nil
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000016">
+        <Properties>
+          <string name="Name">ModuleInterface</string>
+          <ProtectedString name="Source"><![CDATA[local count = 0
+local module = {}
+function module.update(delta: number)
+    count += delta
+    return count, nil
+end
+function module.snapshot()
+    return { count = count, version = 3 }
+end
+return module
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000017">
+        <Properties>
+          <string name="Name">OwnedMethods</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    local owned = Instance.new("Folder")
+    owned.Name = "DecompilerV3OwnedProbe"
+    owned:SetAttribute("Seed", seed)
+    local value = owned:GetAttribute("Seed")
+    local isFolder = owned:IsA("Folder")
+    owned:Destroy()
+    return value, isFolder, nil
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000018">
+        <Properties>
+          <string name="Name">ProtectedCalls</string>
+          <ProtectedString name="Source"><![CDATA[local function inner(seed: number, ...)
+    if seed < 0 then error("controlled\000\255", 0) end
+    if seed == 0 then
+        print("before yield")
+        task.wait()
+        print("after yield")
+    end
+    return seed, nil, ...
+end
+return function(seed: number)
+    local function protected(...)
+        return pcall(inner, seed, ...)
+    end
+    return pcall(protected, "tail", nil)
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000019">
+        <Properties>
+          <string name="Name">RequireDependency</string>
+          <ProtectedString name="Source"><![CDATA[local dependency = require(script.Parent.ModuleDependency)
+return function(seed: number)
+    local squared = dependency(seed)
+    return squared + 1, nil
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000020">
+        <Properties>
+          <string name="Name">ScalarBinary</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    print("scalar", seed, "\000\255")
+    return seed + 7, nil, "\128\000\254", seed == 0
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="RBX00000021">
+        <Properties>
+          <string name="Name">VectorValues</string>
+          <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    local value = Vector3.new(seed, 2, 3)
+    local cross = value:Cross(Vector3.new(0, 1, 0))
+    return value, cross, value.Magnitude, nil
+end
+]]></ProtectedString>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="StarterPlayer" referent="RBX00000005">
+    <Properties>
+      <string name="Name">StarterPlayer</string>
+    </Properties>
+    <Item class="StarterPlayerScripts" referent="RBX00000006">
+      <Properties>
+        <string name="Name">StarterPlayerScripts</string>
+      </Properties>
+      <Item class="Folder" referent="RBX00000007">
+        <Properties>
+          <string name="Name">DecompilerV3Fixtures</string>
+        </Properties>
+        <Item class="LocalScript" referent="RBX00000012">
+          <Properties>
+            <string name="Name">LocalBinary</string>
+            <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    warn("local", seed, "\000\255")
+    return seed, "client local", nil
+end
+]]></ProtectedString>
+            <bool name="Disabled">true</bool>
+          </Properties>
+        </Item>
+        <Item class="LocalScript" referent="RBX00000013">
+          <Properties>
+            <string name="Name">LocalLoop</string>
+            <ProtectedString name="Source"><![CDATA[return function(seed: number)
+    local result = seed
+    repeat
+        result += 1
+    until result >= seed + 3
+    return result, nil, "repeat"
+end
+]]></ProtectedString>
+            <bool name="Disabled">true</bool>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+</roblox>

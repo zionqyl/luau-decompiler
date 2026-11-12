@@ -1,0 +1,1481 @@
+{
+    "schema":  1,
+    "version":  "0.4.0-rc.4",
+    "executable_sha256":  "5b1316e78fa183aafe32c46471ce31cb3601778a5650b26898e7a27743a7953d",
+    "generator_sha256":  "6f056ff42bd29a92fab1c86f9d4d84291ebe6c3deeb9823c646a069e784a1fb1",
+    "compiler_sha256":  "870665fdc7e751eb266ea8beec2cda64762c9b6b689e8a466feedaaeefc8dd3d",
+    "analyzer_manifest_sha256":  "ee9136903659e89732473046b9c40895cd63a65853e968ff9992f4b827bd65ec",
+    "examples":  [
+                     {
+                         "id":  "verified_bytecode",
+                         "input_kind":  "bytecode",
+                         "known_source":  "fixtures/runtime/verified.luau",
+                         "known_source_sha256":  "b0925f5524a854eeb1c35ef0bf70873d6aa40135ed6d041e05b33c3bb26c6f70",
+                         "input_path":  "fixtures/runtime/verified.bc",
+                         "input_sha256":  "f670ba8ea603ba19a1430a7708917759e85c17b022f4b7b0901d1312a82e4b2f",
+                         "configuration":  "verified_bytecode.config.json",
+                         "configuration_sha256":  "206d04de0e1cdc3f4c48e85d7d5f43f9d72a9a81b0a8916fdad78d50864258aa",
+                         "output":  "verified_bytecode.luau",
+                         "output_sha256":  "d4dc78026f81297cffb3a23f2f203c58d5fc99cbf53e70356f8fdb1ca7db06eb",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  3,
+                                                                      "useful_annotations":  3,
+                                                                      "runtime_annotations":  3,
+                                                                      "eligible_bindings":  3,
+                                                                      "annotated_bindings":  3,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+                                                                         "static Roblox API definition snapshot d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af; runtime/project availability is an external contract"
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  8,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "d4dc78026f81297cffb3a23f2f203c58d5fc99cbf53e70356f8fdb1ca7db06eb",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  826689,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  55,
+                                            "analyzer_micros":  171,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+
+                                                                       ],
+                                       "total_bindings":  7,
+                                       "annotated_bindings":  2,
+                                       "annotated_parameters":  1,
+                                       "annotated_returns":  1,
+                                       "useful_annotations":  3,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  3,
+                                       "iterations":  2,
+                                       "work_steps":  22,
+                                       "evidence":  [
+                                                        {
+                                                            "binding":  "p1:b0",
+                                                            "name":  "add",
+                                                            "proto":  1,
+                                                            "register":  0,
+                                                            "first_pc":  1,
+                                                            "last_pc":  2,
+                                                            "ty":  {
+                                                                       "kind":  "function",
+                                                                       "value":  {
+                                                                                     "generics":  [
+
+                                                                                                  ],
+                                                                                     "generic_packs":  [
+
+                                                                                                       ],
+                                                                                     "parameters":  [
+                                                                                                        {
+                                                                                                            "kind":  "number"
+                                                                                                        }
+                                                                                                    ],
+                                                                                     "variadic":  null,
+                                                                                     "returns":  {
+                                                                                                     "head":  [
+                                                                                                                  {
+                                                                                                                      "kind":  "number"
+                                                                                                                  }
+                                                                                                              ],
+                                                                                                     "tail":  null
+                                                                                                 }
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p1:b1",
+                                                            "name":  "value2",
+                                                            "proto":  1,
+                                                            "register":  1,
+                                                            "first_pc":  2,
+                                                            "last_pc":  4,
+                                                            "ty":  {
+                                                                       "kind":  "number"
+                                                                   },
+                                                            "origin":  "metadata",
+                                                            "detail":  "serialized VM type tag; broad/erased tags remain unresolved",
+                                                            "metadata_offsets":  [
+                                                                                     94
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p1:b3",
+                                                            "name":  "answer",
+                                                            "proto":  1,
+                                                            "register":  1,
+                                                            "first_pc":  4,
+                                                            "last_pc":  5,
+                                                            "ty":  {
+                                                                       "kind":  "number"
+                                                                   },
+                                                            "origin":  "metadata",
+                                                            "detail":  "serialized VM type tag; broad/erased tags remain unresolved",
+                                                            "metadata_offsets":  [
+                                                                                     94
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b0",
+                                                            "name":  "value",
+                                                            "proto":  0,
+                                                            "register":  0,
+                                                            "first_pc":  0,
+                                                            "last_pc":  1,
+                                                            "ty":  {
+                                                                       "kind":  "number"
+                                                                   },
+                                                            "origin":  "metadata",
+                                                            "detail":  "serialized VM type tag; broad/erased tags remain unresolved",
+                                                            "metadata_offsets":  [
+                                                                                     34
+                                                                                 ]
+                                                        }
+                                                    ],
+                                       "limitations":  [
+                                                           "Erased or dynamic types remain unannotated; one observed call input never narrows a function interface."
+                                                       ],
+                                       "api_definition_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                       "preserved_metadata":  [
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "parameter",
+                                                                      "index":  0,
+                                                                      "tag":  2,
+                                                                      "source_offset":  34,
+                                                                      "first_pc":  null,
+                                                                      "last_pc":  null,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  1,
+                                                                      "role":  "local",
+                                                                      "index":  0,
+                                                                      "tag":  15,
+                                                                      "source_offset":  90,
+                                                                      "first_pc":  1,
+                                                                      "last_pc":  6,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  1,
+                                                                      "role":  "local",
+                                                                      "index":  1,
+                                                                      "tag":  2,
+                                                                      "source_offset":  94,
+                                                                      "first_pc":  2,
+                                                                      "last_pc":  6,
+                                                                      "userdata_name":  null
+                                                                  }
+                                                              ],
+                                       "emittable_bindings":  3,
+                                       "emittable_variadics":  0,
+                                       "annotated_variadics":  0,
+                                       "emitted_annotations":  3,
+                                       "emitted_runtime_annotations":  3,
+                                       "emitted_useful_annotations":  3,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  1,
+                                       "metadata_emitted_annotations":  2,
+                                       "metadata_emitted_runtime_annotations":  2,
+                                       "metadata_annotated_bindings":  1,
+                                       "metadata_annotated_parameters":  1,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  2,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+                                                                       "0":  [
+                                                                                 1
+                                                                             ]
+                                                                   },
+                                       "original_return_sites":  [
+                                                                     {
+                                                                         "proto":  0,
+                                                                         "pc":  2,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     },
+                                                                     {
+                                                                         "proto":  1,
+                                                                         "pc":  5,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     }
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     },
+                     {
+                         "id":  "roblox_identity",
+                         "input_kind":  "bytecode",
+                         "known_source":  "tests/type-corpus/roblox_identity.luau",
+                         "known_source_sha256":  "2e48d1b47b2b4fcc8757f13ff69638e0428ff3323fb0f11d6c4dde292d14ed23",
+                         "input_path":  "artifacts/examples-rc/roblox_identity.bc",
+                         "input_sha256":  "236f3d69d977dd4745c4ee2c01f81863e19edab6d90b81b2a8e1993fd4b93a7c",
+                         "configuration":  "roblox_identity.config.json",
+                         "configuration_sha256":  "c8c6523997c88bef5a12447fb0150051db57b3cfd50cea54cd7f12a750481bf2",
+                         "output":  "roblox_identity.luau",
+                         "output_sha256":  "d3f2dfc161179f7422f2fa0144d73cd76c52e32132fdaabb7056d8bb460196ad",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  2,
+                                                                      "useful_annotations":  2,
+                                                                      "runtime_annotations":  2,
+                                                                      "eligible_bindings":  2,
+                                                                      "annotated_bindings":  2,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+                                                                         "external contract p0:b0: Player",
+                                                                         "static Roblox API definition snapshot d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af; runtime/project availability is an external contract"
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  6,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "d3f2dfc161179f7422f2fa0144d73cd76c52e32132fdaabb7056d8bb460196ad",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  853915,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  53,
+                                            "analyzer_micros":  220,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+
+                                                                       ],
+                                       "total_bindings":  4,
+                                       "annotated_bindings":  1,
+                                       "annotated_parameters":  1,
+                                       "annotated_returns":  1,
+                                       "useful_annotations":  2,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  2,
+                                       "iterations":  2,
+                                       "work_steps":  18,
+                                       "evidence":  [
+                                                        {
+                                                            "binding":  "p1:b0",
+                                                            "name":  "getPlayerIdentity",
+                                                            "proto":  1,
+                                                            "register":  0,
+                                                            "first_pc":  1,
+                                                            "last_pc":  2,
+                                                            "ty":  {
+                                                                       "kind":  "function",
+                                                                       "value":  {
+                                                                                     "generics":  [
+
+                                                                                                  ],
+                                                                                     "generic_packs":  [
+
+                                                                                                       ],
+                                                                                     "parameters":  [
+                                                                                                        {
+                                                                                                            "kind":  "named",
+                                                                                                            "value":  "Player"
+                                                                                                        }
+                                                                                                    ],
+                                                                                     "variadic":  null,
+                                                                                     "returns":  {
+                                                                                                     "head":  [
+                                                                                                                  {
+                                                                                                                      "kind":  "number"
+                                                                                                                  },
+                                                                                                                  {
+                                                                                                                      "kind":  "string"
+                                                                                                                  }
+                                                                                                              ],
+                                                                                                     "tail":  null
+                                                                                                 }
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b0",
+                                                            "name":  "player",
+                                                            "proto":  0,
+                                                            "register":  0,
+                                                            "first_pc":  0,
+                                                            "last_pc":  2,
+                                                            "ty":  {
+                                                                       "kind":  "named",
+                                                                       "value":  "Player"
+                                                                   },
+                                                            "origin":  "external_contract",
+                                                            "detail":  "explicit recovered-binding type contract",
+                                                            "metadata_offsets":  [
+                                                                                     61
+                                                                                 ]
+                                                        }
+                                                    ],
+                                       "limitations":  [
+                                                           "Erased or dynamic types remain unannotated; one observed call input never narrows a function interface."
+                                                       ],
+                                       "api_definition_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                       "preserved_metadata":  [
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "parameter",
+                                                                      "index":  0,
+                                                                      "tag":  7,
+                                                                      "source_offset":  61,
+                                                                      "first_pc":  null,
+                                                                      "last_pc":  null,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  1,
+                                                                      "role":  "local",
+                                                                      "index":  0,
+                                                                      "tag":  15,
+                                                                      "source_offset":  121,
+                                                                      "first_pc":  1,
+                                                                      "last_pc":  3,
+                                                                      "userdata_name":  null
+                                                                  }
+                                                              ],
+                                       "emittable_bindings":  2,
+                                       "emittable_variadics":  0,
+                                       "annotated_variadics":  0,
+                                       "emitted_annotations":  2,
+                                       "emitted_runtime_annotations":  2,
+                                       "emitted_useful_annotations":  2,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  1,
+                                       "metadata_emitted_annotations":  1,
+                                       "metadata_emitted_runtime_annotations":  1,
+                                       "metadata_annotated_bindings":  0,
+                                       "metadata_annotated_parameters":  1,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  1,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+                                                                       "0":  [
+                                                                                 2
+                                                                             ]
+                                                                   },
+                                       "original_return_sites":  [
+                                                                     {
+                                                                         "proto":  0,
+                                                                         "pc":  4,
+                                                                         "fixed_count":  2,
+                                                                         "open_results":  false
+                                                                     },
+                                                                     {
+                                                                         "proto":  1,
+                                                                         "pc":  2,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     }
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     },
+                     {
+                         "id":  "roblox_position",
+                         "input_kind":  "bytecode",
+                         "known_source":  "tests/type-corpus/roblox_position.luau",
+                         "known_source_sha256":  "138c1f4deb600aafb334b71101bd55e3dc19f2b0784d612c36dfdfdbe032dc95",
+                         "input_path":  "artifacts/examples-rc/roblox_position.bc",
+                         "input_sha256":  "af0e3e8d399c168eeec0e12116a120d84fa5a0f9f35bbb51f1008e7a08c97116",
+                         "configuration":  "roblox_position.config.json",
+                         "configuration_sha256":  "c8c6523997c88bef5a12447fb0150051db57b3cfd50cea54cd7f12a750481bf2",
+                         "output":  "roblox_position.luau",
+                         "output_sha256":  "764cbed63b05a29a2b6b76c7f7b2819dd3d1372ce6834d86d9793757a4d89fe0",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  4,
+                                                                      "useful_annotations":  4,
+                                                                      "runtime_annotations":  4,
+                                                                      "eligible_bindings":  4,
+                                                                      "annotated_bindings":  4,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+                                                                         "external contract p0:b0: Player",
+                                                                         "static Roblox API definition snapshot d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af; runtime/project availability is an external contract"
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  12,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "764cbed63b05a29a2b6b76c7f7b2819dd3d1372ce6834d86d9793757a4d89fe0",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  763175,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  71,
+                                            "analyzer_micros":  352,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+
+                                                                       ],
+                                       "total_bindings":  7,
+                                       "annotated_bindings":  3,
+                                       "annotated_parameters":  1,
+                                       "annotated_returns":  1,
+                                       "useful_annotations":  4,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  3,
+                                       "iterations":  2,
+                                       "work_steps":  56,
+                                       "evidence":  [
+                                                        {
+                                                            "binding":  "p1:b0",
+                                                            "name":  "getPlayerPosition",
+                                                            "proto":  1,
+                                                            "register":  0,
+                                                            "first_pc":  1,
+                                                            "last_pc":  2,
+                                                            "ty":  {
+                                                                       "kind":  "function",
+                                                                       "value":  {
+                                                                                     "generics":  [
+
+                                                                                                  ],
+                                                                                     "generic_packs":  [
+
+                                                                                                       ],
+                                                                                     "parameters":  [
+                                                                                                        {
+                                                                                                            "kind":  "named",
+                                                                                                            "value":  "Player"
+                                                                                                        }
+                                                                                                    ],
+                                                                                     "variadic":  null,
+                                                                                     "returns":  {
+                                                                                                     "head":  [
+                                                                                                                  {
+                                                                                                                      "kind":  "optional",
+                                                                                                                      "value":  {
+                                                                                                                                    "kind":  "named",
+                                                                                                                                    "value":  "Vector3"
+                                                                                                                                }
+                                                                                                                  }
+                                                                                                              ],
+                                                                                                     "tail":  null
+                                                                                                 }
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b0",
+                                                            "name":  "player",
+                                                            "proto":  0,
+                                                            "register":  0,
+                                                            "first_pc":  0,
+                                                            "last_pc":  0,
+                                                            "ty":  {
+                                                                       "kind":  "named",
+                                                                       "value":  "Player"
+                                                                   },
+                                                            "origin":  "external_contract",
+                                                            "detail":  "explicit recovered-binding type contract",
+                                                            "metadata_offsets":  [
+                                                                                     89
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b1",
+                                                            "name":  "character",
+                                                            "proto":  0,
+                                                            "register":  1,
+                                                            "first_pc":  0,
+                                                            "last_pc":  5,
+                                                            "ty":  {
+                                                                       "kind":  "optional",
+                                                                       "value":  {
+                                                                                     "kind":  "named",
+                                                                                     "value":  "Model"
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b2",
+                                                            "name":  "position",
+                                                            "proto":  0,
+                                                            "register":  2,
+                                                            "first_pc":  2,
+                                                            "last_pc":  11,
+                                                            "ty":  {
+                                                                       "kind":  "optional",
+                                                                       "value":  {
+                                                                                     "kind":  "named",
+                                                                                     "value":  "Vector3"
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        }
+                                                    ],
+                                       "limitations":  [
+                                                           "Erased or dynamic types remain unannotated; one observed call input never narrows a function interface."
+                                                       ],
+                                       "api_definition_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                       "preserved_metadata":  [
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "parameter",
+                                                                      "index":  0,
+                                                                      "tag":  7,
+                                                                      "source_offset":  89,
+                                                                      "first_pc":  null,
+                                                                      "last_pc":  null,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "local",
+                                                                      "index":  0,
+                                                                      "tag":  135,
+                                                                      "source_offset":  90,
+                                                                      "first_pc":  0,
+                                                                      "last_pc":  12,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "local",
+                                                                      "index":  1,
+                                                                      "tag":  135,
+                                                                      "source_offset":  94,
+                                                                      "first_pc":  2,
+                                                                      "last_pc":  12,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  1,
+                                                                      "role":  "local",
+                                                                      "index":  0,
+                                                                      "tag":  15,
+                                                                      "source_offset":  204,
+                                                                      "first_pc":  1,
+                                                                      "last_pc":  3,
+                                                                      "userdata_name":  null
+                                                                  }
+                                                              ],
+                                       "emittable_bindings":  4,
+                                       "emittable_variadics":  0,
+                                       "annotated_variadics":  0,
+                                       "emitted_annotations":  4,
+                                       "emitted_runtime_annotations":  4,
+                                       "emitted_useful_annotations":  4,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  1,
+                                       "metadata_emitted_annotations":  1,
+                                       "metadata_emitted_runtime_annotations":  1,
+                                       "metadata_annotated_bindings":  0,
+                                       "metadata_annotated_parameters":  1,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  1,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+                                                                       "0":  [
+                                                                                 1
+                                                                             ]
+                                                                   },
+                                       "original_return_sites":  [
+                                                                     {
+                                                                         "proto":  0,
+                                                                         "pc":  11,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     },
+                                                                     {
+                                                                         "proto":  1,
+                                                                         "pc":  2,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     }
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     },
+                     {
+                         "id":  "player_snapshot",
+                         "input_kind":  "bytecode",
+                         "known_source":  "tests/type-corpus/roblox_snapshot.luau",
+                         "known_source_sha256":  "d66dab16440c07f56c6048bbd34c07d4e8992bb0f6dbb4e9b12439cb4d61a9e2",
+                         "input_path":  "artifacts/examples-rc/player_snapshot.bc",
+                         "input_sha256":  "96c08e1edf54fdcf80d7acd4bbdfdeed77be09aab9caa6c2dfc8f3b1aee42de2",
+                         "configuration":  "player_snapshot.config.json",
+                         "configuration_sha256":  "c8c6523997c88bef5a12447fb0150051db57b3cfd50cea54cd7f12a750481bf2",
+                         "output":  "player_snapshot.luau",
+                         "output_sha256":  "a792f9a28b4137ed4668e17745e0bc722579cb16d5c137fc58c879291c503118",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  5,
+                                                                      "useful_annotations":  5,
+                                                                      "runtime_annotations":  4,
+                                                                      "eligible_bindings":  4,
+                                                                      "annotated_bindings":  4,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+                                                                         "external contract p0:b0: Player",
+                                                                         "static Roblox API definition snapshot d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af; runtime/project availability is an external contract"
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  20,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "a792f9a28b4137ed4668e17745e0bc722579cb16d5c137fc58c879291c503118",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  846833,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  88,
+                                            "analyzer_micros":  520,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+                                                                           "p0:b6"
+                                                                       ],
+                                       "total_bindings":  10,
+                                       "annotated_bindings":  3,
+                                       "annotated_parameters":  1,
+                                       "annotated_returns":  1,
+                                       "useful_annotations":  5,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  6,
+                                       "iterations":  2,
+                                       "work_steps":  66,
+                                       "evidence":  [
+                                                        {
+                                                            "binding":  "p1:b0",
+                                                            "name":  "getPlayerSnapshot",
+                                                            "proto":  1,
+                                                            "register":  0,
+                                                            "first_pc":  1,
+                                                            "last_pc":  2,
+                                                            "ty":  {
+                                                                       "kind":  "function",
+                                                                       "value":  {
+                                                                                     "generics":  [
+
+                                                                                                  ],
+                                                                                     "generic_packs":  [
+
+                                                                                                       ],
+                                                                                     "parameters":  [
+                                                                                                        {
+                                                                                                            "kind":  "named",
+                                                                                                            "value":  "Player"
+                                                                                                        }
+                                                                                                    ],
+                                                                                     "variadic":  null,
+                                                                                     "returns":  {
+                                                                                                     "head":  [
+                                                                                                                  {
+                                                                                                                      "kind":  "record",
+                                                                                                                      "value":  {
+                                                                                                                                    "displayName":  {
+                                                                                                                                                        "kind":  "string"
+                                                                                                                                                    },
+                                                                                                                                    "position":  {
+                                                                                                                                                     "kind":  "optional",
+                                                                                                                                                     "value":  {
+                                                                                                                                                                   "kind":  "named",
+                                                                                                                                                                   "value":  "Vector3"
+                                                                                                                                                               }
+                                                                                                                                                 },
+                                                                                                                                    "userId":  {
+                                                                                                                                                   "kind":  "number"
+                                                                                                                                               }
+                                                                                                                                }
+                                                                                                                  }
+                                                                                                              ],
+                                                                                                     "tail":  null
+                                                                                                 }
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b0",
+                                                            "name":  "player",
+                                                            "proto":  0,
+                                                            "register":  0,
+                                                            "first_pc":  0,
+                                                            "last_pc":  16,
+                                                            "ty":  {
+                                                                       "kind":  "named",
+                                                                       "value":  "Player"
+                                                                   },
+                                                            "origin":  "external_contract",
+                                                            "detail":  "explicit recovered-binding type contract",
+                                                            "metadata_offsets":  [
+                                                                                     128
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b1",
+                                                            "name":  "character",
+                                                            "proto":  0,
+                                                            "register":  1,
+                                                            "first_pc":  0,
+                                                            "last_pc":  5,
+                                                            "ty":  {
+                                                                       "kind":  "optional",
+                                                                       "value":  {
+                                                                                     "kind":  "named",
+                                                                                     "value":  "Model"
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        },
+                                                        {
+                                                            "binding":  "p0:b2",
+                                                            "name":  "position",
+                                                            "proto":  0,
+                                                            "register":  2,
+                                                            "first_pc":  2,
+                                                            "last_pc":  20,
+                                                            "ty":  {
+                                                                       "kind":  "optional",
+                                                                       "value":  {
+                                                                                     "kind":  "named",
+                                                                                     "value":  "Vector3"
+                                                                                 }
+                                                                   },
+                                                            "origin":  "inference",
+                                                            "detail":  "bounded AST assignment/call/return constraints; no runtime sample specialization",
+                                                            "metadata_offsets":  [
+
+                                                                                 ]
+                                                        }
+                                                    ],
+                                       "limitations":  [
+                                                           "Erased or dynamic types remain unannotated; one observed call input never narrows a function interface."
+                                                       ],
+                                       "api_definition_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                       "preserved_metadata":  [
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "parameter",
+                                                                      "index":  0,
+                                                                      "tag":  7,
+                                                                      "source_offset":  128,
+                                                                      "first_pc":  null,
+                                                                      "last_pc":  null,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "local",
+                                                                      "index":  0,
+                                                                      "tag":  135,
+                                                                      "source_offset":  129,
+                                                                      "first_pc":  0,
+                                                                      "last_pc":  23,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  0,
+                                                                      "role":  "local",
+                                                                      "index":  1,
+                                                                      "tag":  135,
+                                                                      "source_offset":  133,
+                                                                      "first_pc":  2,
+                                                                      "last_pc":  23,
+                                                                      "userdata_name":  null
+                                                                  },
+                                                                  {
+                                                                      "proto":  1,
+                                                                      "role":  "local",
+                                                                      "index":  0,
+                                                                      "tag":  15,
+                                                                      "source_offset":  313,
+                                                                      "first_pc":  1,
+                                                                      "last_pc":  3,
+                                                                      "userdata_name":  null
+                                                                  }
+                                                              ],
+                                       "emittable_bindings":  4,
+                                       "emittable_variadics":  0,
+                                       "annotated_variadics":  0,
+                                       "emitted_annotations":  5,
+                                       "emitted_runtime_annotations":  4,
+                                       "emitted_useful_annotations":  5,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  1,
+                                       "metadata_emitted_annotations":  1,
+                                       "metadata_emitted_runtime_annotations":  1,
+                                       "metadata_annotated_bindings":  0,
+                                       "metadata_annotated_parameters":  1,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  1,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+                                                                       "0":  [
+                                                                                 1
+                                                                             ]
+                                                                   },
+                                       "original_return_sites":  [
+                                                                     {
+                                                                         "proto":  0,
+                                                                         "pc":  22,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     },
+                                                                     {
+                                                                         "proto":  1,
+                                                                         "pc":  2,
+                                                                         "fixed_count":  1,
+                                                                         "open_results":  false
+                                                                     }
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     },
+                     {
+                         "id":  "generic_identity",
+                         "input_kind":  "source",
+                         "known_source":  "examples/source-input/generic_identity.luau",
+                         "known_source_sha256":  "92cb296e5c5851607f550bd06a3c92574ba50ff2e56c2d829d7d5f1f3e156727",
+                         "input_path":  "examples/source-input/generic_identity.luau",
+                         "input_sha256":  "92cb296e5c5851607f550bd06a3c92574ba50ff2e56c2d829d7d5f1f3e156727",
+                         "configuration":  "generic_identity.config.json",
+                         "configuration_sha256":  "5477253a6649216c82f1da8ce22b1cdb23f7708bb3dc470076adfa6a0f1d3faf",
+                         "output":  "generic_identity.luau",
+                         "output_sha256":  "a3af48d1cdf9c69a914d6bba03e40fbb0f41e016a822fdd81404b5ae9d6d6410",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  2,
+                                                                      "useful_annotations":  2,
+                                                                      "runtime_annotations":  2,
+                                                                      "eligible_bindings":  1,
+                                                                      "annotated_bindings":  1,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  3,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "a3af48d1cdf9c69a914d6bba03e40fbb0f41e016a822fdd81404b5ae9d6d6410",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  886805,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  44,
+                                            "analyzer_micros":  193,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+
+                                                                       ],
+                                       "total_bindings":  2,
+                                       "annotated_bindings":  0,
+                                       "annotated_parameters":  1,
+                                       "annotated_returns":  1,
+                                       "useful_annotations":  2,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  0,
+                                       "iterations":  0,
+                                       "work_steps":  0,
+                                       "evidence":  [
+
+                                                    ],
+                                       "limitations":  [
+                                                           "Source text is parsed and formatted directly; runtime token order, parentheses, and original annotations are retained. Bounded inference uses immutable scalar dependencies, existing type contracts and closed equal-arity returns. Unknown calls, varying return arities, fallthrough return mixtures and mutable tables remain unannotated; explicit binding contracts are reported separately."
+                                                       ],
+                                       "api_definition_sha256":  null,
+                                       "preserved_metadata":  [
+
+                                                              ],
+                                       "emittable_bindings":  1,
+                                       "emittable_variadics":  0,
+                                       "annotated_variadics":  0,
+                                       "emitted_annotations":  2,
+                                       "emitted_runtime_annotations":  2,
+                                       "emitted_useful_annotations":  2,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  0,
+                                       "metadata_emitted_annotations":  0,
+                                       "metadata_emitted_runtime_annotations":  0,
+                                       "metadata_annotated_bindings":  0,
+                                       "metadata_annotated_parameters":  0,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  0,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+
+                                                                   },
+                                       "original_return_sites":  [
+
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     },
+                     {
+                         "id":  "generic_vararg",
+                         "input_kind":  "source",
+                         "known_source":  "examples/source-input/generic_vararg.luau",
+                         "known_source_sha256":  "4054982dc3a9fa900e544fb0eb10eaca60e8f6d8655bedf7c8d34b1c2ecfa131",
+                         "input_path":  "examples/source-input/generic_vararg.luau",
+                         "input_sha256":  "4054982dc3a9fa900e544fb0eb10eaca60e8f6d8655bedf7c8d34b1c2ecfa131",
+                         "configuration":  "generic_vararg.config.json",
+                         "configuration_sha256":  "5477253a6649216c82f1da8ce22b1cdb23f7708bb3dc470076adfa6a0f1d3faf",
+                         "output":  "generic_vararg.luau",
+                         "output_sha256":  "853f6c7938fd8ac5c2de9ab2b5687ae0787d52a2be89f5b5d1540325a7f47a28",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  2,
+                                                                      "useful_annotations":  2,
+                                                                      "runtime_annotations":  2,
+                                                                      "eligible_bindings":  1,
+                                                                      "annotated_bindings":  1,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  3,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "853f6c7938fd8ac5c2de9ab2b5687ae0787d52a2be89f5b5d1540325a7f47a28",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  847672,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  62,
+                                            "analyzer_micros":  163,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+
+                                                                       ],
+                                       "total_bindings":  1,
+                                       "annotated_bindings":  0,
+                                       "annotated_parameters":  0,
+                                       "annotated_returns":  1,
+                                       "useful_annotations":  2,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  0,
+                                       "iterations":  0,
+                                       "work_steps":  0,
+                                       "evidence":  [
+
+                                                    ],
+                                       "limitations":  [
+                                                           "Source text is parsed and formatted directly; runtime token order, parentheses, and original annotations are retained. Bounded inference uses immutable scalar dependencies, existing type contracts and closed equal-arity returns. Unknown calls, varying return arities, fallthrough return mixtures and mutable tables remain unannotated; explicit binding contracts are reported separately."
+                                                       ],
+                                       "api_definition_sha256":  null,
+                                       "preserved_metadata":  [
+
+                                                              ],
+                                       "emittable_bindings":  0,
+                                       "emittable_variadics":  1,
+                                       "annotated_variadics":  1,
+                                       "emitted_annotations":  2,
+                                       "emitted_runtime_annotations":  2,
+                                       "emitted_useful_annotations":  2,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  0,
+                                       "metadata_emitted_annotations":  0,
+                                       "metadata_emitted_runtime_annotations":  0,
+                                       "metadata_annotated_bindings":  0,
+                                       "metadata_annotated_parameters":  0,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  0,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+
+                                                                   },
+                                       "original_return_sites":  [
+
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     },
+                     {
+                         "id":  "inferred_returns",
+                         "input_kind":  "source",
+                         "known_source":  "examples/source-input/inferred_returns.luau",
+                         "known_source_sha256":  "8f0d2520ca41be3128bff196ac5a3fdfddb75350a823c9e2767bb8d827190f95",
+                         "input_path":  "examples/source-input/inferred_returns.luau",
+                         "input_sha256":  "8f0d2520ca41be3128bff196ac5a3fdfddb75350a823c9e2767bb8d827190f95",
+                         "configuration":  "inferred_returns.config.json",
+                         "configuration_sha256":  "5477253a6649216c82f1da8ce22b1cdb23f7708bb3dc470076adfa6a0f1d3faf",
+                         "output":  "inferred_returns.luau",
+                         "output_sha256":  "4df5a726705d5ed7b418a9f8c3988658ca86621098db3f17cf5de1736d664992",
+                         "validation":  {
+                                            "output_policy":  "verified_typed",
+                                            "meaningful_typing":  {
+                                                                      "passed":  true,
+                                                                      "emitted_annotations":  7,
+                                                                      "useful_annotations":  7,
+                                                                      "runtime_annotations":  7,
+                                                                      "eligible_bindings":  5,
+                                                                      "annotated_bindings":  5,
+                                                                      "binding_coverage_percent":  100,
+                                                                      "useful_annotation_percent":  100,
+                                                                      "failures":  [
+
+                                                                                   ]
+                                                                  },
+                                            "reconstruction_complete":  true,
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "required_passed":  true,
+                                            "diagnostics":  [
+
+                                                            ],
+                                            "missing_dependencies":  [
+
+                                                                     ],
+                                            "external_globals":  [
+
+                                                                 ],
+                                            "external_assumptions":  [
+
+                                                                     ],
+                                            "explicit_any":  0,
+                                            "inferred_any":  0,
+                                            "inferred_unknown":  0,
+                                            "type_traversal_exhausted":  false,
+                                            "external_contract_any":  0,
+                                            "external_contract_unknown":  0,
+                                            "unmeasured_external_contracts":  [
+
+                                                                              ],
+                                            "type_assertions":  0,
+                                            "expressions_analyzed":  14,
+                                            "attempts":  [
+                                                             {
+                                                                 "strategy":  "annotated",
+                                                                 "source_sha256":  "4df5a726705d5ed7b418a9f8c3988658ca86621098db3f17cf5de1736d664992",
+                                                                 "syntax":  "passed",
+                                                                 "compilation":  "passed",
+                                                                 "strict_analysis":  "passed",
+                                                                 "diagnostic_count":  0,
+                                                                 "reason":  "validate actual formatted output"
+                                                             }
+                                                         ],
+                                            "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
+                                            "elapsed_micros":  893956,
+                                            "cache_hit":  false,
+                                            "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                                            "selected_strategy":  "annotated",
+                                            "compiler_micros":  80,
+                                            "analyzer_micros":  284,
+                                            "recovery_transform_failures":  [
+
+                                                                            ]
+                                        },
+                         "types":  {
+                                       "unapplied_external_contracts":  [
+
+                                                                        ],
+                                       "constructor_transformations":  [
+
+                                                                       ],
+                                       "total_bindings":  6,
+                                       "annotated_bindings":  2,
+                                       "annotated_parameters":  3,
+                                       "annotated_returns":  2,
+                                       "useful_annotations":  7,
+                                       "explicit_any":  0,
+                                       "inferred_any":  0,
+                                       "unknown_bindings":  0,
+                                       "iterations":  0,
+                                       "work_steps":  0,
+                                       "evidence":  [
+
+                                                    ],
+                                       "limitations":  [
+                                                           "Source text is parsed and formatted directly; runtime token order, parentheses, and original annotations are retained. Bounded inference uses immutable scalar dependencies, existing type contracts and closed equal-arity returns. Unknown calls, varying return arities, fallthrough return mixtures and mutable tables remain unannotated; explicit binding contracts are reported separately."
+                                                       ],
+                                       "api_definition_sha256":  null,
+                                       "preserved_metadata":  [
+
+                                                              ],
+                                       "emittable_bindings":  5,
+                                       "emittable_variadics":  0,
+                                       "annotated_variadics":  0,
+                                       "emitted_annotations":  7,
+                                       "emitted_runtime_annotations":  7,
+                                       "emitted_useful_annotations":  7,
+                                       "emitted_explicit_any":  0,
+                                       "metadata_any":  0,
+                                       "metadata_emitted_annotations":  0,
+                                       "metadata_emitted_runtime_annotations":  0,
+                                       "metadata_annotated_bindings":  0,
+                                       "metadata_annotated_parameters":  0,
+                                       "metadata_annotated_returns":  0,
+                                       "metadata_annotated_variadics":  0,
+                                       "metadata_emitted_useful_annotations":  0,
+                                       "metadata_emitted_explicit_any":  0,
+                                       "optional_failures":  [
+
+                                                             ],
+                                       "function_return_arities":  {
+
+                                                                   },
+                                       "original_return_sites":  [
+
+                                                                 ]
+                                   },
+                         "behavior":  "not_run_by_example_generator; independent controlled release matrices are separate"
+                     }
+                 ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "publisher": "JohnnyMorganz/luau-lsp",
+  "revision": "5f290c825ee73c710bc9101512787ae66931d3e2",
+  "revision_date": "2026-11-10T07:23:36Z",
+  "source_url": "https://raw.githubusercontent.com/JohnnyMorganz/luau-lsp/5f290c825ee73c710bc9101512787ae66931d3e2/scripts/globalTypes.d.luau",
+  "path": "definitions/roblox.d.luau",
+  "sha256": "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+  "license": "MIT",
+  "license_path": "definitions/LICENSE-luau-lsp",
+  "analyzer_revision": "12a6ba75883272c79b66b59815efef4c574196f6",
+  "analyzer_protocol": "LQUAL/1",
+  "data_model_unknown_children": "diagnose; no permissive child indexer is added",
+  "project_resolution": "explicit virtual modules and require mappings; no script execution or filesystem discovery",
+  "bootstrap_limits": {"unification_iterations":1000000,"clone_iterations":2000000,"instantiation_children":1000000},
+  "bootstrap_note": "Finite larger limits apply only while loading the pinned full API graph; request limits revert to pinned upstream defaults. Definition snapshot is not asserted to match every client build."
+}

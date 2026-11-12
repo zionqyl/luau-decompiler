@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/luau-lang/luau.git",
+  "tag": "0.654",
+  "revision": "8cc289fae430d9b0c22bde209fe5cf2d01751ff1",
+  "bytecode_versions": [3, 4, 5, 6],
+  "type_encoding_versions": [1, 2, 3],
+  "compiler_fixture_bytecode_version": 6,
+  "compiler_fixture_type_version": 3,
+  "windows_release_url": "https://github.com/luau-lang/luau/releases/download/0.654/luau-windows.zip",
+  "windows_release_sha256": "6b734d3cf426749d51586d2530da95796112b3db16ebf26a9632f520990cfdb6",
+  "windows_compiler_sha256": "4300a366fd96d51e1d104ab459e4c9eba6a5d0dfa9fdea2b5ced07065381a69b",
+  "windows_interpreter_sha256": "7589b5c22a621ced8795dfa50feb6f15d62491f91e934f3ea18afe599bb09db9"
+}

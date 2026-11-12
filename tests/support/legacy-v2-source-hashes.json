@@ -1,0 +1,660 @@
+{
+    "schema":  1,
+    "baseline_version":  "0.2.0",
+    "baseline_archive":  "dist/luau-decompiler-0.2.0-windows-x64.zip",
+    "baseline_archive_sha256":  "cff3e8d5572824db99078c2f1ff7e5be7dcbd29001ed287bfc5e4cb8c3a21030",
+    "archived_reports":  [
+                             {
+                                 "entry":  "release-package-0.2.0-aa23275cfacd42aaba48d059e6358299/docs/results/generated-programs.json",
+                                 "sha256":  "61d7d34b1eff7fc5801886d7745228da8ad1cbf7770c47e2f4c10005a3b9f785"
+                             },
+                             {
+                                 "entry":  "release-package-0.2.0-aa23275cfacd42aaba48d059e6358299/evidence/docs/results/generated-programs.json",
+                                 "sha256":  "61d7d34b1eff7fc5801886d7745228da8ad1cbf7770c47e2f4c10005a3b9f785"
+                             }
+                         ],
+    "mapping":  "Archived verified results explicitly bind generator_seed0..127 to source_sha256; all four compiler rows per seed agree. Duplicate packaged/evidence reports are byte-identical.",
+    "source_count":  128,
+    "sources":  [
+                    {
+                        "index":  0,
+                        "source_sha256":  "117fb85fc24d959819f7a0bb2453334faa69ba62259b99c4409003ba7151b904",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  1,
+                        "source_sha256":  "b903e76cc4756f1594f5c2eb4243b01389f6ca9b7196e50b90baa1da4203bc48",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  2,
+                        "source_sha256":  "c0015fdc17c93296824771b23b262109a51bda65bc6d522608dbc43be9fd18d7",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  3,
+                        "source_sha256":  "e2289b8d4b2950a52911b897c27c313af21cceb2a82f78bd695f8763d58dabff",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  4,
+                        "source_sha256":  "03555c8d2fe43ddf6ee42529aa80f17494da1ecb3881a7d4e966ca45d1722346",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  5,
+                        "source_sha256":  "d0690897e0d7088711dd8c36db31cfbc1699e863c7a551156793e4392790193f",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  6,
+                        "source_sha256":  "12a225c93aefb16b5d5b53a84b8f7d95a0b2efd09b1d7d0bca487ad09c9b30e0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  7,
+                        "source_sha256":  "47c2966dc2bd1ec3f79e57273f758f2588a6704fcdf54bfbcbcc1f635358b2c2",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  8,
+                        "source_sha256":  "5e4f98de2f8acd3a06c46a618580a793490cfad5efc1658805cadbc3ff3306f3",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  9,
+                        "source_sha256":  "3e3e8295d406e916671075ea4037c5489fdb38d69f8f642f1f91a0bedf1b8f6d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  10,
+                        "source_sha256":  "da0de56f7a64bc687be00e5bcad50e62c052e1d0155fd971891614f7ca8dfb2b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  11,
+                        "source_sha256":  "bd1cca0463ae341d1feabaeb09d759c6fe0702be49377be61ed8dfa8f311a8b0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  12,
+                        "source_sha256":  "3cffac0439511c89804d564d5b2260d6308acee6d835c8dd55a05fbd5f0944a6",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  13,
+                        "source_sha256":  "253c260327adee844e18f7afba0e8cf952aaefe1d119e1162f6e65a6a932749d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  14,
+                        "source_sha256":  "c871712b9cb3e39affe1b246a166d29d432bdd06f6777b07195565c613c1ebaf",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  15,
+                        "source_sha256":  "9db6516643062dbd24881d81c05130ff70e2a5128a313ef32db35e50b717d02c",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  16,
+                        "source_sha256":  "d2eeb6da7692ef4238e3d8afcb55684305ad08371d41950a77a900345d46bc95",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  17,
+                        "source_sha256":  "8eb09fb80fef36428633f11caf423eb3e10ee24e1bc1532f974f5492e3bf018d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  18,
+                        "source_sha256":  "311c6da03e75a2d2cdb1b7e1b30ed29a34c821093f33457da0864c3543c5867a",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  19,
+                        "source_sha256":  "85072756637fcaa588bd68ac31af013b8ea2c915c12f63a513305b1c1cc3e9d5",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  20,
+                        "source_sha256":  "d8d75f986bf366c595c088fb687afe439f083ee3b888df2383b38333e339d802",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  21,
+                        "source_sha256":  "3a0c296e806285327bdc374157668a8640de6e63819f5102af0b5b449194f5de",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  22,
+                        "source_sha256":  "d81c047fd5bab9863fc39d8ef8c1070a1a865e0e15f5ff95fb3fb912a5e931f7",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  23,
+                        "source_sha256":  "72129ebdf1d1cbb0a070f6f1f8596f623ef04b517a1568e6d429a2ee07d33a9d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  24,
+                        "source_sha256":  "0e034bb70b9ea6998c2332ffc896ece77ce379f013884e9596d7739a4124e41f",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  25,
+                        "source_sha256":  "1a9f339846fd98d7ca93d5b204f41aab9c170189bfcf52335ac550d8aabc029e",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  26,
+                        "source_sha256":  "43e55fd934d43070029a570012d5ea088851ee8a0c6dc5750b0221f21632a9b4",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  27,
+                        "source_sha256":  "ff579ea02bc9326524ab48031b358525bcaf024a623fb5cfc91d740867fe64b0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  28,
+                        "source_sha256":  "2795826f00a53ee8af3788b1f6ffbef37cfca1e0e304ee944c7da186db4e6814",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  29,
+                        "source_sha256":  "961ae6bd6f064eba79216c7dd90fda4e750be2f85868363143c2f6f1ee7e628e",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  30,
+                        "source_sha256":  "91cae5f0ba9e06504ca4d5f4aaae6a5975f8217e4cbc2df9d4f9bcfd59ed217b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  31,
+                        "source_sha256":  "b5619076ac8320c48c2fa3ca64545a77cfac244dd04d6029500637b5f795d8ab",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  32,
+                        "source_sha256":  "ccf059f0f281a80a56ed85fd171ea4df3db9d2b1cf75d9ec58328b22c7813f19",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  33,
+                        "source_sha256":  "34917a5f49eba6247493fed2c1da58a70f1ed722eb0b8d9cab974c7725036932",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  34,
+                        "source_sha256":  "9675bbcd5edc9b592bd71ca40a7f725b54b79b9beeb9d0e759bb32d775aeb749",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  35,
+                        "source_sha256":  "b72c7a3e205aedf00004ce67ce53e33e8774c92d66843cd7e32bb80bc3439a7f",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  36,
+                        "source_sha256":  "9db2508f0031c09b2757d511ba7ab929328888bbd7f871912f8768a6635e32bd",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  37,
+                        "source_sha256":  "28003a356f0264a0b1c2721d56138ae12d63adb2c35d4c9dc06b7d14463c4250",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  38,
+                        "source_sha256":  "d2dd80b1d5613506a918b494227de27430ea03a022e1cd8fe9ecb5d35195ff62",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  39,
+                        "source_sha256":  "4cfca71da7f8af10c37a1a161e237a4d343eee036d6e0a1badf57901692b0631",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  40,
+                        "source_sha256":  "d0a790e2d8eb83d1fbc9b3de1ed5cc180a5ee8eb90a5efe3078d294524a555fb",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  41,
+                        "source_sha256":  "0c07485ec8d5ba0a996aacb6fa549bf467951c0bdd31d5c54e3f9d32547e4fdd",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  42,
+                        "source_sha256":  "875c550938ace2a9ed711cbd5f4ae595e56bc97b832763073d9620b9ab13f86c",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  43,
+                        "source_sha256":  "c9d402f7a9ba309285aa0a051229bedec52d41fd5dddfbd0d4ec01b47cb0dc57",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  44,
+                        "source_sha256":  "ecff3a4079233b5a5a22b6b892066999e12508951cebaf641e9faf7db578a2c6",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  45,
+                        "source_sha256":  "7edf899d8888f7987dce4fc59d6430e98d9296a5a977123798c2c5083c445660",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  46,
+                        "source_sha256":  "3733b3e6eaa725ac097a2ef3a709b396892deb570cf984c98a6351b317215546",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  47,
+                        "source_sha256":  "ef6a7506a43ac5e08d472b9537ef3d5de4ad9f83d41c1d0eeb7fda71982e0c9c",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  48,
+                        "source_sha256":  "48741b2cd60e73ee9fb9d7e1e49eb2de859b15f27e8c3741e6de6a5e1fe17d92",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  49,
+                        "source_sha256":  "3ec3bc60f25547b289db66224711a87e80bcf3e21a70dfdce8d65427f824964f",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  50,
+                        "source_sha256":  "0a051f3052f1e814db947e1f43a4341ad77041ccd0a1590d6b0e9078a6e66c87",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  51,
+                        "source_sha256":  "e17d0d498a805b512ad4a840f6b3a81d6f9e8ce153658f7c24b3a6b4e538279b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  52,
+                        "source_sha256":  "61ad3efa1f02f4c332172bbcffde7ee8326acd7a4fab40b1dcb0cfdb8d1d9124",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  53,
+                        "source_sha256":  "7332ea16fd281cdea6d59ba2be036e6ecf02b6c07dae7339d8a2cb14eee7882b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  54,
+                        "source_sha256":  "3875c12ab391f6e09734856c010ac0d407d3e4c9263c30fc5c39e6d7c55f7485",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  55,
+                        "source_sha256":  "cf69d8ef2796e3b9e0c3b970ab35bf2600bb7ee52aac70cf05ccd676529e684d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  56,
+                        "source_sha256":  "a8125f4ff2c82789c34fcd642e7acc5cf323c16e9ac11395b61c0a63820f2ff2",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  57,
+                        "source_sha256":  "44388b308626c965e9e837f911f36cb17a684b4ede402b63ae2c29f728cd5214",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  58,
+                        "source_sha256":  "f47aa95fad9b6e483c7eea08a3b1c3f29e41dade82decbf8eab33e622bbff329",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  59,
+                        "source_sha256":  "8edf871b8589c395f1fc700f396c237682c4ce7bb5f6e8f11eb391d30b03255d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  60,
+                        "source_sha256":  "89e8c417d1bb067ac881f6e8e93fb9a5efcd8c6f59b2013717b2e8da0171ad59",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  61,
+                        "source_sha256":  "057a6d4ee47788a27e5460f8a6dca5f466d63731fa4325b81236522e62133ca6",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  62,
+                        "source_sha256":  "cb2033a7a9ba70a8b81ffe30a03f93d3f4f32869bb1b89adcc457fa06687c12f",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  63,
+                        "source_sha256":  "712a5ed4578571dee899546edd55795106df7f868b6e3d002cee77bda89bf91d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  64,
+                        "source_sha256":  "9b300a9ee1d2c4a9c2607debcb85b67f00c3c29710e094c972271b0146c612bb",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  65,
+                        "source_sha256":  "0dc6832f9e9f5a37666efcfb7744835ef8d86bcf539005844dac3dba78ebcbb6",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  66,
+                        "source_sha256":  "cef2f6cf5f6c3470fcc30d67ae7861f6c703cdc4c653c13989902cb5e2d72048",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  67,
+                        "source_sha256":  "061df6a96066a2aaa3e689edca8868390e29709e6a3e9faa820a95d3b69366d6",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  68,
+                        "source_sha256":  "3ff8285c8385282844843bb02bd1535ebb2c9d0fb654fa57c166fe6a8625396c",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  69,
+                        "source_sha256":  "a25929146bf5b453c2d0220862d3938c7d2c9f59d9b41e02d6381cb36fc2c272",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  70,
+                        "source_sha256":  "0288eb5371e0656581194fbba4ea46a8aa07ebe2c51bca3aa0451f71da4a7774",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  71,
+                        "source_sha256":  "430f892f1a8a196786e55f1530c76b1b07762711f7602b55e837da822e55b069",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  72,
+                        "source_sha256":  "2b35b1ff8b3464511a5be9b99e14067f4c18e02c0563e328b75a44185c454588",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  73,
+                        "source_sha256":  "0850750e76db8bd0f577a74579317fcdce73b4e7bd2da052ceb3e721c125b298",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  74,
+                        "source_sha256":  "19d2c6f55f50500bed26604ac67af3e56cc7c1713451e18be01120717bac9522",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  75,
+                        "source_sha256":  "a31b2c40d83e83a0f67dd053725e7e37d621ddd5459ef8250ea92cfa88248a4b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  76,
+                        "source_sha256":  "8982b6fd522d132b3d996f442bb2f71a8a04f60d31b18c1f0ea8dfe3b9c51caf",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  77,
+                        "source_sha256":  "c2b4055b64dcb10bd89905df17abf5bb02df9f9af492f275f1f77bf4c71dea08",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  78,
+                        "source_sha256":  "f6bdb9c555acbc1a93ce1f99c8b38cb7f4e07ea4f549bc7ee411550d9c3ab659",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  79,
+                        "source_sha256":  "62f60bd1619f3431825ec805186aab698794f43a6c7a4ee3b6bafec7254eb2a7",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  80,
+                        "source_sha256":  "3e10bc791c31df877bb85e3312d33d5f5127685eb0fe1e7bc569972f0eb4d648",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  81,
+                        "source_sha256":  "02c57d3c16c29bfb6c959aa41eda7325af7f4a70fca2a74d6b25c24c7ce4eaee",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  82,
+                        "source_sha256":  "f832c30a514a0be23567abb19cbfcedbc9e67f12e582684ca59299416039132b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  83,
+                        "source_sha256":  "e9f6f6a2bc245af9cbb50e76dba96faeba687bcb3c327e9cb3fde7197b126524",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  84,
+                        "source_sha256":  "b47d6cf310075af7700c1ec537ba9dafa8e16202bf5658a64f05b558a9d9708d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  85,
+                        "source_sha256":  "e3857ff8162c4dc3a9e7cfa4e4214b8d5ed5eb11cde16e19e6e8c6ea74853d75",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  86,
+                        "source_sha256":  "a8850a8de99183f9c2ca30c8bb74bf1aef6b25ec62adb01aec36615d5cd57245",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  87,
+                        "source_sha256":  "adf6d9766f400ce4b09fca481b887aeedc977e544544013d6771eeec2015b7d0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  88,
+                        "source_sha256":  "671db492d825664f2f40ac50fb04973d8e237603aca0a937cf1b99d0ad486d47",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  89,
+                        "source_sha256":  "60621868e29846ba444ad3a12ee6758a88d04b5c392bc998bb5d347a17ec2999",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  90,
+                        "source_sha256":  "cd36f59d5266d0e7ebd100734dcb4e950c9e437b7a68dbfae109d5bd94159b93",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  91,
+                        "source_sha256":  "acbf5763444079699ac8d7787ecb7740d349bd22ee99ea8d04389e5b2d69c325",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  92,
+                        "source_sha256":  "2b3364e45f93f50a2a182a58377df9a24e604b0c6ad4f703e585d705c721254e",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  93,
+                        "source_sha256":  "c688d2e1478dbdc2c34fad4885ffb629eea0e259ca5072b626536f4c0a26bbc1",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  94,
+                        "source_sha256":  "ed33fbe79db4c0b2144e7f9a4372f4ae46f44daefe4f30a3cca2785e23d4c5ea",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  95,
+                        "source_sha256":  "df818a3186ec61ca3dca4143ce261584e99c14c7cd206137a59e75e7c1d5da5d",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  96,
+                        "source_sha256":  "77f6022f33577f9f5039603eba19a9c297651034aeef455a5fb8669050ad0f60",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  97,
+                        "source_sha256":  "d964ac5a8bc60ea02f1714fe60511ae152bafc7e3729ee54d7e39c2833006c12",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  98,
+                        "source_sha256":  "a8542cdead1527ad97232ca498d17a02f3bf1f15794f01845a77598a68a02b56",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  99,
+                        "source_sha256":  "eba23d573596daf6f400025c711ebe6e8f38c1596cfd5009b38a24da545df537",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  100,
+                        "source_sha256":  "2e41dcbaf6b8b3c34dfc81b7c4dbb21a482519c11cb9a02b564cfc3685552f95",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  101,
+                        "source_sha256":  "c16ca18f98946de7fbf658b1237b43d26bc0803b2961f7ab493f385671dd22ed",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  102,
+                        "source_sha256":  "e80a51378abd0a1352c29898dd98db2b44f3d75f0edeb395cc70d4139c8a56d7",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  103,
+                        "source_sha256":  "e00b3048496ecb4691787757f5499eca2928c8266e187581f96545ad684d19cc",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  104,
+                        "source_sha256":  "3b51ea5f48bc1348184b13140bae976295f12fcd85cbb44753f1be69b2635f97",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  105,
+                        "source_sha256":  "25b68663934ab9e4574d281490855d945e326e45f547e64669cc0d0da097dd4b",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  106,
+                        "source_sha256":  "8092a1e69385cbbe857daba8439de10686c41a02e942288cd310760145928eb0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  107,
+                        "source_sha256":  "84c8ea7443243addb058ce5078c3b809b1095f2fd426415af8f6cece0f74ea68",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  108,
+                        "source_sha256":  "11d148f8c0dba97f06c975597008e964703440f6f46a188db40bfe3b0ee65dd0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  109,
+                        "source_sha256":  "5c5531474d14d9c6bd3c800e518633f3cea5fbd0bf400059aa2779122d5f9fd0",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  110,
+                        "source_sha256":  "2f5d429fd00e480eeb0120f6187e7d31ab1c4cebb9e7a8fb164db9db30284dba",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  111,
+                        "source_sha256":  "d48f43a979922a3108dd84606277f0536e09b3d40bd2214017b2061de44ebc74",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  112,
+                        "source_sha256":  "fe6b95b1ffe6385d5d6dc20477ee70af136f10c5d6ce7055e016ceaf572c84b3",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  113,
+                        "source_sha256":  "ffa247de720072a50630098d7b4c796708b4ef09f08337e9a07934312b8fcae1",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  114,
+                        "source_sha256":  "172464920d09360b83240de086ce101ec2d6b1fb0d42176872481837a28ed1ae",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  115,
+                        "source_sha256":  "9f8266d8f563ba7ea68bbfdd3de27ca2d2c9c6ba262a2a2d4b3b3e50416b0b81",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  116,
+                        "source_sha256":  "9be95e9febd75ea33f7034cce67d51ffdf0507f29944d494a38c24305f081690",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  117,
+                        "source_sha256":  "0065915ea8586935325927fc42ebbe6dd48372db5609f91a3ac0eeef9047afb6",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  118,
+                        "source_sha256":  "7bfa9ab2e9636c93714b15c5274ecfff4b5d4a454346ecbdd29ee5ef8f2b7353",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  119,
+                        "source_sha256":  "1bf0d2bf4546acc9620ef3c008df1f98f31d949dd7e5d8d116cb24fba2df89c1",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  120,
+                        "source_sha256":  "c1b52be0b488b8cf720acef4cb4189a7f134d2eefa61378d70d9cc8a9e01ff9a",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  121,
+                        "source_sha256":  "08b5d690bbf7b34cf29eb3a28bc3102c55867e87a86f1490d86b0178f6c0f6a1",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  122,
+                        "source_sha256":  "8d216aaa3099e2526815f3afbdc5c52ba8501db04b848a922989b45d4ca70625",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  123,
+                        "source_sha256":  "94c228ab46893d96029f1edc92a6151f410916a4a4a6cd990e69cedb3a1ebd48",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  124,
+                        "source_sha256":  "8d67c6451b0da3bb093aecd167d465848c53a0837742b4a1c7ceae9bfc26116c",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  125,
+                        "source_sha256":  "307a45747452c616a23f8c832080c84ca2006a39c384e489d16f5ffcd8c21c50",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  126,
+                        "source_sha256":  "595ee4b30e19bec2946e52d0a3e6ec8198e816d4e4869fed8ba71d3734fc55ed",
+                        "archived_compiler_cases":  4
+                    },
+                    {
+                        "index":  127,
+                        "source_sha256":  "b797fb0121172101e23f42e72ef555fa7746528f09e2b202e5c82295e15fa021",
+                        "archived_compiler_cases":  4
+                    }
+                ]
+}

@@ -1,0 +1,90 @@
+name: browser-local-pages
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - "evidence/**"
+  pull_request:
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - "evidence/**"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      LUAU_BROWSER_NATIVE_CLI: ${{ github.workspace }}/artifacts/linux-runtime/bin/luau-decompile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.20.0"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare Rust and pinned Emscripten
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --target wasm32-unknown-unknown
+          rustup default 1.99.1
+          cargo install wasm-bindgen-cli --version 0.2.130 --locked
+          git clone --depth 1 --branch 4.0.23 https://github.com/emscripten-core/emsdk.git .tools/emsdk
+          .tools/emsdk/emsdk install 4.0.23
+          .tools/emsdk/emsdk activate 4.0.23
+          source .tools/emsdk/emsdk_env.sh
+          echo "EMXX=$(command -v em++)" >> "$GITHUB_ENV"
+          echo "EM_CONFIG=$EM_CONFIG" >> "$GITHUB_ENV"
+          echo "$(dirname "$(command -v em++)")" >> "$GITHUB_PATH"
+      - name: Prepare pinned native comparison tools
+        run: |
+          python scripts/build-linux.py --fetch --test-tools --threads 2
+          cargo fetch --locked --target wasm32-unknown-unknown
+      - name: Build static assets and local WASM engines
+        run: |
+          npm ci --prefix web --ignore-scripts --no-audit --no-fund
+          python scripts/build-browser.py --emxx "$EMXX" --threads 2
+      - name: Browser unit and actual static-export acceptance
+        run: |
+          npm run --prefix web test:unit
+          node web/node_modules/playwright/cli.js install --with-deps chromium
+          node scripts/test-browser.mjs
+      - name: Preserve browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-local-evidence
+          path: |
+            artifacts/browser-build/static-export-manifest.json
+            artifacts/browser-build/analyzer-manifest.json
+            artifacts/browser-tests/
+      - uses: actions/configure-pages@v5
+        if: github.event_name != 'pull_request'
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          path: web/out
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Deploy validated static export
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,10 @@
+{$DECOMPILER_DOMAIN} {
+    request_body {
+        max_size 32MiB
+    }
+    reverse_proxy decompiler:7879 {
+        transport http {
+            response_header_timeout 125s
+        }
+    }
+}

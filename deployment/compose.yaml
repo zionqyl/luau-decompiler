@@ -1,0 +1,36 @@
+services:
+  decompiler:
+    image: ${LUAU_DECOMPILER_IMAGE:?Set the tested published versioned runtime image}
+    environment:
+      LUAU_DECOMPILER_TOKEN: ${LUAU_DECOMPILER_TOKEN:?Set a random token of at least 32 printable characters}
+    expose:
+      - "7879"
+    ports:
+      - "127.0.0.1:${LUAU_DECOMPILER_PORT:-7879}:7879"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    mem_limit: 1536m
+    cpus: 4
+    pids_limit: 128
+    restart: unless-stopped
+    stop_grace_period: 45s
+  proxy:
+    profiles:
+      - https
+    image: caddy:2.11.7-alpine
+    environment:
+      DECOMPILER_DOMAIN: ${DECOMPILER_DOMAIN:-localhost}
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - decompiler
+    restart: unless-stopped
+volumes:
+  caddy_data:
+  caddy_config:

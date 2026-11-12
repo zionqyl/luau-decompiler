@@ -1,0 +1,110 @@
+{
+    "schema":  1,
+    "version":  "0.4.0-rc.2",
+    "purpose":  "Independent final-binary native HTTP adapter observations; canonical function/raw helpers, not normal-engine script coverage",
+    "archive_path":  "evidence/releases/0.4.0-rc.2-live.zip",
+    "archive_bytes":  58775,
+    "archive_sha256":  "38d851e748099642b7e14fe08cf33b378c244f876f3cb198bc697b74c5e8c705",
+    "files":  [
+                  {
+                      "path":  "cleanup.json",
+                      "bytes":  188,
+                      "sha256":  "82a4b8e31489c3bc8b5040a33fa2583394f86e4eabc786afe89d5bad153441f4"
+                  },
+                  {
+                      "path":  "client-identity.json",
+                      "bytes":  305,
+                      "sha256":  "1439e7da6b9bc6ef777b1eeab933a081cae68ab649bff8de73c7c2ed2b3318f4"
+                  },
+                  {
+                      "path":  "config.json",
+                      "bytes":  80,
+                      "sha256":  "8c54e7b18c6ca66ba142d45094ce059a4c940aa1642c22c92957cebda967b4e7"
+                  },
+                  {
+                      "path":  "controls-driver-redacted.luau",
+                      "bytes":  36349,
+                      "sha256":  "2aa849adb777c2e908b2c07c48e61cd503e29ca6a3f3d94a2d291aa129b755d8"
+                  },
+                  {
+                      "path":  "deadline-driver-redacted.luau",
+                      "bytes":  33604,
+                      "sha256":  "f9f8a384702add8b6802a9a2bc617f98497e2e877edb2d6cb94e03b104ce40f1"
+                  },
+                  {
+                      "path":  "documented-contracts.json",
+                      "bytes":  4108,
+                      "sha256":  "d854d32593a507e6cb749aef5e139f6271e8299d3b851b30d8816de33b51ffab"
+                  },
+                  {
+                      "path":  "driver-redacted.luau",
+                      "bytes":  46951,
+                      "sha256":  "28843db9c2d026da7718d3b3b710bf3a1c9c8e6ad03be917941d9bb6cefe7fcd"
+                  },
+                  {
+                      "path":  "final-host-capabilities.json",
+                      "bytes":  14462,
+                      "sha256":  "534a844c84654977d589fc399f2ec167eb1e9b29c467fa1924c1c2421559f312"
+                  },
+                  {
+                      "path":  "host-capabilities.json",
+                      "bytes":  14456,
+                      "sha256":  "4cb83a55abd31b9816662b6516433ad30ae8c3fc2bf0ff4a081a3a12a0fb6a79"
+                  },
+                  {
+                      "path":  "host-state.json",
+                      "bytes":  377,
+                      "sha256":  "c2cfb11d8a7a27bc7e3dcb8f1f57afc2af798afd2a8fdb2dee792aa1ea2c843c"
+                  },
+                  {
+                      "path":  "provenance.json",
+                      "bytes":  9578,
+                      "sha256":  "5e534db373d70c91b3a33ec0c288e87332bfc3c4fb2467700de1a07dbc55091a"
+                  },
+                  {
+                      "path":  "quality-driver-redacted.luau",
+                      "bytes":  45519,
+                      "sha256":  "fe8390118cf77f0b76045d40686fb902fdc6b037692519c3b614e8caf68c4eb9"
+                  },
+                  {
+                      "path":  "raw-client-probe.json",
+                      "bytes":  1537,
+                      "sha256":  "ce21773661d14d74167297df11f81e793f33feab4cfe778ba69e39b53ab0d074"
+                  },
+                  {
+                      "path":  "raw-controls.json",
+                      "bytes":  21039,
+                      "sha256":  "f76b39e8f5d919474aabe5d501df67af3d9ce39c7fa9ed003c8bd78d16f29b4d"
+                  },
+                  {
+                      "path":  "raw-deadlines.json",
+                      "bytes":  10185,
+                      "sha256":  "bb6aa954f1e96111dc1432784266eea14fdc48fdde8f88f8122ef8a2d3cebab7"
+                  },
+                  {
+                      "path":  "raw-extraction.json",
+                      "bytes":  2751,
+                      "sha256":  "33fe994ef763b2c9e24d2f39da328ecd47af64794fb48b5b8f67d5a0e4d558a5"
+                  },
+                  {
+                      "path":  "raw-functions.json",
+                      "bytes":  27551,
+                      "sha256":  "3372ee865bc6153098c47ff06e207cfedc52030b1a4740ee7af7863d58fc9e28"
+                  },
+                  {
+                      "path":  "raw-http-capabilities.json",
+                      "bytes":  1198,
+                      "sha256":  "5436b1df73acc5629e95673c2f534025b218738123ee9394f0585a4660c48fb9"
+                  },
+                  {
+                      "path":  "raw-quality.json",
+                      "bytes":  5569,
+                      "sha256":  "d023d6c4e87d099c0efa79d6d8697b15c54f5302c9bbe32a6a20d0f43294f951"
+                  },
+                  {
+                      "path":  "shutdown.json",
+                      "bytes":  271,
+                      "sha256":  "1bd661f7738d6326691fc2f10218bf687361df60effcc744cf87081036e25a1b"
+                  }
+              ]
+}

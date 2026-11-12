@@ -1,0 +1,11 @@
+target
+.tools
+vendor
+artifacts
+dist
+.git
+.agents
+.codex
+*.tmp
+fuzz/target
+web

@@ -1,0 +1,10 @@
+local seed = ...
+local thread = coroutine.create(function()
+    local same, equal = pcall(rawequal, seed, seed)
+    print("c result", same, equal, seed)
+    local failed = table.pack(pcall(error, "c error\000\255", 0))
+    print("c error", failed.n, table.unpack(failed, 1, failed.n))
+    local unpacked = table.pack(pcall(table.unpack, { seed, nil, "tail", nil }, 1, 4))
+    return unpacked.n, table.unpack(unpacked, 1, unpacked.n)
+end)
+return coroutine.resume(thread)

@@ -1,0 +1,1 @@
+{"input_format":"luau_bytecode","bytecode_encoding":"roblox_opcode227","output_policy":"annotated","limits":{"max_bytes":8388608,"max_output_bytes":4194304,"max_analysis_steps":4000000},"validation":{"mode":"check","timeout_ms":8000,"max_attempts":2}}

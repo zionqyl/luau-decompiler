@@ -1,0 +1,150 @@
+name: correctness-and-packages
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      [
+        "**/*.md",
+        "web/**",
+        "browser-toolchain.lock.json",
+        "scripts/build-browser.py",
+        "scripts/test-browser.mjs",
+        ".github/workflows/pages.yml",
+      ]
+  pull_request:
+    paths-ignore:
+      [
+        "**/*.md",
+        "web/**",
+        "browser-toolchain.lock.json",
+        "scripts/build-browser.py",
+        "scripts/test-browser.mjs",
+        ".github/workflows/pages.yml",
+      ]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+permissions:
+  contents: read
+jobs:
+  windows-release:
+    runs-on: windows-2022
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare pinned contributor tools
+        shell: pwsh
+        run: |
+          ./scripts/setup.ps1 -PortableToolchain -BuildOracle
+          . ./scripts/env.ps1
+          rustup component add rustfmt clippy llvm-tools-preview
+          if ($LASTEXITCODE -ne 0) { throw 'Rust tool component installation failed' }
+          ./scripts/build-coverage-runtime.ps1
+      - name: Full required correctness gate and release package
+        shell: pwsh
+        run: ./scripts/release.ps1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-release-evidence
+          path: |
+            dist/*
+            artifacts/release-gate.json
+  linux-runtime-candidate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - name: Install contributor toolchain
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+          rustup default 1.99.1
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends g++ cmake python3
+      - name: Check the declared minimum Rust version
+        run: |
+          rustup toolchain install 1.85.0 --profile minimal
+          cargo +1.85.0 check --locked --all-targets
+      - name: Build pinned assets and runtime package
+        run: python3 scripts/build-linux.py --fetch --test-tools --threads 2
+      - name: Rust correctness, formatting and lint
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked --all-targets
+      - name: Runtime package and independent typed behavior acceptance
+        run: python3 scripts/runtime-smoke.py --require-linux --bundle artifacts/linux-runtime --compiler .tools/luau-modern/luau-compile --oracle .tools/luau-modern/vm-runner --report artifacts/linux-runtime-smoke.json
+      - name: Build minimal container
+        run: docker build -f deployment/Dockerfile -t luau-decompiler-ci .
+      - name: Container startup and readiness
+        shell: bash
+        run: |
+          token=$(openssl rand -hex 32)
+          export LUAU_DECOMPILER_TOKEN="$token"
+          docker run --detach --name luau-decompiler-ci --publish 127.0.0.1:17879:7879 --env LUAU_DECOMPILER_TOKEN luau-decompiler-ci
+          trap 'docker rm --force luau-decompiler-ci >/dev/null' EXIT
+          ready=false
+          for attempt in $(seq 1 40); do
+            if printf 'Authorization: Bearer %s\n' "$token" | curl --silent --fail --header @- http://127.0.0.1:17879/readyz >/dev/null; then ready=true; break; fi
+            sleep 1
+          done
+          test "$ready" = true
+          python3 - <<'PYTHON'
+          import hashlib,http.client,json,os,pathlib,subprocess,time
+          source="local answer: number = 42\nreturn answer\n"
+          def verify():
+              deadline=time.monotonic()+40
+              while True:
+                  try:
+                      client=http.client.HTTPConnection("127.0.0.1",17879,timeout=5)
+                      client.request("GET","/readyz",headers={"Authorization":"Bearer "+os.environ["LUAU_DECOMPILER_TOKEN"]})
+                      response=client.getresponse(); body=json.loads(response.read()); client.close()
+                      if response.status==200 and body["ready"]: break
+                  except (OSError,http.client.HTTPException):
+                      pass
+                  if time.monotonic()>deadline: raise RuntimeError("container readiness deadline")
+                  time.sleep(.1)
+              client=http.client.HTTPConnection("127.0.0.1",17879,timeout=40)
+              client.request("POST","/v1/process",json.dumps({"source":source,"reconstruction_config":{"output_policy":"verified_typed"}}),{"Authorization":"Bearer "+os.environ["LUAU_DECOMPILER_TOKEN"],"Content-Type":"application/json"})
+              response=client.getresponse(); body=json.loads(response.read()); client.close()
+              assert response.status==200 and body["validation"]["required_passed"] and body["validation"]["meaningful_typing"]["passed"]
+              return {"status":response.status,"source_sha256":hashlib.sha256(body["source"].encode()).hexdigest(),"analyzer_sha256":body["validation"]["analyzer_sha256"],"definitions_sha256":body["validation"]["definitions_sha256"]}
+          first=verify()
+          subprocess.run(["docker","restart","--time","40","luau-decompiler-ci"],check=True,stdout=subprocess.DEVNULL)
+          restarted=verify()
+          assert first==restarted
+          subprocess.run(["docker","stop","--time","40","luau-decompiler-ci"],check=True,stdout=subprocess.DEVNULL)
+          assert subprocess.check_output(["docker","inspect","-f","{{.State.ExitCode}}","luau-decompiler-ci"],text=True).strip()=="0"
+          image=subprocess.check_output(["docker","image","inspect","-f","{{.Id}}","luau-decompiler-ci"],text=True).strip()
+          report={"schema":1,"passed":True,"image_id":image,"source_revision":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),"request_source_sha256":hashlib.sha256(source.encode()).hexdigest(),"initial":first,"same_container_restart":restarted,"clean_shutdown":True,"credential_environment_persisted":True,"distinct_image_upgrade_rollback":"not_run_by_this_initial_image_check"}
+          pathlib.Path("artifacts/container-validation.json").write_text(json.dumps(report,indent=2)+"\n")
+          PYTHON
+      - name: Controlled shell shutdown contracts
+        run: sh tests/entrypoint-contract.sh
+      - name: Preserve the exact tested container
+        run: |
+          docker image inspect luau-decompiler-ci > artifacts/tested-container-image.json
+          docker save luau-decompiler-ci -o artifacts/tested-container-image.tar
+      - name: Archive Linux runtime candidate
+        run: |
+          tar -czf artifacts/luau-decompiler-linux-candidate.tar.gz -C artifacts/linux-runtime .
+          sha256sum artifacts/luau-decompiler-linux-candidate.tar.gz > artifacts/luau-decompiler-linux-candidate.tar.gz.sha256
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-runtime-candidate-evidence
+          path: |
+            artifacts/linux-runtime-smoke.json
+            artifacts/luau-decompiler-linux-candidate.tar.gz*
+            artifacts/tested-container-image.*
+            artifacts/container-validation.json

@@ -1,0 +1,16 @@
+local seed = ...
+local cache = module.new(2)
+cache:put("a", seed)
+cache:put("b", seed + 1)
+assert(cache:keys() == "a|b")
+local value, present = cache:get("a")
+assert(present and value == seed)
+assert(cache:keys() == "b|a")
+local removed, previous = cache:put("c", seed + 2)
+assert(removed == "b" and previous == seed + 1)
+assert(cache:get("b") == nil)
+cache:put("a", seed + 7)
+assert(cache:keys() == "c|a")
+print("cache", cache:keys(), cache.size)
+local updated = cache:get("a")
+return updated, cache:keys(), removed, previous, cache.size, nil

@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+public/runtime/
+public/examples/
+playwright-report/
+test-results/
+generated/
+next-env.d.ts
+*.tsbuildinfo

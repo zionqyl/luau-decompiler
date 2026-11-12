@@ -1,0 +1,15 @@
+{
+  "oracle_inputs": [
+    {"name":"empty","values":[]},
+    {"name":"negative","values":[{"type":"number","value":"c00c000000000000"},{"type":"string","value":[116,97,105,108,0,255]}]},
+    {"name":"positive_zero","values":[{"type":"number","value":"0000000000000000"},{"type":"nil"}]},
+    {"name":"negative_zero","values":[{"type":"number","value":"8000000000000000"},{"type":"nil"}]},
+    {"name":"infinity","values":[{"type":"number","value":"7ff0000000000000"}]},
+    {"name":"nan_payload","values":[{"type":"number","value":"7ff800000000005a"}]},
+    {"name":"subnormal","values":[{"type":"number","value":"0000000000000001"}]},
+    {"name":"binary_string","values":[{"type":"string","value":[0,255,254,9,13,10]},{"type":"boolean","value":true}]},
+    {"name":"false_error","values":[{"type":"boolean","value":false}]},
+    {"name":"vector","values":[{"type":"vector","value":[1065353216,2147483648,1077936128]}]},
+    {"name":"buffer","values":[{"type":"buffer","value":{"identity":1,"bytes":[0,255,254,9]}}]}
+  ]
+}

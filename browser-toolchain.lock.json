@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "wasm_bindgen_version": "0.2.130",
+  "node_version": "24.20.0",
+  "emscripten_version": "4.0.23",
+  "emscripten_release": "aaa43392544d695232b70eda706d751f18980c2a",
+  "emscripten_windows_archive_sha256": "c2e1b9a2eed20f9d5903780b559ce2b384132713f07936512e6d962dd5a5dae6",
+  "emsdk_archive_sha256": "0e18169a4dfe3e25f0e864c43480e10772f7736e00b50b7b4cffe2a375212961",
+  "analyzer_revision": "12a6ba75883272c79b66b59815efef4c574196f6",
+  "analyzer_memory_limit_bytes": 536870912,
+  "engine_memory_limit_bytes": 268435456,
+  "pthread": false
+}

@@ -1,0 +1,21 @@
+# Development
+
+Rust 1.85 or later builds the Rust core. Cargo.lock fixes utility dependencies. Contributor validation additionally needs the pinned upstream Luau compilers, C++ toolchain, independent VM oracles, analyzer harness and Roblox definition snapshot. End-user bundles carry their runtime assets and do not need these development tools.
+
+Read root `AGENTS.md` and applicable nested instructions before editing. First-party implementation, adapters, tests and scripts contain no explanatory or documentation comments. Design rationale belongs in external documents. Functional directives, license notices, third-party upstream code and comment-like fixture data are preserved. `scripts/check-code-style.ps1` checks Rust/C++/Luau lexical comments and PowerShell parser comment tokens; its explicit `-Fix` mode preserves strings and fixture inputs.
+
+```powershell
+. ./scripts/env.ps1
+cargo test --offline --locked --test source_inputs
+./scripts/release.ps1
+```
+
+The full gate preserves the existing fixture identities, semantic matrices, typed oracle, negative tests, coverage-guided decoder campaign and source/tool provenance. New release cases are additive. Expected rejections are never successful reconstructions. Windows gate execution does not certify Linux or executor behavior.
+
+Version `0.4.0-rc.3` is a release candidate. Pre-1.0 minor releases may add explicit public configuration fields or result variants; documented protocol fields and legacy bytecode APIs are retained when practical. Publication locations are explicit in `release.json`; a configured location is not evidence of a published release.
+
+Unsafe allocation observers forward the exact original layout and pointer to the system allocator. Windows stack sampling writes only into fixed arrays using the supplied frame count. These test/profiling invariants remain external documentation; normal untrusted processing uses safe Rust.
+
+Use focused affected tests during development. The release driver owns formatting, Clippy, ordinary tests and required ignored suites; do not precede it with the full validator for the same snapshot. `-PackageOnly` can reuse a gate only when all relevant identities still match. Final runtime acceptance runs at extraction, while installation ownership/update scenarios protect a separate boundary. See [validation ownership](validation.md).
+
+Native Rust 1.85 is the declared minimum; the browser build uses its separately pinned Rust/WASM and Emscripten toolchains. Native thread pools and subprocess workers remain native-only; the browser baseline runs one sequential Rust engine and one analyzer in a worker without SharedArrayBuffer. [Browser development and acceptance](browser.md) has a separate owner from the native release gate.

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "product": "luau-decompiler",
+  "files": [
+    {"source": "LICENSE", "destination": "LICENSE"},
+    {"source": "definitions/roblox.d.luau", "destination": "definitions/roblox.d.luau"},
+    {"source": "definitions/LICENSE-luau-lsp", "destination": "definitions/LICENSE-luau-lsp"},
+    {"source": "definitions.lock.json", "destination": "definitions.lock.json"},
+    {"source": "release.json", "destination": "release.json"},
+    {"source": "fixtures/runtime/verified.luau", "destination": "checks/verified.luau"},
+    {"source": "fixtures/runtime/verified.bc", "destination": "checks/verified.bc"},
+    {"source": "fixtures/runtime/manifest.json", "destination": "checks/fixture-manifest.json"},
+    {"source": "scripts/install.ps1", "destination": "install.ps1", "target": "windows-x64"},
+    {"source": "deployment/start-server.ps1", "destination": "deployment/start-server.ps1"},
+    {"source": "deployment/start-server.sh", "destination": "deployment/start-server.sh"},
+    {"source": "deployment/compose.yaml", "destination": "deployment/compose.yaml"},
+    {"source": "deployment/Caddyfile", "destination": "deployment/Caddyfile"}
+  ]
+}

@@ -1,0 +1,186 @@
+{
+    "schema":  1,
+    "repository":  "https://github.com/llvm/llvm-project",
+    "tag":  "llvmorg-23.1.1",
+    "revision":  "6dfe1677ab8dffbc6ec13d53a1e0215d75147689",
+    "llvm_version":  "23.1.1",
+    "purpose":  "validation-only GNU profiler runtime; not decompiler core",
+    "license":  "Apache-2.0 WITH LLVM-exception",
+    "files":  [
+                  {
+                      "path":  "compiler-rt/include/profile/instr_prof_interface.h",
+                      "sha256":  "e799e4872db5104692980bd2a7349d383d1dfeee9fe02eb3e5ede302dc23c7e0",
+                      "bytes":  3137
+                  },
+                  {
+                      "path":  "compiler-rt/include/profile/InstrProfData.inc",
+                      "sha256":  "d05cf0aeefda190df340b848de8030b01b5ca78b00f5f716f28f81c48de5878a",
+                      "bytes":  43179
+                  },
+                  {
+                      "path":  "compiler-rt/include/profile/MemProfData.inc",
+                      "sha256":  "436b2be03266c012dbc3f28d4f6e50e837e3812569fb49b84b62f1e9c7204b8c",
+                      "bytes":  9561
+                  },
+                  {
+                      "path":  "compiler-rt/include/profile/MIBEntryDef.inc",
+                      "sha256":  "258f2f52ee8edfb65fc5013fedb528cf98435bc602efa3ddfd9f5c26107d458a",
+                      "bytes":  2743
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/CMakeLists.txt",
+                      "sha256":  "8c9d97d3deba9d6f6d9c51ada07b388011c1ca31dbdb11345dc8c705f914e723",
+                      "bytes":  9009
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/GCDAProfiling.c",
+                      "sha256":  "c1de63f526105f21dc5179e5e15c1f355e8d8387f8d504072626455db2524cea",
+                      "bytes":  17157
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfiling.c",
+                      "sha256":  "a573ba08d49b9d015523b1975c643e7987e0b2e0cabf2780df04dc350cf2dcd0",
+                      "bytes":  2816
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfiling.h",
+                      "sha256":  "21214fae3d438d4b722afca35f81c2bc02ac0ffeb6e17d0236b983b172024504",
+                      "bytes":  15895
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingBuffer.c",
+                      "sha256":  "3cc2eb35f0d8872e809db2d297fb0dfea9aced3d18e0b29f1d0e42f030c0866f",
+                      "bytes":  11416
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingFile.c",
+                      "sha256":  "151b35fed1a3de3115cda0a888032dd2388ee2684190450bcd590d44fa548156",
+                      "bytes":  50024
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingInternal.c",
+                      "sha256":  "bc9fd759ec4a14f5fe359a10266b62bb8d9a997217f7232d2c43054c733973ea",
+                      "bytes":  805
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingInternal.h",
+                      "sha256":  "c53135f76a7b75151920eb857f2b9b55a74e719ea0f013de98a3b7c46f39667d",
+                      "bytes":  8598
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingMerge.c",
+                      "sha256":  "3cfa964671cf5804d128404fd724698c75fe6df5e8ded1b8d0fd98913513361d",
+                      "bytes":  10544
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingMergeFile.c",
+                      "sha256":  "255aef89817dcde56961d6e51c2e7e4eb3259fa967f5c34c2aad963fce6b52eb",
+                      "bytes":  1625
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingNameVar.c",
+                      "sha256":  "7f94805fe61285411f843db3b3c69d64e6d1f2bff10b4552d2254afd8a8a5f73",
+                      "bytes":  730
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformAIX.c",
+                      "sha256":  "9ab02ad8674cf7bda5cc7a3c577d63bc5883dc1b731294df8caa83f856122d6b",
+                      "bytes":  7839
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformDarwin.c",
+                      "sha256":  "822112e1e740fae3e30fc8e13b9a4e3443fe77463910e3d8c6d7ef0e23baedbb",
+                      "bytes":  3820
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformFuchsia.c",
+                      "sha256":  "049096c1979b50cf50fe9a532f05cc7daaad5b8139396769bce2b4cd1de964d3",
+                      "bytes":  6677
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformGPU.c",
+                      "sha256":  "4f5671889469b5e8b79a4dbee7b121e9d2172040cf9e9021f0a8b1ebe77f0c3f",
+                      "bytes":  5498
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformLinux.c",
+                      "sha256":  "006f62fac5291e878463e562502ee7d60fea11f03738d870edaa08483091f676",
+                      "bytes":  10207
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformOther.c",
+                      "sha256":  "755dd9d64e8beca89b7970bba8b62e618dddb6cf73d58d3ad905341cd565262c",
+                      "bytes":  5963
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformROCm.cpp",
+                      "sha256":  "cdc07a954d20e322562fe49366e0aafbe56bd96c973fd2599358ae29f91966a2",
+                      "bytes":  54436
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformROCmHSA.cpp",
+                      "sha256":  "7dba24f7a694766a502b8efe6b91c3a153ab1dc9a2d67b8ccb68a3a31077d6b5",
+                      "bytes":  19531
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformROCmHSADefs.h",
+                      "sha256":  "e0f38d350a3dd718a61c4c527bb2ff74593d9721ae5bb377fefee966838111c4",
+                      "bytes":  4368
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformROCmInternal.h",
+                      "sha256":  "6517e467a28c08d07c69547523cbf72bc9ed02d462cd541038c4c1dd23744919",
+                      "bytes":  4427
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPlatformWindows.c",
+                      "sha256":  "47952a5a8b6912ccf485195b7037f9c56acedfe89b6238dc22ac04ce1e3ccba9",
+                      "bytes":  4956
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingPort.h",
+                      "sha256":  "19055831ea9fd98b8d056b906a272323484ee4d948962ad597c263a77332fbb5",
+                      "bytes":  5433
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingRuntime.cpp",
+                      "sha256":  "f390bc9d3fc6d517e4c23087a673a1c3e4609968acc2ff1548938a92b795a48c",
+                      "bytes":  733
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingUtil.c",
+                      "sha256":  "0057b49b3e05424aba15fff0df926847c3a1b1a30a5ee5d5a439aa23359e2aee",
+                      "bytes":  15126
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingUtil.h",
+                      "sha256":  "8acefed462a4370ef552627de3267e1fd98ec309f93776cd51403e741b75740c",
+                      "bytes":  4080
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingValue.c",
+                      "sha256":  "f90000bb6b525d4bd7ede8dc9929bde7fc6ac51e8af80fd68443759e6a799857",
+                      "bytes":  12763
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingVersionVar.c",
+                      "sha256":  "f13fe99b4a6cc607599569a4273013c69af24e68249203bf9d46f44930dbc525",
+                      "bytes":  755
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/InstrProfilingWriter.c",
+                      "sha256":  "254fd97fdc0710e648feb89e62b826c3f990532b6b2870aa573a3d99bf95c020",
+                      "bytes":  15991
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/WindowsMMap.c",
+                      "sha256":  "e9f3d4d52b497a3dd7e811474301bb52d11ba8144992005420bbed52dd788787",
+                      "bytes":  4509
+                  },
+                  {
+                      "path":  "compiler-rt/lib/profile/WindowsMMap.h",
+                      "sha256":  "4a311829a23ed5e744030626465c198925e067d18773aa93cc1ef15134be29f9",
+                      "bytes":  2158
+                  }
+              ]
+}

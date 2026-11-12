@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "release": "0.4.0-rc.3",
+  "scope": "Observed client-accessible snapshot; includes engine content. Serialized-buffer counts are not distinct-program counts.",
+  "environment": {
+    "platform": "Windows x64",
+    "executor": "Madium",
+    "executor_version": "2.0.0",
+    "roblox_build": "0.747.0.7471481",
+    "place_id": 142823291,
+    "place_version": 1462,
+    "game_id": 66654135,
+    "capture_started_unix_ms": 1794437598262
+  },
+  "inventory": {
+    "total": 37285,
+    "by_class": {
+      "LocalScript": 466,
+      "ModuleScript": 36780,
+      "Script": 39
+    }
+  },
+  "extraction": {
+    "captured_instances": 37253,
+    "unsupported_nonclient_script_contexts": 32,
+    "getter_errors": 0,
+    "disappeared": 0,
+    "returned_bytes_all_instances": 72049630,
+    "unique_serialized_buffers": 23645,
+    "unique_serialized_bytes": 67460571,
+    "unique_format_headers": {
+      "v14-types3": 282,
+      "v9-types3": 23363
+    },
+    "binary_transfer_probe_passed": true,
+    "script_getter_accepts_function": false,
+    "function_getter_accepts_script_instance": false,
+    "controlled_function_getter_succeeded": true,
+    "controlled_function_dump_bytes": 29,
+    "controlled_function_dump_header": "0d03"
+  },
+  "upstream_investigation": {
+    "attempted_unique": 14829,
+    "decode_rejections": 14829,
+    "not_attempted_unique": 8816,
+    "sources": 0,
+    "stop_reason": "uniform decode failures; explicit separate encoding investigation retained"
+  },
+  "opcode227_investigation": {
+    "representation": "explicit provisional roblox_opcode227; no independent script-representation equivalence proof",
+    "attempted_unique": 23645,
+    "reconstructed_input_buffers": 16,
+    "distinct_faithful_source_hashes": 13,
+    "reconstructed_instances": 53,
+    "rejected_unique_buffers": 23629,
+    "rejected_instances": 37200,
+    "rejection": "24 unresolved trailing bytes after main prototype",
+    "rejections_by_version": {
+      "v9": 23363,
+      "v14": 266
+    },
+    "accepted_by_version": {
+      "v14": 16
+    },
+    "footer_bytes_removed": 0,
+    "full_pass_elapsed_seconds": 221.84399999992456,
+    "faithful_validation": "off; separate compile and strict attempts below"
+  },
+  "source_quality": {
+    "compiler_attempts": 16,
+    "compiler_passed": 16,
+    "typed_attempts_unique": 16,
+    "strict_unique": {
+      "failed": 8,
+      "passed": 8
+    },
+    "strict_instances": {
+      "failed": 39,
+      "passed": 14
+    },
+    "strict_and_meaningful_unique": 2,
+    "strict_and_meaningful_instances": 3,
+    "policy_rejected_unique": 14,
+    "typed_source_retained_on_all_rejections": true,
+    "faithful_and_typed_exports_byte_exact": true,
+    "finalized_header_exports_checked": 106,
+    "interpretation": "Source-quality results conditional on provisional representation; not native behavioral-equivalence proof.",
+    "final_binary_source_hashes_match_prior_candidates": true,
+    "compile_evidence_reused": "Pinned official faithful compilation results reused only for identical finalized source hashes; final verified policy reran the pinned pipeline.",
+    "final_optimized_strict_unique": {
+      "failed": 8,
+      "passed": 8
+    },
+    "final_optimized_policy_passed_unique": 2
+  },
+  "execution": {
+    "captured_scripts_executed": 0,
+    "captured_modules_required": 0,
+    "native_behavioral_equivalence": "not_run; intentionally no captured-code execution"
+  },
+  "identities": {
+    "engine_version": "0.4.0-rc.3",
+    "processing_executable_sha256": "891aed3ca5b771aa44c72c166b264c6280b63367cb854369ca833840ca07a434",
+    "collector_loaded_source_sha256": "509b6965402e43f18d9124419c17578fef389391295f4e93f5b2882b75ac2bbb",
+    "receiver_current_reproduction_source_sha256": "5b1add2a109b1491e77909aac50d1887ce9e00a663cf10fbf518a3995d4f97a8",
+    "receiver_source_identity_limit": "No pre-start whole-file fingerprint was recorded; post-capture/current script hashes do not attest the exact running full receiver file. Processing-only edits were made during capture. Original buffers and the exact loaded collector source were retained.",
+    "official_compiler_sha256": "870665fdc7e751eb266ea8beec2cda64762c9b6b689e8a466feedaaeefc8dd3d",
+    "analyzer_binary_sha256": "beb38f04010850a3e5de9cfab8c93a53c275a05ba88e1abd48de5a8385739e99",
+    "analyzer_source_sha256": "145fe9572fa79c2f1e5d961e9e1ffdee82a0bdb6793f305a541543c7d53b1dbc",
+    "analyzer_upstream_revision": "12a6ba75883272c79b66b59815efef4c574196f6",
+    "generation_configuration_sha256": {
+      "upstream-faithful-unchecked": "b424fa3da159173de4495dff0d3f8c0e88fc16ee43a221bc6562c8823f0d4142",
+      "opcode227-candidate-faithful": "787d7f3541543e3810ef68d3e5ca48b397d513e0b4d483824376caa8d52e878a",
+      "opcode227-candidate-verified": "d0bd99a476f6287a21c78eac4b9cd35ec1dbf2ea73d61fcacf593ae1ff6515a1"
+    },
+    "final_optimized_executable_sha256": "c4bdcd492e61826c0e388593b2768002e7f9e57f551083613c667c0f06317a0c"
+  },
+  "publication": {
+    "corpus": "private_only",
+    "redistribution_rights": "not_established",
+    "public_script_sources": 0,
+    "public_original_bytecode": 0
+  },
+  "checks": {
+    "synthetic_collector_tests": {
+      "passed": 7,
+      "failed": 0,
+      "duration_seconds": 0.052
+    },
+    "original_buffer_hashes_reverified": 23645,
+    "attribution_and_export_boundaries_passed": true,
+    "captured_behavioral_execution": "not_run",
+    "controller_state_at_cleanup": "already_absent; explicit removal not claimed",
+    "receiver_shutdown_http_status": 200,
+    "typed_processing_shutdown_http_status": 200,
+    "typed_processing_exit_code": 0,
+    "final_binary_export_boundaries_checked": {
+      "final-opcode227-faithful": 53,
+      "final-opcode227-verified": 53
+    },
+    "historical_full_pass_identity": "Full 23,645-input pass used recorded debug executable; only the16 previously reconstructed inputs were rerun with the final optimized binary."
+  },
+  "final_optimized_binary_check": {
+    "final-opcode227-faithful": {
+      "executable_sha256": "c4bdcd492e61826c0e388593b2768002e7f9e57f551083613c667c0f06317a0c",
+      "configuration_sha256": "787d7f3541543e3810ef68d3e5ca48b397d513e0b4d483824376caa8d52e878a",
+      "elapsed_seconds": 0.9059999999590218,
+      "unique_inputs": 16,
+      "instance_exports": 53,
+      "distinct_source_hashes": 13,
+      "source_hashes_changed_from_debug_generation": 0,
+      "lifecycle": {
+        "started": true,
+        "pid": 18120,
+        "ready": true,
+        "shutdown_status": 200,
+        "exit_code": 0
+      }
+    },
+    "final-opcode227-verified": {
+      "executable_sha256": "c4bdcd492e61826c0e388593b2768002e7f9e57f551083613c667c0f06317a0c",
+      "configuration_sha256": "d0bd99a476f6287a21c78eac4b9cd35ec1dbf2ea73d61fcacf593ae1ff6515a1",
+      "elapsed_seconds": 1.75,
+      "unique_inputs": 16,
+      "instance_exports": 53,
+      "distinct_source_hashes": 13,
+      "source_hashes_changed_from_debug_generation": 0,
+      "lifecycle": {
+        "started": true,
+        "pid": 18572,
+        "ready": true,
+        "shutdown_status": 200,
+        "exit_code": 0
+      }
+    }
+  }
+}
