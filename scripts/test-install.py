@@ -8,6 +8,7 @@ import pathlib
 import subprocess
 import threading
 import time
+import traceback
 import zipfile
 
 
@@ -34,7 +35,7 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def main():
+def main(failure_context=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--archive', required=True)
     parser.add_argument('--installer', default=str(pathlib.Path(__file__).with_name('install.ps1')))
@@ -78,8 +79,13 @@ def main():
     report_path = pathlib.Path(args.report).resolve()
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2)+'\n')
+    if failure_context is not None:
+        failure_context.update({'report': report, 'path': report_path})
 
     def install(arguments, success=True, no_path=True, manager=None):
+        operation = next((str(value) for value in arguments if str(value) in ['-Doctor', '-Uninstall', '-Rollback', '-RepairManagement']), 'install')
+        report['last_operation'] = {'operation': operation, 'destination': str(managed.relative_to(work)),
+                                    'manager_sha256': digest(pathlib.Path(manager or installer).read_bytes()), 'expected_success': success}
         result = subprocess.run([str(powershell), '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', str(manager or installer),
                                  '-Destination', str(managed), *(['-NoPath'] if no_path else []), *map(str, arguments)], cwd=work,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=120)
@@ -95,6 +101,7 @@ def main():
 
     def record(identity, **extra):
         cases.append({'id': identity, 'passed': True, **extra})
+        report['last_completed_case'] = identity
         report_path.write_text(json.dumps(report, indent=2)+'\n')
 
     def variant(identity, overrides):
@@ -119,6 +126,7 @@ def main():
         return source.replace(marker, marker+b"\n$managementReleaseIdentity='"+identity.encode()+b"'", 1)
 
     def interrupt_activation(identity, archive, checkpoint):
+        report['last_operation'] = {'operation': 'interrupt_activation', 'checkpoint': checkpoint, 'destination': str(managed.relative_to(work))}
         signal = work / (identity+'.checkpoint')
         source = installer.read_text(encoding='utf-8-sig')
         if checkpoint == 'after_pointer':
@@ -165,6 +173,7 @@ def main():
             }
             for checkpoint, marker in checkpoints.items():
                 managed = work / ('fresh interrupted '+checkpoint)
+                report['last_operation'] = {'operation': 'interrupt_bootstrap', 'checkpoint': checkpoint, 'destination': str(managed.relative_to(work))}
                 signal = work / (checkpoint+'.bootstrap-checkpoint')
                 source = installer.read_text(encoding='utf-8-sig')
                 assert source.count(marker) == 1
@@ -462,6 +471,7 @@ def main():
         primary_managed = managed
         if not args.admission_only:
             managed = work / 'fresh killed during real download'
+            report['last_operation'] = {'operation': 'interrupt_http_download', 'destination': str(managed.relative_to(work))}
             state['interrupted'] = False
             asset_reached.clear()
             resume_asset.clear()
@@ -507,6 +517,7 @@ def main():
         for collision in ['modified_owned', 'new_unowned']:
             if collision == 'new_unowned':
                 managed = work / 'concurrent fresh installation'
+            report['last_operation'] = {'operation': 'concurrent_download', 'collision': collision, 'destination': str(managed.relative_to(work))}
             state['interrupted'] = False
             pause_asset.set()
             asset_reached.clear()
@@ -593,6 +604,7 @@ def main():
         registry_probe.write_text(REGISTRY_PATH_SCRIPT, encoding='utf-8')
 
         def shell_value(action, environment=None, value_file=None):
+            report['last_operation'] = {'operation': 'registry_'+action, 'destination': str(managed.relative_to(work))}
             arguments = [str(powershell),'-NoProfile','-ExecutionPolicy','Bypass','-File',str(registry_probe),'-Action',action]
             if value_file is not None:
                 arguments += ['-ValueFile',str(value_file)]
@@ -628,4 +640,20 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    failure_context = {}
+    try:
+        main(failure_context)
+    except Exception as error:
+        if failure_context:
+            report = failure_context['report']
+            report['passed'] = False
+            frames = traceback.extract_tb(error.__traceback__)
+            report['failure'] = {'exception_type': type(error).__name__, 'message': str(error)[:4096],
+                                 'last_completed_case': report.get('last_completed_case'), 'last_operation': report.get('last_operation'),
+                                 'location': {'file': frames[-1].filename, 'line': frames[-1].lineno, 'function': frames[-1].name},
+                                 'traceback': ''.join(traceback.format_exception(type(error), error, error.__traceback__))[-8192:]}
+            try:
+                failure_context['path'].write_text(json.dumps(report, indent=2)+'\n')
+            except OSError as report_error:
+                error.add_note('Could not retain installer failure report: '+str(report_error)[:1024])
+        raise

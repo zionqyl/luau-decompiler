@@ -64,7 +64,18 @@ try{
     if($PreviousArchive){$installerArguments+=@('--previous-archive',(Resolve-Path -LiteralPath $PreviousArchive).Path)}
     if($ModernPreviousArchive){$installerArguments+=@('--modern-previous-archive',(Resolve-Path -LiteralPath $ModernPreviousArchive).Path)}
     & $python (Join-Path $taskRoot 'scripts/test-install.py') @installerArguments
-    if($LASTEXITCODE -ne 0){throw 'Final runtime installer acceptance failed'}
+    if($LASTEXITCODE -ne 0){
+        $failureDetails='Installer harness did not retain a structured failure; inspect its traceback and partial report.'
+        if(Test-Path -LiteralPath $installerReportPath){
+            $partial=Get-Content -LiteralPath $installerReportPath -Raw|ConvertFrom-Json
+            $lastCase=if($partial.last_completed_case){$partial.last_completed_case}else{'none'}
+            $failureDetails='Last completed case: '+$lastCase
+            if($partial.failure){
+                $failureDetails+='; operation: '+($partial.failure.last_operation|ConvertTo-Json -Compress)+'; '+$partial.failure.exception_type+': '+$partial.failure.message+'; '+$partial.failure.traceback
+            }
+        }
+        throw ('Final runtime installer acceptance failed. '+$failureDetails.Substring(0,[Math]::Min(12000,$failureDetails.Length))+'; partial report: '+$installerReportPath)
+    }
     $installerAcceptance=Get-Content -LiteralPath $installerReportPath -Raw|ConvertFrom-Json
     if(-not $installerAcceptance.passed -or $installerAcceptance.archive_sha256 -cne $runtimeHash){throw 'Installer acceptance artifact identity mismatch'}
     $installerHashes=@{};foreach($inputFile in $installerInputs){$installerHashes[$inputFile.path]=$inputFile.sha256;if((Get-FileHash -LiteralPath $inputFile.path -Algorithm SHA256).Hash.ToLowerInvariant() -cne $inputFile.sha256){throw ('Installer input changed during packaging: '+$inputFile.path)}}
