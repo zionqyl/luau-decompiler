@@ -29,8 +29,13 @@ fn compile(
     let output = command.arg(path).output().unwrap();
     assert!(
         output.status.success() && output.stdout.first().is_some_and(|b| *b != 0),
-        "{path:?}: {:?} {}",
+        "{path:?}: compiler={} flags={:?} O{optimization} D{debug} T{metadata} status={:?} stdout_bytes={} stdout_sha256={} stdout_prefix={} stderr={}",
+        tools.compiler.display(),
+        tools.flags,
         output.status,
+        output.stdout.len(),
+        support::digest(&output.stdout),
+        output.stdout.iter().take(32).map(|byte| format!("{byte:02x}")).collect::<String>(),
         String::from_utf8_lossy(&output.stderr)
     );
     output.stdout

@@ -50,7 +50,14 @@ jobs:
           ./scripts/build-coverage-runtime.ps1
       - name: Full required correctness gate and release package
         shell: pwsh
-        run: ./scripts/release.ps1
+        run: |
+          try {
+            ./scripts/release.ps1
+          } catch {
+            $failure = $_.Exception.Message.Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
+            Write-Output ('::error::' + $failure)
+            throw
+          }
       - uses: actions/upload-artifact@v4
         if: always()
         with:

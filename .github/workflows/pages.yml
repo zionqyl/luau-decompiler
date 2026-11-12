@@ -43,6 +43,10 @@ jobs:
           .tools/emsdk/emsdk install 4.0.23
           .tools/emsdk/emsdk activate 4.0.23
           source .tools/emsdk/emsdk_env.sh
+          emsdk_config="$GITHUB_WORKSPACE/.tools/emsdk/.emscripten"
+          test -f "$emsdk_config"
+          export EM_CONFIG="$emsdk_config"
+          em++ --version
           echo "EMXX=$(command -v em++)" >> "$GITHUB_ENV"
           echo "EM_CONFIG=$EM_CONFIG" >> "$GITHUB_ENV"
           echo "$(dirname "$(command -v em++)")" >> "$GITHUB_PATH"
