@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "release": "0.4.0-rc.5",
+  "purpose": "independent_current_local_comparison_review",
+  "prepared_utc": "2026-11-14T01:36:42.223356+00:00",
+  "publication": "not_performed; root review and authorization remain separate",
+  "repository_source_commit": "6c45359b98dc878c2688f468064d6988687117f9",
+  "engine_sha256": "36c81f2589bda731036dd505886d6676e67bca2f759bf0789d5b08e4feb8cfb4",
+  "portable_engine_text_sha256": "29427015a45d9f790d99bd352233ff71561bd48537be3d9cbfd707c589991ec6",
+  "windows_runtime_installer_publication": "pending_separate_final_boundary",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2907,
+      "sha256": "551549a34d14fc20dcf76b2a774f58e13f09cfcd895deea9da904dfc6404e56b",
+      "origin": {
+        "kind": "new_scope_documentation"
+      }
+    },
+    {
+      "path": "configs/Button.roblox.json",
+      "bytes": 354,
+      "sha256": "4025dd6a55e7cc706b68c00a5d467288e4d956ebdd629d2716102fffa61847ef",
+      "origin": {
+        "kind": "exact_portable_configuration",
+        "source": "artifacts/rc5-performance/candidate.Button.roblox.config.json",
+        "source_sha256": "4025dd6a55e7cc706b68c00a5d467288e4d956ebdd629d2716102fffa61847ef"
+      }
+    },
+    {
+      "path": "configs/InventoryService.roblox.json",
+      "bytes": 364,
+      "sha256": "fb62eda371647063c1df7b02efb0f77043a0d6ae2ccb6d8d879e97666fec3c2d",
+      "origin": {
+        "kind": "exact_portable_configuration",
+        "source": "artifacts/rc5-performance/candidate.InventoryService.roblox.config.json",
+        "source_sha256": "fb62eda371647063c1df7b02efb0f77043a0d6ae2ccb6d8d879e97666fec3c2d"
+      }
+    },
+    {
+      "path": "configs/Item.roblox.json",
+      "bytes": 352,
+      "sha256": "daeedee4d24c34d6aefb8cbf75301d7d6136ac25272f1f7d3a9e232560136f0c",
+      "origin": {
+        "kind": "exact_portable_configuration",
+        "source": "artifacts/rc5-performance/candidate.Item.roblox.config.json",
+        "source_sha256": "daeedee4d24c34d6aefb8cbf75301d7d6136ac25272f1f7d3a9e232560136f0c"
+      }
+    },
+    {
+      "path": "receipts/browser-acceptance.json",
+      "bytes": 9275,
+      "sha256": "0c4da74aa9cedde9794575c60628de0ad6906cd848035368cfc418028709b046",
+      "origin": {
+        "kind": "derived_compact_receipt",
+        "sources": [
+          "artifacts/browser-tests/export.json",
+          "artifacts/browser-tests/rc5-published-observed-runtime/acceptance.json"
+        ]
+      }
+    },
+    {
+      "path": "receipts/browser-toolchain.lock.json",
+      "bytes": 573,
+      "sha256": "c3df8834e6dcd25cf530882815ce3b970324fc4714c16572fc5154f16f67956e",
+      "origin": {
+        "kind": "exact_sdk_lock",
+        "source": "browser-toolchain.lock.json",
+        "source_sha256": "c3df8834e6dcd25cf530882815ce3b970324fc4714c16572fc5154f16f67956e"
+      }
+    },
+    {
+      "path": "receipts/engine-source.json",
+      "bytes": 5406,
+      "sha256": "4f20532e0727dee272c2cbc0e51538650d152ba63707b25d6c7f4574388549cb",
+      "origin": {
+        "kind": "derived_compact_receipt",
+        "source": "artifacts/rc5-performance/candidate.identity.json",
+        "source_sha256": "146715cc06ed64fb98d2250e0c93068d0e8b28a7d4ef26be630940f355c8bf16"
+      }
+    },
+    {
+      "path": "receipts/native-engine-gate.json",
+      "bytes": 1087,
+      "sha256": "59859107bc827c2e03073c17ac856d289eb64db2fb946e11068dbc16cd87c4d7",
+      "origin": {
+        "kind": "derived_compact_receipt",
+        "source": "artifacts/release-gate.json",
+        "source_sha256": "939ee2993ef2d431cd7b9f2073b97395037b69619de21727e134c05f849ad0b7"
+      }
+    },
+    {
+      "path": "receipts/tools.json",
+      "bytes": 1418,
+      "sha256": "554f2ec7b39c00507d48f3cc18068db16f61b68c16887917a6a54a9ebe429c42",
+      "origin": {
+        "kind": "derived_compact_receipt",
+        "sources": [
+          "artifacts/rc5-performance/candidate.identity.json",
+          "artifacts/release-gate.json",
+          "browser-toolchain.lock.json"
+        ]
+      }
+    },
+    {
+      "path": "reports/browser-performance-rc5.json",
+      "bytes": 9801,
+      "sha256": "a2c12966f2d58a9a6145520a43dc6a4352a974b6fa1c6cf02b57f34ae81e37ac",
+      "origin": {
+        "kind": "exact_canonical_report",
+        "source": "docs/results/browser-performance-rc5.json",
+        "source_sha256": "a2c12966f2d58a9a6145520a43dc6a4352a974b6fa1c6cf02b57f34ae81e37ac"
+      }
+    },
+    {
+      "path": "reports/performance-rc5.json",
+      "bytes": 172621,
+      "sha256": "3d2aef1056640f694ab181ec81226e6c5b84f1ae7591f57b260f89a5f0468d4f",
+      "origin": {
+        "kind": "exact_canonical_report",
+        "source": "docs/results/performance-rc5.json",
+        "source_sha256": "3d2aef1056640f694ab181ec81226e6c5b84f1ae7591f57b260f89a5f0468d4f"
+      }
+    },
+    {
+      "path": "reports/readability-rc5.json",
+      "bytes": 19168,
+      "sha256": "72aedef939dda5bc7eeddd5a9a561ff78ce6d1d0daf0e061b8e9bc6014865a30",
+      "origin": {
+        "kind": "exact_canonical_report",
+        "source": "docs/results/readability-rc5.json",
+        "source_sha256": "72aedef939dda5bc7eeddd5a9a561ff78ce6d1d0daf0e061b8e9bc6014865a30"
+      }
+    }
+  ],
+  "excluded": [
+    "old unapproved rc.4 supplements and their payloads",
+    "native evidence ZIPs and report closures",
+    "original or normalized captured bytecode",
+    "game source and source snippets",
+    "runtime binaries and packages",
+    "screenshots",
+    "logs and network bodies",
+    "credentials",
+    "machine-specific absolute paths"
+  ]
+}
