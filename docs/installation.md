@@ -4,12 +4,14 @@ Windows x64 is the supported transactional-installer target. Linux x64 runtime/c
 
 ## Current distribution status
 
-The [rc.4 release](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.4) publishes matching Windows/Linux runtimes, source, evidence, indexes and checksum sidecars from source `6a84b6248681552ff1746347caf24b9e64e47995`. The tag-pinned online installer was tested against those public assets in a separate Unicode/space destination, including diagnosis, verified bytecode, CLI/stdin, HTTP quality rejection and owned uninstall. Ordinary installation requires no account or developer tools. The default adds the owned per-user command directory to PATH; `-NoPath` is available.
+The [rc.5 release](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.5) publishes matching Windows/Linux runtimes, source, evidence, indexes and checksum sidecars from source `090c1e64635c6af7344973a283b164e9e5f944d8`. Its [Windows](https://github.com/zionqyl/luau-decompiler/actions/runs/43545344892/job/132295248819) and [Linux](https://github.com/zionqyl/luau-decompiler/actions/runs/43545344892/job/132295248434) canonical CI jobs passed. The public Windows ZIP is **5,577,821 bytes**, SHA-256 `41b45bbdd4e13fc6e2f46e0a682a772efe218d592bc227e26c412c1da3bc2371`; [runtime-publication.json](https://github.com/zionqyl/luau-decompiler/releases/download/v0.4.0-rc.5/runtime-publication.json) records the matching assets.
+
+The actual public online installation used a separate Unicode/space destination with `-NoPath`; its first attempt hit the one-second atomic bootstrap deadline. The owned intent was preserved and the exact same command succeeded on retry. That initial attempt is a recorded failure, not a clean first-pass installation. The retry passed diagnosis, and the installed runtime then passed all ten runtime acceptance cases, including verified bytecode, CLI/stdin, HTTP quality rejection and exact output attribution. The main and tag-pinned installer bytes matched. Ordinary installation requires no account or developer tools; the default adds the owned per-user command directory to PATH.
 
 ## Windows: one-command installation
 
 ```powershell
-& ([scriptblock]::Create((Invoke-RestMethod https://raw.githubusercontent.com/zionqyl/luau-decompiler/v0.4.0-rc.4/scripts/install.ps1))) -Repository zionqyl/luau-decompiler -Version 0.4.0-rc.4 -Preview
+& ([scriptblock]::Create((Invoke-RestMethod https://raw.githubusercontent.com/zionqyl/luau-decompiler/v0.4.0-rc.5/scripts/install.ps1))) -Repository zionqyl/luau-decompiler -Version 0.4.0-rc.5 -Preview
 ```
 
 The version and preview channel are explicit. The installer resolves one release, verifies its runtime checksum and every manifest file, then runs a small verified-typed diagnosis before activation. Its streaming SHA-256 implementation does not depend on the optional PowerShell `Get-FileHash` function.
@@ -19,7 +21,7 @@ The version and preview channel are explicit. The installer resolves one release
 Keep `install.ps1`, the runtime ZIP, and its `.sha256` sidecar together. The installer is also included inside the runtime ZIP. From their directory:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Archive ./luau-decompiler-0.4.0-rc.4-windows-x64.zip -Preview
+powershell -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Archive ./luau-decompiler-0.4.0-rc.5-windows-x64.zip -Preview
 ```
 
 The default destination is `%LOCALAPPDATA%\LuauDecompiler`. Use `-Destination 'D:\My applications\LuauDecompiler'` to choose another location. `-NoPath` leaves persistent PATH unchanged. The installer prints an immediately usable executable path; a terminal started from an older environment may need refreshing before the command shim is discoverable.
@@ -35,7 +37,7 @@ Use the printed executable path in place of `luau-decompile` until your shell se
 
 ## Updates, rollback and removal
 
-A current installed updater installs management files from the newly verified runtime payload. It never promotes its own invoking script in place of the release's `install.ps1` and `release.json`. An explicit `-Version 0.4.0-rc.4 -Preview` selects that candidate; omitting `-Preview` admits stable releases only. Online resolution selects one release and downloads its matching runtime/checksum pair. Local `-Archive` installation works without network access.
+A current installed updater installs management files from the newly verified runtime payload. It never promotes its own invoking script in place of the release's `install.ps1` and `release.json`. An explicit `-Version 0.4.0-rc.5 -Preview` selects that candidate; omitting `-Preview` admits stable releases only. Online resolution selects one release and downloads its matching runtime/checksum pair. Local `-Archive` installation works without network access.
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA/LuauDecompiler/install.ps1" -Doctor
 powershell -NoProfile -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA/LuauDecompiler/install.ps1" -Rollback
@@ -66,9 +68,9 @@ Checksums and manifests establish integrity relative to the configured publisher
 
 ## Linux and container downloads
 
-The same [release](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.4) provides `luau-decompiler-0.4.0-rc.4-linux-x64.tar.gz` and its checksum. The Linux runtime and exact container passed clean Ubuntu 24.04 CI; the published TAR's 77 manifest files and validation reports were independently audited. Linux currently uses the portable TAR rather than the Windows transactional installer.
+The same [release](https://github.com/zionqyl/luau-decompiler/releases/tag/v0.4.0-rc.5) provides `luau-decompiler-0.4.0-rc.5-linux-x64.tar.gz` and its checksum. The Linux runtime and exact container passed clean Ubuntu 24.04 CI at the source identity above. The published TAR is 4,490,645 bytes, SHA-256 `c84308311ac75c035d2c47c07f22ffa83da6f863c85ae7c918be0ed4cd2648d7`. Linux currently uses the portable TAR rather than the Windows transactional installer.
 
-The published image's anonymous digest pull passed. [Self-hosting](hosting.md) documents the prebuilt image and bootstrap prerequisites. The Linux bootstrap base flow, failed missing-image update preservation and credential persistence passed a focused Ubuntu run. Successful distinct-image upgrades/rollback, actual Windows Docker bootstrap and HTTPS remain separate untested boundaries.
+The published image's anonymous digest pull passed. [Self-hosting](hosting.md) documents the current image, bootstrap prerequisites and evidence boundaries. The focused Linux bootstrap test is historical rc.4 evidence; it was not rerun against rc.5. Successful distinct-image upgrades/rollback, actual Windows Docker bootstrap and HTTPS remain separate untested boundaries.
 
 ## Interrupted first installation
 
@@ -78,7 +80,7 @@ The focused `scripts/test-install.py --bootstrap-only` profile terminates real i
 
 ## Rc.5 atomic-write recovery
 
-The rc.5 installer records a bounded write intent in the exclusively held installation lock and flushes it before creating a transaction temporary file. Retry recovers only that exact owned temporary, after checking its path, identity and bytes. Incomplete intents created before any temporary file are safely cleared. Modified temporary files and unrelated staging-like files remain untouched. This covers interruption inside journal and ownership-marker writes, separately from interrupted download and activation tests. The currently published rc.4 installer already uses streaming hashes; rc.5 does not claim to repair that completed change again.
+The rc.5 installer records a bounded write intent in the exclusively held installation lock and flushes it before creating a transaction temporary file. Retry recovers only that exact owned temporary, after checking its path, identity and bytes. Incomplete intents created before any temporary file are safely cleared. Modified temporary files and unrelated staging-like files remain untouched. This covers interruption inside journal and ownership-marker writes, separately from interrupted download and activation tests. Streaming hashes were already present in the published rc.4 installer; rc.5 does not claim to repair that completed change again.
 
 ## Windows publication and file contention
 

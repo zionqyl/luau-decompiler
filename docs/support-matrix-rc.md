@@ -1,10 +1,10 @@
 # Candidate support matrix
 
-This matrix describes the implemented `0.4.0-rc.5` candidate scope. Rc.4 platform and live-integration observations below are historical evidence, not fresh rc.5 certification. Completed checks and pending release boundaries are recorded in the [release assessment](release-candidate.md). An implemented path is not automatically a tested platform or native integration.
+This matrix describes the published `0.4.0-rc.5` candidate at source `090c1e64635c6af7344973a283b164e9e5f944d8`. Rc.4 live-integration and whole-corpus observations remain historical. Completed checks, artifact identities and remaining limitations are recorded in the [release assessment](release-candidate.md). An implemented path is not automatically a tested platform or native integration.
 
 | Input/workflow | Implemented scope | Evidence boundary |
 | --- | --- | --- |
-| Local files/stdin/stdout and output files | Shared byte/source dispatch; binary file preservation; explicit format override | Windows executable and separate-working-directory package acceptance |
+| Local files/stdin/stdout and output files | Shared byte/source dispatch; binary file preservation; explicit format override | Clean Windows CI and ten checks against the actual public, online-installed executable from a separate working directory; first online install needed a safe retry after the bootstrap deadline |
 | Bounded batches | Persistent CPU workers; ordered bounded windows; per-input errors and quality failures | Rust/service regressions and packaged batch acceptance |
 | Rust embedding | Direct source/byte buffers; reusable processor; cancellation, deadline, caller assets and bounded resources | Rust embedding example and focused API tests |
 | Luau bytecode | Explicit version profiles 3 through 14; structural auto-detection of upstream raw and the evidenced v9/v14 signed container; explicit opcode227 getter override | Required compiler/oracle matrices plus a separately identified full reference decoder census; shipped-binary processing records at least 23,239 decoder passes and 406 resource/cancellation outcomes with unrecorded decoder status. Decoding does not establish reconstruction or behavior |
@@ -13,7 +13,7 @@ This matrix describes the implemented `0.4.0-rc.5` candidate scope. Rc.4 platfor
 | Standard Lua/LuaJIT bytecode | Recognized and rejected; no backend | Format-specific rejection tests |
 | Browser static workspace | Shared Rust WASM reconstruction/source pipeline plus pinned C++ WASM parser/compiler/strict analyzer; supplied modules/contracts in memory | Real static-export acceptance is independent; see [browser evidence](browser.md). No processing service or script execution. |
 | Windows self-hosting | Authenticated HTTP, bounded pool/writers/cache, cancellation, readiness and graceful drain | Windows listener and runtime acceptance tests |
-| Linux x64 server/container | Native runtime with pinned validation assets; container and optional TLS-proxy configuration | Clean Ubuntu 24.04 CI passed build, Rust 1.85 check, formatting/lint/ordinary tests, extracted-runtime acceptance with independent typed behavior, container startup/readiness, same-container restart and clean shutdown. [Exact job and limits](hosting.md#evidence-boundary-for-this-candidate). The versioned image and public runtime are published; anonymous image pull passed. Six actual Linux published-bootstrap base-flow cases also passed. HTTPS, actual Windows Docker bootstrap and successful distinct-image upgrade/rollback remain unverified. |
+| Linux x64 server/container | Native runtime with pinned validation assets; container and optional TLS-proxy configuration | Rc.5 clean Ubuntu 24.04 CI passed build, Rust 1.85 check, formatting/lint/ordinary tests, ten extracted-runtime checks, container startup/readiness, a verified request, same-container restart and clean shutdown. [Exact job and limits](hosting.md#evidence-boundary-for-this-candidate). The matching image/runtime are public; anonymous image pull passed. Six published-bootstrap base-flow cases apply to historical rc.4, not a fresh rc.5 bootstrap run. HTTPS, actual Windows Docker bootstrap and successful distinct-image upgrade/rollback remain unverified. |
 | macOS | No certified candidate package | **Not run**, no Mac runner available |
 | Android/iOS | No certified same-device or encrypted companion integration | **Not run**; a phone's loopback cannot reach a PC |
 
@@ -29,4 +29,4 @@ Bytecode instruction coverage remains narrower than format recognition. Native u
 | Historical v0.2/v0.3 live reports | Apply only to their recorded builds, binaries, packets and transport outcomes |
 | Rc.2 Madium 2.0.0 / Roblox 0.747.0.7471481, Windows | Final-binary canonical function/raw HTTP helpers: five known-source functions, 21 complete typed comparisons; absent capture rejected. Native script calling convention and normal-engine script extraction not tested. [Exact live scope](adapter-rc.md#rc2-connected-client-result) |
 
-See [adapter contracts](adapter-rc.md), the versioned [catalog/matrix](executors-v3.md), and the candidate release assessment for exact observed outcomes. Executor availability is independent of standalone release validation.
+No fresh rc.5 executor round trip is claimed. See [adapter contracts](adapter-rc.md), the versioned [catalog/matrix](executors-v3.md), and the candidate release assessment for exact observed outcomes. Executor availability is independent of standalone release validation.
