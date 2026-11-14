@@ -79,3 +79,11 @@ The focused `scripts/test-install.py --bootstrap-only` profile terminates real i
 ## Rc.5 atomic-write recovery
 
 The rc.5 installer records a bounded write intent in the exclusively held installation lock and flushes it before creating a transaction temporary file. Retry recovers only that exact owned temporary, after checking its path, identity and bytes. Incomplete intents created before any temporary file are safely cleared. Modified temporary files and unrelated staging-like files remain untouched. This covers interruption inside journal and ownership-marker writes, separately from interrupted download and activation tests. The currently published rc.4 installer already uses streaming hashes; rc.5 does not claim to repair that completed change again.
+
+## Windows publication and file contention
+
+The current installer checks the checksum, manifest and version in staging, then records ownership and moves the payload to a provisional version directory before diagnosis. Activation still requires diagnosis to pass. This avoids renaming the directory from which a doctor/analyzer process has just run. Healthy existing versions are diagnosed once.
+
+Atomic replacement retries only Windows sharing/locking codes 32/33 and code 1175, with at most eight attempts under one one-second scheduling deadline. Each attempt checks the unchanged prior target and complete intended candidate. Synchronous operating-system I/O cannot be forcibly interrupted. The [Microsoft ReplaceFile contract](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew) distinguishes unchanged-name failure 1175 from partial-publication failures 1176/1177; these latter states are never retried as ordinary contention.
+
+Missing or modified prior targets, ambiguous legacy intents without a prior hash, and partial native publication retain the owned intent and candidate for diagnosis. They are not silently deleted or automatically replayed. A legacy intent can be cleared automatically only when its target already equals the intended bytes. These exceptional states can require manual resolution; universal interrupted-update recovery is not claimed. Ordinary hard-kill, contention, update and user-file preservation cases have separate recorded tests.

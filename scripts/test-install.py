@@ -1,11 +1,14 @@
 import argparse
 import base64
+import ctypes
+from ctypes import wintypes
 import hashlib
 import http.server
 import json
 import os
 import pathlib
 import subprocess
+import sys
 import threading
 import time
 import traceback
@@ -166,6 +169,189 @@ def main(failure_context=None):
     if not args.admission_only and not args.legacy_only:
         primary_managed = managed
         try:
+            lock_results = []
+            for order in ['staging_control', 'provisional_version']:
+                managed = work / ('post doctor cwd '+order)
+                signal = work / (order+'.doctor-checkpoint')
+                resume = work / (order+'.doctor-resume')
+                ready = work / (order+'.holder-ready')
+                move_failure = work / (order+'.move-failure.json')
+                source = installer.read_text(encoding='utf-8-sig')
+                move = '    if($movePayload){[IO.Directory]::Move($payload,$versionPath)}'
+                diagnosis = '    if($movePayload){$null=Run-Check $versionPath}'
+                version_selection = "    $relative='versions/'+$manifest.version+'-'+$expected.Substring(0,12).ToLowerInvariant()"
+                assert source.count(move) == source.count(diagnosis) == source.count(version_selection) == 1
+                if order == 'staging_control':
+                    source = source.replace(diagnosis+'\n', '', 1).replace(version_selection, '    $null=Run-Check $payload\n'+version_selection, 1)
+                return_marker = '        return $result'
+                assert source.count(return_marker) == 1
+                signal_text = str(signal).replace("'", "''")
+                resume_text = str(resume).replace("'", "''")
+                failure_text = str(move_failure).replace("'", "''")
+                pause = "        [IO.File]::WriteAllText('"+signal_text+"',[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($Directory)));while(-not(Test-Path -LiteralPath '"+resume_text+"')){Start-Sleep -Milliseconds 100}\n"
+                source = source.replace(return_marker, pause+return_marker, 1)
+                observed_move = "    if($movePayload){try{[IO.Directory]::Move($payload,$versionPath)}catch{[IO.File]::WriteAllText('"+failure_text+"',(@{hresult=$_.Exception.GetBaseException().HResult;message=$_.Exception.GetBaseException().Message}|ConvertTo-Json));throw}}"
+                source = source.replace(move, observed_move, 1)
+                instrumented = work / (order+'-cwd-instrumented.ps1')
+                instrumented.write_text(source, encoding='utf-8')
+                process = subprocess.Popen([str(powershell), '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', str(instrumented),
+                                            '-Destination', str(managed), '-NoPath', '-Archive', str(archive),
+                                            '-ExpectedSha256', archive_sha, '-Preview'], cwd=work,
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                holder = None
+                try:
+                    deadline = time.monotonic()+45
+                    while not signal.exists():
+                        if process.poll() is not None:
+                            raise AssertionError(process.communicate()[1].decode('utf-8', 'replace'))
+                        if time.monotonic() >= deadline:
+                            raise AssertionError('post-doctor checkpoint was not reached')
+                        time.sleep(.025)
+                    checked_directory = pathlib.Path(base64.b64decode(signal.read_text(encoding='utf-8-sig')).decode('utf-8'))
+                    assert checked_directory.is_relative_to(managed)
+                    holder = subprocess.Popen([sys.executable, '-c', "import pathlib,sys;pathlib.Path(sys.argv[1]).write_text('ready',encoding='ascii');sys.stdin.buffer.read(1)", str(ready)],
+                                              cwd=checked_directory, stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                                              creationflags=subprocess.CREATE_NO_WINDOW)
+                    while not ready.exists():
+                        if holder.poll() is not None:
+                            raise AssertionError(holder.communicate()[1].decode('utf-8', 'replace'))
+                        if time.monotonic() >= deadline:
+                            raise AssertionError('CWD-holder process did not become ready')
+                        time.sleep(.025)
+                    resume.write_bytes(b'resume')
+                    output, errors = process.communicate(timeout=120)
+                    assert holder.poll() is None
+                    if order == 'staging_control':
+                        assert process.returncode != 0 and move_failure.is_file(), errors.decode('utf-8', 'replace')
+                        failure = json.loads(move_failure.read_text(encoding='utf-8-sig'))
+                        assert failure['hresult'] & 0xffff in (5, 32), failure
+                        assert not (managed / 'current').exists()
+                    else:
+                        assert process.returncode == 0, errors.decode('utf-8', 'replace')
+                        assert managed / current() == checked_directory and not move_failure.exists()
+                        assert not (managed / '.luau-bootstrap.json').exists()
+                    lock_results.append({'ordering': order, 'invoker_sha256': digest(instrumented.read_bytes()),
+                                         'installer_exit_code': process.returncode, 'independent_cwd_holder_alive_at_result': True,
+                                         'directory_move_denied': move_failure.exists()})
+                finally:
+                    if holder is not None and holder.poll() is None:
+                        holder.communicate(input=b'x', timeout=10)
+                    if process.poll() is None:
+                        process.kill()
+                        process.communicate(timeout=10)
+                local(archive)
+                if order == 'provisional_version':
+                    before_pointer = (managed / 'current').read_bytes()
+                    before_metadata = (managed / '.luau-installation.json').read_bytes()
+                    before_versions = sorted(path.name for path in (managed / 'versions').iterdir())
+                    rejected = variant('diagnosis-fails-'+order, {'bin/luau-quality.exe': b'invalid controlled analyzer executable'})
+                    local(rejected, success=False)
+                    assert (managed / 'current').read_bytes() == before_pointer
+                    assert (managed / '.luau-installation.json').read_bytes() == before_metadata
+                    assert sorted(path.name for path in (managed / 'versions').iterdir()) == before_versions
+                    assert not (managed / '.luau-bootstrap.json').exists()
+                    assert not list(managed.glob('.staging-*'))
+                install(['-Uninstall'])
+            record('diagnosis_in_final_owned_version_avoids_live_cwd_rename_and_preserves_failed_updates',
+                   controlled_orderings=lock_results, failed_diagnosis_preserves_active_runtime=True,
+                   scope='Actual separate Windows process holds the diagnosed directory as CWD until installer completion; old staging order is a required failing control')
+            atomic_results = []
+            kernel = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel.CreateFileW.argtypes = [wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, ctypes.c_void_p, wintypes.DWORD, wintypes.DWORD, wintypes.HANDLE]
+            kernel.CreateFileW.restype = wintypes.HANDLE
+            kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+            kernel.CloseHandle.restype = wintypes.BOOL
+            for condition in ['released', 'held', 'modified', 'partial']:
+                managed = work / ('atomic contention '+condition)
+                ready = work / (condition+'.atomic-ready')
+                start = work / (condition+'.atomic-start')
+                observed = work / (condition+'.atomic-observed')
+                resume = work / (condition+'.atomic-resume')
+                result_path = work / (condition+'.atomic-result.json')
+                source = installer.read_text(encoding='utf-8-sig').split("if($env:OS -ne 'Windows_NT'", 1)[0]
+                def literal(path):
+                    return "'"+str(path).replace("'", "''")+"'"
+                setup = "\n$script:observedAttempts=0;$script:attemptTimes=@()\n"
+                call = '                if($null -ne $previousHash){[IO.File]::Replace($temporary,$Path,[NullString]::Value)}else{[IO.File]::Move($temporary,$Path)}'
+                assert source.count(call) == 1
+                replacement = '                $script:observedAttempts=$attempt;$script:attemptTimes+=@($clock.ElapsedMilliseconds)\n'
+                replacement += ("                [IO.File]::Delete($Path);throw [IO.IOException]::new('controlled partial publication',-2147023720)" if condition == 'partial' else call)
+                source = source.replace(call, replacement, 1)
+                failure_marker = '                $remaining=1000-$clock.ElapsedMilliseconds'
+                assert source.count(failure_marker) == 1
+                if condition != 'partial':
+                    pause = "                if($attempt -eq 1){[IO.File]::WriteAllText("+literal(observed)+",[string]($nativeHresult -band 65535));while(-not(Test-Path -LiteralPath "+literal(resume)+")){Start-Sleep -Milliseconds 5}}\n"
+                    source = source.replace(failure_marker, pause+failure_marker, 1)
+                setup += "New-Item -ItemType Directory -Path $root -Force|Out-Null\n[IO.File]::WriteAllText($metadataPath,'previous controlled bytes',$utf8)\n"
+                setup += "$lock=[IO.File]::Open($lockPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)\n"
+                setup += "[IO.File]::WriteAllText("+literal(ready)+",'ready');while(-not(Test-Path -LiteralPath "+literal(start)+")){Start-Sleep -Milliseconds 5}\n"
+                setup += "$operationClock=[Diagnostics.Stopwatch]::StartNew();$failure=$null\ntry{Atomic-Text $metadataPath 'next controlled bytes'}catch{$failure=$_.Exception.Message}\n$operationClock.Stop()\n"
+                setup += "$candidate=@(Get-ChildItem -LiteralPath $root -Filter '.luau-installation.json.new-*' -File);$retained=$lock.Length -gt 0 -and $candidate.Count -eq 1\n"
+                setup += "$recoveryFailure=$null;try{Recover-AtomicWrite}catch{$recoveryFailure=$_.Exception.Message}\n"
+                if condition == 'partial':
+                    setup += "$lock.Position=0;$data=[byte[]]::new([int]$lock.Length);$null=$lock.Read($data,0,$data.Length);$legacy=$utf8.GetString($data).Substring('LUAU-ATOMIC/1 '.Length)|ConvertFrom-Json;$legacy.PSObject.Properties.Remove('previous_sha256');$data=$utf8.GetBytes('LUAU-ATOMIC/1 '+($legacy|ConvertTo-Json -Compress)+\"`n\");$lock.SetLength(0);$lock.Position=0;$lock.Write($data,0,$data.Length);$lock.Flush($true);$legacyFailure=$null;try{Recover-AtomicWrite}catch{$legacyFailure=$_.Exception.Message}\n"
+                else:
+                    setup += "$legacyFailure=$null\n"
+                setup += "$targetHash=$null;if(Test-Path -LiteralPath $metadataPath){$targetHash=Hash $metadataPath};$remainingCandidates=@(Get-ChildItem -LiteralPath $root -Filter '.luau-installation.json.new-*' -File)\n"
+                setup += "$result=@{failure=$failure;attempts=$script:observedAttempts;attempt_started_ms=$script:attemptTimes;elapsed_ms=$operationClock.ElapsedMilliseconds;target_sha256=$targetHash;intent_and_candidate_retained_on_error=$retained;recovery_failure=$recoveryFailure;legacy_recovery_failure=$legacyFailure;remaining_candidates=$remainingCandidates.Count;remaining_intent_bytes=$lock.Length}\n$lock.Dispose();[IO.File]::WriteAllText("+literal(result_path)+",($result|ConvertTo-Json -Depth 6),$utf8)\n"
+                instrumented = work / (condition+'-atomic-contention.ps1')
+                instrumented.write_text(source+setup, encoding='utf-8')
+                process = subprocess.Popen([str(powershell), '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', str(instrumented), '-Destination', str(managed), '-NoPath'],
+                                           cwd=work, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                handle = None
+                try:
+                    deadline = time.monotonic()+30
+                    for checkpoint in [ready, observed] if condition != 'partial' else [ready]:
+                        while not checkpoint.exists():
+                            if process.poll() is not None:
+                                raise AssertionError(process.communicate()[1].decode('utf-8', 'replace'))
+                            if time.monotonic() >= deadline:
+                                raise AssertionError('atomic contention checkpoint was not reached: '+condition)
+                            time.sleep(.005)
+                        if checkpoint == ready:
+                            if condition != 'partial':
+                                handle = kernel.CreateFileW(str(managed / '.luau-installation.json'), 0x80000000, 3, None, 3, 0, None)
+                                if handle in (None, ctypes.c_void_p(-1).value):
+                                    raise ctypes.WinError(ctypes.get_last_error())
+                            start.write_bytes(b'start')
+                    if condition == 'released':
+                        assert kernel.CloseHandle(handle)
+                        handle = None
+                    elif condition == 'modified':
+                        (managed / '.luau-installation.json').write_bytes(b'user modified bytes')
+                    resume.write_bytes(b'resume')
+                    output, errors = process.communicate(timeout=15)
+                    assert process.returncode == 0, errors.decode('utf-8', 'replace')
+                    result = json.loads(result_path.read_text(encoding='utf-8-sig'))
+                    result['observed_win32_code'] = int(observed.read_text(encoding='utf-8-sig')) if condition != 'partial' else None
+                    assert condition == 'partial' or result['observed_win32_code'] == 32, result
+                    assert 1 <= result['attempts'] <= 8 and all(value < 1000 for value in result['attempt_started_ms']), result
+                    if condition == 'released':
+                        assert result['failure'] is None and result['attempts'] >= 2
+                        assert result['target_sha256'] == digest(b'next controlled bytes')
+                    else:
+                        assert result['failure'] and result['intent_and_candidate_retained_on_error']
+                        if condition == 'held':
+                            assert result['target_sha256'] == digest(b'previous controlled bytes')
+                            assert result['attempts'] >= 2 and result['recovery_failure'] is None
+                            assert result['remaining_candidates'] == 0 and result['remaining_intent_bytes'] == 0
+                        elif condition == 'modified':
+                            assert result['target_sha256'] == digest(b'user modified bytes')
+                            assert result['recovery_failure'] and result['remaining_candidates'] == 1 and result['remaining_intent_bytes'] > 0
+                        else:
+                            assert result['attempts'] == 1 and result['target_sha256'] is None
+                            assert 'Win32 1176' in result['failure']
+                            assert result['recovery_failure'] and result['legacy_recovery_failure']
+                            assert result['remaining_candidates'] == 1 and result['remaining_intent_bytes'] > 0
+                    atomic_results.append({'condition': condition, 'invoker_sha256': digest(instrumented.read_bytes()), **result})
+                finally:
+                    if handle not in (None, ctypes.c_void_p(-1).value):
+                        kernel.CloseHandle(handle)
+                    if process.poll() is None:
+                        process.kill()
+                        process.communicate(timeout=10)
+            record('atomic_contention_is_classified_bounded_and_partial_or_changed_publication_is_preserved', controls=atomic_results,
+                   native_contention='Actual deny-delete file handles; only partial1176 is an explicit fault injection, not an observed OS failure')
             for atomic_target in ['intent', 'bootstrap', 'stage_owner', 'activation']:
                 managed = work / ('atomic interrupted '+atomic_target)
                 signal = work / (atomic_target+'.atomic-checkpoint')

@@ -50,6 +50,16 @@ function Recover-AtomicWrite {
     $temporary=Safe-Path $root ($plan.path+'.new-'+$plan.transaction_id)
     $expected=[Convert]::FromBase64String($plan.bytes)
     if($expected.Length -gt 1048576){throw 'Atomic write content exceeds its size limit'}
+    $hasPrevious=$plan.PSObject.Properties.Name -ccontains 'previous_sha256'
+    if($hasPrevious -and $null -ne $plan.previous_sha256 -and (-not($plan.previous_sha256 -is [string]) -or $plan.previous_sha256 -cnotmatch '^[0-9a-f]{64}$')){throw 'Invalid previous atomic target identity; intent and candidate were preserved'}
+    $targetExists=Test-Path -LiteralPath $target
+    if(-not $targetExists -and (-not $hasPrevious -or $null -ne $plan.previous_sha256)){throw ('Unsupported partial atomic publication for '+$plan.path+': previous target is missing or unrecorded; intent and candidate were preserved')}
+    if($targetExists){
+        if(-not(Test-Path -LiteralPath $target -PathType Leaf) -or (Get-Item -LiteralPath $target).Length -gt 1048576){throw 'Modified atomic target was preserved with its intent and candidate'}
+        $targetHash=Hash $target
+        $expectedHash=Hash-Bytes $expected
+        if($targetHash -cne $expectedHash -and (-not $hasPrevious -or $null -eq $plan.previous_sha256 -or $targetHash -cne $plan.previous_sha256)){throw ('Modified or ambiguous atomic target '+$plan.path+' was preserved with its intent and candidate')}
+    }
     if(Test-Path -LiteralPath $temporary){
         if(-not(Test-Path -LiteralPath $temporary -PathType Leaf) -or (Get-Item -LiteralPath $temporary).Length -gt $expected.Length){throw 'Modified atomic write was preserved'}
         $actual=[IO.File]::ReadAllBytes($temporary)
@@ -61,17 +71,55 @@ function Recover-AtomicWrite {
 function Atomic-Bytes([string]$Path,[byte[]]$Bytes){
     if(-not $lock -or $Bytes.Length -gt 1048576){throw 'Atomic writes require a held installation lock and at most 1 MiB'}
     Recover-AtomicWrite
+    $previousHash=$null
+    if(Test-Path -LiteralPath $Path){
+        if(-not(Test-Path -LiteralPath $Path -PathType Leaf) -or (Get-Item -LiteralPath $Path).Length -gt 1048576){throw 'Atomic target is not a bounded owned file'}
+        $previousHash=Hash $Path
+    }
     $transactionId=[Guid]::NewGuid().ToString('N')
     $relative=$Path.Substring($root.Length+1).Replace('\','/')
     $temporary=$Path+'.new-'+$transactionId
-    $plan=[ordered]@{product=$product;transaction_id=$transactionId;path=$relative;bytes=[Convert]::ToBase64String($Bytes)}
+    $plan=[ordered]@{product=$product;transaction_id=$transactionId;path=$relative;bytes=[Convert]::ToBase64String($Bytes);previous_sha256=$previousHash}
     $intent=$utf8.GetBytes('LUAU-ATOMIC/1 '+($plan|ConvertTo-Json -Compress)+"`n")
     $lock.Position=0;$lock.Write($intent,0,$intent.Length);$lock.Flush($true)
+    $committed=$false
     try{
         $stream=[IO.FileStream]::new($temporary,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None,4096,[IO.FileOptions]::WriteThrough)
         try{$stream.Write($Bytes,0,$Bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}
-        if(Test-Path -LiteralPath $Path){[IO.File]::Replace($temporary,$Path,[NullString]::Value)}else{[IO.File]::Move($temporary,$Path)}
-    }finally{Recover-AtomicWrite}
+        $expectedHash=Hash-Bytes $Bytes
+        $clock=[Diagnostics.Stopwatch]::StartNew()
+        $attempt=0
+        $lastContention=$null
+        while($true){
+            if($clock.ElapsedMilliseconds -ge 1000){if($lastContention){throw $lastContention};throw 'Atomic publication deadline exceeded; intent and candidate were preserved'}
+            if($null -eq $previousHash){
+                if(Test-Path -LiteralPath $Path){throw 'Atomic target appeared during publication; intent and candidate were preserved'}
+            }elseif(-not(Test-Path -LiteralPath $Path -PathType Leaf) -or (Get-Item -LiteralPath $Path).Length -gt 1048576 -or (Hash $Path) -cne $previousHash){throw 'Atomic target changed during publication; intent and candidate were preserved'}
+            if(-not(Test-Path -LiteralPath $temporary -PathType Leaf) -or (Get-Item -LiteralPath $temporary).Length -ne $Bytes.Length -or (Hash $temporary) -cne $expectedHash){throw 'Atomic candidate changed during publication; intent and candidate were preserved'}
+            if($clock.ElapsedMilliseconds -ge 1000){if($lastContention){throw $lastContention};throw 'Atomic publication deadline exceeded; intent and candidate were preserved'}
+            $attempt++
+            try{
+                if($null -ne $previousHash){[IO.File]::Replace($temporary,$Path,[NullString]::Value)}else{[IO.File]::Move($temporary,$Path)}
+                $committed=$true
+                break
+            }catch{
+                $cause=$_.Exception.GetBaseException()
+                $nativeHresult=$cause.HResult -band 4294967295L
+                $code=$(if(($nativeHresult -band 4294901760L) -eq 2147942400L){$nativeHresult -band 65535}else{$null})
+                $remaining=1000-$clock.ElapsedMilliseconds
+                if($null -eq $previousHash -or $code -notin @(32,33,1175) -or $attempt -ge 8 -or $remaining -le 0){throw}
+                $lastContention=$cause
+                Start-Sleep -Milliseconds ([int][Math]::Min([Math]::Min($attempt*20,100),$remaining))
+                if($clock.ElapsedMilliseconds -ge 1000){throw}
+            }
+        }
+    }catch{
+        $cause=$_.Exception.GetBaseException()
+        $nativeHresult=$cause.HResult -band 4294967295L
+        $nativeCode=$(if(($nativeHresult -band 4294901760L) -eq 2147942400L){$nativeHresult -band 65535}else{'unavailable'})
+        $hresult=('{0:X8}' -f $nativeHresult)
+        throw [IO.IOException]::new(('Atomic write failed for '+$relative+' (HRESULT 0x'+$hresult+', Win32 '+$nativeCode+'): '+$cause.Message),$cause)
+    }finally{if($committed){Recover-AtomicWrite}}
 }
 function Atomic-Text([string]$Path,[string]$Value){Atomic-Bytes $Path ($utf8.GetBytes($Value))}
 function Safe-Path([string]$Base,[string]$Relative){
@@ -407,7 +455,6 @@ try{
     $manifest=Check-Manifest $payload
     if($manifest.version.Contains('-') -and -not $Preview){throw 'Release candidates require explicit -Preview selection'}
     if(($Version -and $manifest.version -cne $Version.TrimStart('v')) -or ($resolved -and $manifest.version -cne $resolved.version)){throw 'Runtime version differs from the resolved release'}
-    $null=Run-Check $payload
     $relative='versions/'+$manifest.version+'-'+$expected.Substring(0,12).ToLowerInvariant()
     $versionPath=Safe-Path $root $relative
     New-Item -ItemType Directory -Path (Join-Path $root 'versions') -Force|Out-Null
@@ -416,6 +463,7 @@ try{
     $bootstrap.target_path=$relative;$bootstrap.target_manifest_sha256=Hash (Join-Path $(if($movePayload){$payload}else{$versionPath}) 'runtime-manifest.json');$bootstrap.owns_target=$movePayload
     Atomic-Text $bootstrapPath ($bootstrap|ConvertTo-Json -Depth 5)
     if($movePayload){[IO.Directory]::Move($payload,$versionPath)}
+    if($movePayload){$null=Run-Check $versionPath}
     $history=@()
     if($existing){$history=@($existing.versions|Where-Object{$_.path -cne $relative})}
     $history+=@{version=$manifest.version;path=$relative;manifest_sha256=(Hash (Join-Path $versionPath 'runtime-manifest.json'));archive_sha256=$expected.ToLowerInvariant()}
@@ -428,5 +476,5 @@ try{
     $executable=Join-Path $versionPath 'bin/luau-decompile.exe'
     if($Json){Emit-Json @{passed=$true;version=$manifest.version;executable=$executable;command_directory=$root;restart_shell_for_persistent_path=(-not $NoPath)}}else{Write-Output ('Installed '+$manifest.version+"`nExecutable: "+$executable+"`nCommand directory: "+$root);if(-not $NoPath){Write-Output 'Open a new shell for persistent PATH discovery; the executable path above works immediately.'}}
 }finally{
-    try{if($lock -and -not(Test-Path -LiteralPath $activationPath)){Recover-Bootstrap}}finally{if($lock){$lock.Dispose()}}
+    try{if($lock -and $lock.Length -eq 0 -and -not(Test-Path -LiteralPath $activationPath)){Recover-Bootstrap}}finally{if($lock){$lock.Dispose()}}
 }

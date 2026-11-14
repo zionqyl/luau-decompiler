@@ -1,5 +1,7 @@
 # Performance evidence
 
+The [audited rc.5 comparison archive](https://github.com/zionqyl/luau-decompiler/tree/7bbc410e035c39223a851ab8ba611744c5c9adf5) contains the exact current measurement/readability reports, portable settings and compact identities. It excludes source code, captured bytes, logs and old supplemental payloads; runtime/installer publication is a separate boundary.
+
 The current rc.4 versus rc.5 native receipt `docs/results/performance-rc5.json` uses the exact published rc.4 executable and the recorded rc.5 binary, with equal policies, inputs and bounded worker settings. It separates core work, uncached strict validation, result-cache hits, actual verified-typed requests, cold processes and parallel batches. Improvements and regressions are both retained. Original PID-only aggregate-memory observations were invalidated; the separate creation-time-validated cohorts are the supported process-tree memory evidence. Allocation counts were not measured.
 
 The rc.5 browser receipt `docs/results/browser-performance-rc5.json` measures the accepted static export in Windows Chromium. Seven warm observations per tiny owned input follow the first observation; five fresh page-owned workers measure initialization separately. Historical rc.4 browser timings remain dated references, not a fresh matched baseline. WASM linear memory excludes browser RSS and JavaScript heaps.
