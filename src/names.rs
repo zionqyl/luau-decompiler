@@ -103,13 +103,26 @@ impl NameAllocator {
         }
     }
     pub fn allocate(&mut self, hint: &str) -> String {
-        let base = identifier(hint, self.style);
+        self.allocate_with_style(hint, self.style)
+    }
+    pub fn allocate_service(&mut self, hint: &str) -> String {
+        self.allocate_with_style(
+            hint,
+            if self.style == NameStyle::Roblox {
+                NameStyle::PascalCase
+            } else {
+                self.style
+            },
+        )
+    }
+    fn allocate_with_style(&mut self, hint: &str, style: NameStyle) -> String {
+        let base = identifier(hint, style);
         if self.used.insert(base.clone()) {
             return base;
         }
         let mut suffix = self.next_suffix.get(&base).copied().unwrap_or(2);
         loop {
-            let name = if self.style == NameStyle::SnakeCase {
+            let name = if style == NameStyle::SnakeCase {
                 format!("{base}_{suffix}")
             } else {
                 format!("{base}{suffix}")

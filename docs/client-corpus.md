@@ -58,6 +58,12 @@ The subsequent final-executable check used SHA-256 `a5b735d38c2f61bc6d6a5d09cfc8
 
 The exact loaded collector source hash was recorded. A pre-start whole-file fingerprint of the Python receiver was not recorded: processing-only edits were made while collection ran, and current/post-capture hashes identify the reproduction script rather than attesting the exact running full file. The report preserves this provenance limitation instead of substituting a later hash. Original-buffer hashes were independently rechecked, and capture never depended on the mutable processing implementation.
 
+## Rc.5 selected-output refresh
+
+Three retained buffers were processed again: Button and InventoryService (gameplay/UI), and Item (data only). They reconstruct and compile; only Item passes strict analysis and meaningful typing. Button and InventoryService remain unverified. The local/evidence receipt `docs/results/readability-rc5.json` identifies the exact inputs, output bytes, engine, tools and configurations. Captured scripts were not executed.
+
+The corpus retains 297 documents: three current outputs and 294 explicitly historical outputs. Its manifest separates current-subset observations, distinct objects and unique buffers from composite coverage. No full rc.5 pass or new capture is claimed. Pages packages the three current examples on demand and checks the historical files' integrity without relabeling them. Prior source and receipts remain available in Git history and the versioned evidence.
+
 ## Rc.4 reprocessing and inventory reconciliation
 
 The retained capture contains 37,285 observation records, including 233 repeated observations of the same LocalScripts. Terminal path-segment identities and matching debug IDs establish 37,052 distinct objects; their class, path, extraction outcome and bytecode hash were unchanged across these repeats. There are 37,020 captured objects and 32 unsupported Script contexts. The historical receipt remains unchanged; its instance-labelled counts describe observations. Exact serialized-buffer deduplication still yields 23,645 unique buffers.

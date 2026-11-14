@@ -13,6 +13,26 @@ fn config() -> Config {
 }
 
 #[test]
+fn generic_type_spacing_preserves_runtime_comparison_boundaries() {
+    let source = b"type Box<T> = {value: T}\ntype Nested = Box<Box<number>>\nlocal function identity<T>(value: T): T return value end\nlocal compare: typeof(function(value: number): boolean return value < 2 end) = function(value: number): boolean return value > 0 end\nreturn identity(compare(1))";
+    let result = process(source, InputFormat::LuauSource, &config()).unwrap();
+    assert!(result.source.contains("type Box<T>"), "{}", result.source);
+    assert!(
+        result.source.contains("Box<Box<number>>"),
+        "{}",
+        result.source
+    );
+    assert!(
+        result.source.contains("function identity<T>"),
+        "{}",
+        result.source
+    );
+    assert!(result.source.contains("value < 2"), "{}", result.source);
+    assert!(result.source.contains("value > 0"), "{}", result.source);
+    assert_eq!(result.source.matches("Made by @zionqyl").count(), 1);
+}
+
+#[test]
 fn detection_uses_content_and_preserves_binary_packets() {
     let bytecode = include_bytes!("fixtures/arithmetic.O1.D2.bc");
     assert_eq!(

@@ -7,6 +7,7 @@ $directory=Join-Path $taskRoot 'artifacts/examples-rc'
 $destination=Join-Path $taskRoot 'examples/typed-output'
 New-Item -ItemType Directory -Force -Path $directory,$destination | Out-Null
 $compiler=Join-Path $taskRoot '.tools/luau-modern/luau-compile.exe'
+$version=(& $Binary --version) -replace '^luau-decompile\s+',''
 $items=@(@{id='verified_bytecode';kind='bytecode';retained='fixtures/runtime/verified.bc';source='fixtures/runtime/verified.luau'},@{id='roblox_identity';kind='bytecode'},@{id='roblox_position';kind='bytecode'},@{id='player_snapshot';file='roblox_snapshot';kind='bytecode'},@{id='generic_identity';kind='source'},@{id='generic_vararg';kind='source'},@{id='inferred_returns';kind='source'})
 function Hash([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()}
 function Reuse-Examples {
@@ -31,7 +32,6 @@ function Reuse-Examples {
         return $true
     }catch{return $false}
 }
-if(Reuse-Examples){Write-Output ('Reused matching final executable/tool/configuration/source/output example evidence: '+$items.Count);return}
 function Run-Cli([string[]]$Parameters,[string]$ErrorPath){
     $start=[Diagnostics.ProcessStartInfo]::new($Binary)
     $start.Arguments=(@($Parameters|ForEach-Object{if($_.Contains('"') -or $_.Contains([char]0)){throw 'Invalid native argument'};'"'+$_+'"'}) -join ' ')
@@ -55,6 +55,27 @@ function Compile-Example([string]$Source,[string]$Destination){
     try{$child.StandardOutput.BaseStream.CopyTo($file);$child.WaitForExit();if($child.ExitCode -ne 0){throw ('Compiler failed: '+$errors.Result)}}finally{$file.Dispose();$child.Dispose()}
     if([IO.File]::ReadAllBytes($Destination)[0] -ne 14){throw 'Expected the pinned version14 example profile.'}
 }
+function Generate-OrganizationExample {
+    $source=Join-Path $taskRoot 'tests/source-corpus/module_organization.luau'
+    $config=Join-Path $destination 'module_organization.config.json'
+    $output=Join-Path $destination 'module_organization.luau'
+    $manifest=Join-Path $destination 'module_organization.manifest.json'
+    $tools=@{analyzer_sha256=(Hash (Join-Path $taskRoot '.tools/luau-quality.exe'));manifest_sha256=(Hash (Join-Path $taskRoot '.tools/luau-quality.exe.manifest.json'));definitions_sha256=(Hash (Join-Path $taskRoot 'definitions/roblox.d.luau'))}
+    if((Test-Path -LiteralPath $manifest) -and (Test-Path -LiteralPath $output)){
+        $prior=Get-Content -LiteralPath $manifest -Raw|ConvertFrom-Json
+        if($prior.executable_sha256 -ceq (Hash $Binary) -and $prior.generator_sha256 -ceq (Hash $PSCommandPath) -and $prior.known_source_sha256 -ceq (Hash $source) -and $prior.configuration_sha256 -ceq (Hash $config) -and $prior.output_sha256 -ceq (Hash $output) -and $prior.analyzer_manifest_sha256 -ceq $tools.manifest_sha256 -and $prior.validation.strict_analysis -ceq 'passed' -and $prior.validation.analyzer_sha256 -ceq $tools.analyzer_sha256 -and $prior.validation.definitions_sha256 -ceq $tools.definitions_sha256){Write-Output 'Reused matching whole-module organization example';return}
+    }
+    $quality=Join-Path $directory 'module_organization-quality.json'
+    Run-Cli @('decompile',$source,'--config',$config,'-o',$output,'--quality-report',$quality,'--force') (Join-Path $directory 'module_organization.stderr')
+    $result=Get-Content -LiteralPath $quality -Raw|ConvertFrom-Json
+    if(-not $result.validation.required_passed -or $result.validation.strict_analysis -cne 'passed'){throw 'Whole-module organization example failed its required strict gate'}
+    $receipt=[ordered]@{schema=1;version=$version;executable_sha256=(Hash $Binary);generator_sha256=(Hash $PSCommandPath);known_source='tests/source-corpus/module_organization.luau';known_source_sha256=(Hash $source);configuration='module_organization.config.json';configuration_sha256=(Hash $config);output='module_organization.luau';output_sha256=(Hash $output);validation=$result.validation;types=$result.type_report;scope='Source preservation and dependency-aware presentation; runtime statements are not reordered. Explicit controlled modules are supplied by configuration.';behavior='Not executed by generator; controlled type_layout_whole_module_preserves_import_type_and_initialization_dependencies owns behavioral verification. Strict status and meaningful typing remain separate.'}
+    $receipt.analyzer_manifest_sha256=$tools.manifest_sha256
+    [IO.File]::WriteAllText($manifest,($receipt|ConvertTo-Json -Depth 32),$utf8)
+    Write-Output 'Generated whole-module organization example with recorded independent quality results'
+}
+Generate-OrganizationExample
+if(Reuse-Examples){Write-Output ('Reused matching final executable/tool/configuration/source/output example evidence: '+$items.Count);return}
 $rows=[Collections.Generic.List[object]]::new()
 foreach($item in $items){
     $id=$item.id
@@ -79,7 +100,6 @@ foreach($item in $items){
     if(-not $result.validation.required_passed -or -not $result.validation.meaningful_typing.passed){throw ('Example policy failed: '+$id)}
     $rows.Add([ordered]@{id=$id;input_kind=$item.kind;known_source=$inputSource.Substring($taskRoot.Length+1).Replace('\','/');known_source_sha256=(Hash $inputSource);input_path=$inputPath.Substring($taskRoot.Length+1).Replace('\','/');input_sha256=(Hash $inputPath);configuration=($id+'.config.json');configuration_sha256=(Hash $configPath);output=($id+'.luau');output_sha256=(Hash $output);validation=$result.validation;types=$result.type_report;behavior='not_run_by_example_generator; independent controlled release matrices are separate'})
 }
-$version=(& $Binary --version) -replace '^luau-decompile\s+',''
 $report=[ordered]@{schema=1;version=$version;executable_sha256=(Hash $Binary);generator_sha256=(Hash $PSCommandPath);compiler_sha256=(Hash $compiler);analyzer_manifest_sha256=(Hash (Join-Path $taskRoot '.tools/luau-quality.exe.manifest.json'));examples=$rows.ToArray()}
 [IO.File]::WriteAllText((Join-Path $destination 'manifest-rc.json'),($report|ConvertTo-Json -Depth 32),$utf8)
 Write-Output ('Verified examples generated from final executable: '+$rows.Count)

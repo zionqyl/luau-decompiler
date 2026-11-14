@@ -311,13 +311,20 @@ try {
   if (packagingOnly) {
     const originalBytes = await readFile(resolve(root, "artifacts/browser-tests/export.json"));
     const original = JSON.parse(originalBytes);
-    const acceptedBytes = await readFile(
-      resolve(root, "artifacts/browser-tests/runtime-gate-manifest.json"),
-    );
+    const unchangedRuntime = digest(staticManifestBytes) === original.static_export_manifest_sha256;
+    const acceptedBytes = unchangedRuntime
+      ? staticManifestBytes
+      : await readFile(resolve(root, "artifacts/browser-tests/runtime-gate-manifest.json"));
     const accepted = JSON.parse(acceptedBytes);
-    const refresh = JSON.parse(
-      await readFile(resolve(root, "artifacts/browser-tests/notice-refresh.json"), "utf8"),
-    );
+    const refresh = unchangedRuntime
+      ? {
+          original_acceptance_sha256: digest(originalBytes),
+          current_static_export_manifest_sha256: digest(staticManifestBytes),
+          changed_assets: [],
+        }
+      : JSON.parse(
+          await readFile(resolve(root, "artifacts/browser-tests/notice-refresh.json"), "utf8"),
+        );
     if (
       !original.passed ||
       digest(acceptedBytes) !== original.static_export_manifest_sha256 ||
@@ -333,7 +340,7 @@ try {
         throw Error("Runtime acceptance implementation changed: " + row.path);
     const allowed = new Set(refresh.changed_assets.map((row) => row.path));
     if (
-      allowed.size !== 2 ||
+      allowed.size !== (unchangedRuntime ? 0 : 2) ||
       Array.from(allowed).some(
         (path) => !path.endsWith("/licenses.txt") && !path.endsWith("/licenses-manifest.json"),
       )
@@ -384,12 +391,13 @@ try {
     }
     if (!notices.text.includes("Copyright notices for The Rust Standard Library"))
       throw Error("The active Rust standard-library notice is absent");
-    report.mode = "notice_package_refresh";
+    report.mode = unchangedRuntime ? "unchanged_runtime_package_refresh" : "notice_package_refresh";
     report.reused_runtime_cases = original.cases.length;
     report.original_acceptance_sha256 = digest(originalBytes);
     report.original_static_export_manifest_sha256 = digest(acceptedBytes);
-    report.runtime_gate_reuse_scope =
-      "Every nonnotice exported asset byte and original runUI case implementation are unchanged; driver changes concern notice checks and packaging; original report retained without retimestamping";
+    report.runtime_gate_reuse_scope = unchangedRuntime
+      ? "Exact accepted static manifest, every exported asset byte and original runUI case implementation are unchanged; only evidence packaging is repeated; original report retained without retimestamping"
+      : "Every nonnotice exported asset byte and original runUI case implementation are unchanged; driver changes concern notice checks and packaging; original report retained without retimestamping";
     report.test_source_deltas = original.test_identity
       .filter(
         (row) => testIdentity.find((current) => current.path === row.path)?.sha256 !== row.sha256,
@@ -402,7 +410,9 @@ try {
     report.required_notices = roles;
     report.cases = [
       {
-        id: "notice_only_runtime_asset_identity",
+        id: unchangedRuntime
+          ? "exact_accepted_runtime_asset_identity"
+          : "notice_only_runtime_asset_identity",
         passed: true,
         unchanged_assets: accepted.assets.length - allowed.size,
       },
@@ -624,6 +634,7 @@ if (!proofMode && report.passed && !publishedUrl) {
     `artifacts/browser-tests/benchmark-${manifest.engine_version}.json`,
     `artifacts/browser-tests/benchmark-cold-${manifest.engine_version}.json`,
     "docs/results/browser-performance-rc4.json",
+    "docs/results/browser-performance-rc5.json",
     "artifacts/rc4-browser-baseline/package-identity.json",
     "artifacts/rc4-browser-baseline/measurement-driver.mjs",
     "artifacts/rc4-browser-baseline/rc4-proof-schema-failure.json",
@@ -631,13 +642,13 @@ if (!proofMode && report.passed && !publishedUrl) {
     "artifacts/rc4-browser-baseline/rc4-ui-width-locator-failure.json",
     "artifacts/browser-tests/ui/workspace.png",
     "artifacts/browser-tests/ui/mobile-viewport.png",
-    ...(packagingOnly
+    ...(packagingOnly && report.mode === "notice_package_refresh"
       ? [
           "artifacts/browser-tests/runtime-gate-manifest.json",
           "artifacts/browser-tests/notice-refresh.json",
-          "artifacts/browser-tests/packaging-refresh.json",
         ]
       : []),
+    ...(packagingOnly ? ["artifacts/browser-tests/packaging-refresh.json"] : []),
   ].filter((path) => existsSync(resolve(root, path)));
   const evidenceEntries = Object.create(null);
   const evidenceFiles = [];

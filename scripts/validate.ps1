@@ -11,7 +11,7 @@ try {
     foreach ($target in @('oracle_protocol','oracle_runtime','behavior','reconstruction','profile_behavior','profiles','applications','generated_programs','scale_behavior','v3_semantics','v3_repeated_entry','types_v3_behavior','quality_v3','native_v3_model','profile_hash_layout_v3')) {
         if (-not (Test-Path -LiteralPath ('tests/' + $target + '.rs'))) { throw ('Required release-gate target is missing: ' + $target) }
     }
-    foreach($target in @('source_inputs','source_behavior_rc','source_rc2','types_rc','output_policy','attribution','scale_quality_rc')) {
+    foreach($target in @('source_inputs','source_behavior_rc','source_rc2','types_rc','types_rc5','types_v3','recovery_rc5','output_policy','attribution','scale_quality_rc')) {
         if(-not(Test-Path -LiteralPath ('tests/'+$target+'.rs'))){throw ('Required release-gate target is missing: '+$target)}
     }
     $manifestPath=Join-Path $taskRoot 'Cargo.toml'
@@ -62,6 +62,15 @@ try {
     if ($Release) { $cargoOptions += '--release' }
     & cargo test @cargoOptions --all-targets
     if ($LASTEXITCODE -ne 0) { throw 'Rust tests failed.' }
+    $requiredTestInventory=@(foreach($target in $candidateRequirements.required_test_identities.PSObject.Properties){
+        [string[]]$targetArguments=if($target.Name -ceq 'lib'){@('--lib')}else{@('--test',$target.Name)}
+        $listed=@(& cargo test @cargoOptions @targetArguments -- --list)
+        if($LASTEXITCODE -ne 0){throw ('Cannot list required candidate tests: '+$target.Name)}
+        foreach($identity in $target.Value){if(($identity+': test') -cnotin $listed){throw ('Required candidate test is missing: '+$target.Name+'::'+$identity)}}
+        [ordered]@{target=$target.Name;required=@($target.Value);identities_present=$true}
+    })
+    $requiredInventoryPath=Join-Path $taskRoot 'artifacts/rc5-required-tests.json'
+    [IO.File]::WriteAllText($requiredInventoryPath,([ordered]@{schema=1;version=$packageVersion;passed=$true;scope='Required test identity presence only; ordinary and ignored execution is owned by this validation driver.';targets=$requiredTestInventory}|ConvertTo-Json -Depth 8),[Text.UTF8Encoding]::new($false))
     & cargo test @cargoOptions --test oracle_runtime -- --ignored --nocapture
     if ($LASTEXITCODE -ne 0) { throw 'Actual-VM oracle negative/conformance tests failed.' }
     & cargo test @cargoOptions --test behavior -- --ignored --nocapture
@@ -95,7 +104,7 @@ try {
         & cargo test @cargoOptions --test $target -- --ignored --nocapture
         if ($LASTEXITCODE -ne 0) { throw ('Mandatory v0.3 semantic/typing/quality target failed: ' + $target) }
     }
-    foreach($target in @('source_inputs','source_behavior_rc','source_rc2','types_rc','output_policy','attribution')) {
+    foreach($target in @('source_inputs','source_behavior_rc','source_rc2','types_rc','types_rc5','types_v3','recovery_rc5','output_policy','attribution')) {
         & cargo test @cargoOptions --test $target -- --ignored --nocapture
         if($LASTEXITCODE -ne 0){throw ('Mandatory candidate input/typing regression failed: '+$target)}
     }
@@ -135,6 +144,7 @@ try {
     $reportPaths += @('artifacts/rc4-core/open-captures/report.json','artifacts/rc4-core/fresh-closures/report.json')
     $reportPaths += @('artifacts/rc4-core/nested-cfg/report.json','artifacts/rc4-core/block-separators/report.json')
     $reportPaths += @('artifacts/rc4-core/import-padding/report.json')
+    $reportPaths += @('artifacts/rc5-required-tests.json')
     foreach ($reportPath in $reportPaths) {
         if (-not (Test-Path -LiteralPath $reportPath) -or (Get-Item -LiteralPath $reportPath).LastWriteTimeUtc -lt $validationStartedUtc) { throw ('Required validation evidence is missing or stale: ' + $reportPath) }
         $evidence = Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json

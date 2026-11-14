@@ -1,4 +1,10 @@
-# Type reconstruction in 0.4.0-rc.4
+# Type reconstruction in 0.4.0-rc.5
+
+Evaluated immutable string facts preserve the class argument to `GetService` and `Instance.new` through aliases and matching joins. Conflicting assignments, captured writes and dynamic contracts retain a broad boundary. When an alias must remain, a justified singleton string annotation can preserve that fact in the final source. The shared native/browser analyzer refines these calls only for services and creatable classes listed by the pinned Roblox definitions; ordinary argument checking still rejects invalid parents, extra arguments and incompatible classes. This contract does not infer GUI classes or children from property names.
+
+Captured table declaration types retain every assigned table identity rather than replacing earlier shapes with the last table. Known local function identities preserve analyzed capture relationships, while every passed table argument still escapes conservatively. Unused callback parameters remain visible unknown boundaries; an unused generic parameter is not invented as evidence of a useful relationship.
+
+Type layout covers local, parameter, callback, variadic, return, union and nested record syntax under one bounded printer. Equivalent available aliases can replace repeated structural types. Foundational aliases precede runtime declarations; import-dependent aliases follow their required bindings and type dependencies. Runtime operations retain their observed order, and available source retains its existing declaration structure. A preferred organizational category never authorizes moving an observable initialization.
 
 The Rust type engine keeps mutable table identities separately from structural types. Literal constructors, table-valued function results, and structural table contracts create bounded abstract identities. Aliases retain identity relationships through record fields, collection entries, adjusted call results, optional values, and captured references.
 

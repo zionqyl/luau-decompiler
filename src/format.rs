@@ -228,6 +228,7 @@ fn format_with_annotations<'a>(
             })
             .or_insert(Some(binding));
     }
+    let display = crate::presentation::DisplayNames::plan(body, annotations, bindings, config)?;
     let mut printer = Printer {
         output: String::new(),
         indent: &config.indent,
@@ -242,39 +243,28 @@ fn format_with_annotations<'a>(
         bindings: binding_map,
         unique_bindings,
         reservation: crate::execution::output_buffer()?,
+        available_aliases: std::collections::BTreeMap::new(),
+        shadowed_types: std::collections::BTreeSet::new(),
+        type_work_remaining: config.limits.max_analysis_steps,
+        display: &display,
     };
     printer.text(&crate::attribution::prefix(
         annotations.is_some_and(|a| a.strict),
     ))?;
-    if let Some(annotations) = annotations {
-        for alias in &annotations.aliases {
-            let first_line = printer.line;
-            if alias.exported {
-                printer.text("export ")?;
+    let schedule = annotations
+        .filter(|annotations| !annotations.aliases.is_empty())
+        .map(|annotations| alias_schedule(body, annotations, config))
+        .transpose()?;
+    for index in 0..=body.len() {
+        if let (Some(annotations), Some(schedule)) = (annotations, &schedule) {
+            for alias in &schedule[index] {
+                printer.type_alias(&annotations.aliases[*alias])?;
             }
-            printer.text("type ")?;
-            printer.text(&alias.name)?;
-            printer.text(&crate::type_ast::generic_declaration(
-                &alias.generics,
-                &alias.generic_packs,
-            ))?;
-            printer.text(" = ")?;
-            printer.type_expr(&alias.ty, 0)?;
-            printer.text("\n\n")?;
-            printer.push_region(GeneratedRegion {
-                node_id: printer.regions.len(),
-                kind: RegionKind::TypeAlias,
-                proto: alias.origin,
-                first_line,
-                last_line: printer.line.saturating_sub(2),
-                first_column: 1,
-                last_column: 1,
-                transformations: vec!["generated_type_alias".into()],
-                ..GeneratedRegion::default()
-            })?;
+        }
+        if let Some(statement) = body.get(index) {
+            printer.body_statement(body, index, statement, 0)?;
         }
     }
-    printer.body(body, 0)?;
     if body.is_empty() {
         printer.text("return\n")?;
     }
@@ -285,6 +275,204 @@ pub fn validate_complexity(body: &[Stmt], config: &Config) -> Result<()> {
     validate_shape(body, config)?;
     validate_function_bindings(body, &[])?;
     Ok(())
+}
+
+struct TypeReferences<'a> {
+    types: std::collections::BTreeSet<&'a str>,
+    values: std::collections::BTreeSet<&'a str>,
+}
+struct TypeReferenceScope<'a> {
+    parent: Option<usize>,
+    generics: &'a [String],
+    packs: &'a [String],
+}
+fn type_reference_is_generic(
+    scopes: &[TypeReferenceScope<'_>],
+    mut scope: Option<usize>,
+    name: &str,
+) -> bool {
+    while let Some(index) = scope {
+        let current = &scopes[index];
+        if current
+            .generics
+            .iter()
+            .chain(current.packs)
+            .any(|generic| generic == name)
+        {
+            return true;
+        }
+        scope = current.parent;
+    }
+    false
+}
+fn type_references<'a>(
+    ty: &'a crate::type_ast::TypeExpr,
+    work: &mut usize,
+) -> Result<TypeReferences<'a>> {
+    use crate::type_ast::{PackTail, TypeExpr};
+    let mut types = std::collections::BTreeSet::new();
+    let mut values = std::collections::BTreeSet::new();
+    let mut scopes = Vec::new();
+    let mut pending = vec![(ty, 0usize, None)];
+    while let Some((ty, depth, scope)) = pending.pop() {
+        if depth > 256 || *work == 0 {
+            return Err(Error::new(
+                "limit",
+                "type dependency complexity limit exceeded",
+            ));
+        }
+        *work -= 1;
+        crate::execution::charge_work(1)?;
+        match ty {
+            TypeExpr::Named(name) | TypeExpr::Apply(name, _) => {
+                if let Some((root, _)) = name.split_once('.') {
+                    if !type_reference_is_generic(&scopes, scope, root) {
+                        values.insert(root);
+                    }
+                } else if !type_reference_is_generic(&scopes, scope, name) {
+                    types.insert(name.as_str());
+                }
+                if let TypeExpr::Apply(_, arguments) = ty {
+                    pending.extend(arguments.iter().map(|ty| (ty, depth + 1, scope)));
+                }
+            }
+            TypeExpr::Optional(inner) | TypeExpr::Array(inner) => {
+                pending.push((inner, depth + 1, scope))
+            }
+            TypeExpr::Union(items) | TypeExpr::Intersection(items) => {
+                pending.extend(items.iter().map(|ty| (ty, depth + 1, scope)))
+            }
+            TypeExpr::Dictionary(key, value) => pending.extend([
+                (key.as_ref(), depth + 1, scope),
+                (value.as_ref(), depth + 1, scope),
+            ]),
+            TypeExpr::Record(fields) => {
+                pending.extend(fields.values().map(|ty| (ty, depth + 1, scope)))
+            }
+            TypeExpr::Function(function) => {
+                let nested = scopes.len();
+                scopes.push(TypeReferenceScope {
+                    parent: scope,
+                    generics: &function.generics,
+                    packs: &function.generic_packs,
+                });
+                pending.extend(
+                    function
+                        .parameters
+                        .iter()
+                        .chain(&function.returns.head)
+                        .map(|ty| (ty, depth + 1, Some(nested))),
+                );
+                for tail in [function.variadic.as_ref(), function.returns.tail.as_ref()]
+                    .into_iter()
+                    .flatten()
+                {
+                    if let PackTail::Variadic(ty) = tail {
+                        pending.push((ty, depth + 1, Some(nested)));
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    Ok(TypeReferences { types, values })
+}
+
+fn alias_schedule(
+    body: &[Stmt],
+    annotations: &Annotations,
+    config: &Config,
+) -> Result<Vec<Vec<usize>>> {
+    use std::collections::{BTreeMap, VecDeque};
+    crate::execution::reserve_ast_capacity(
+        body.len()
+            .saturating_add(1)
+            .saturating_mul(std::mem::size_of::<Vec<usize>>())
+            .saturating_add(annotations.aliases.len().saturating_mul(256)),
+    )?;
+    let mut declarations = BTreeMap::new();
+    for (index, statement) in body.iter().enumerate() {
+        if let Stmt::Local(names, _) = statement {
+            for name in names {
+                crate::execution::reserve_ast_capacity(96)?;
+                declarations
+                    .entry(name.as_str())
+                    .and_modify(|position| *position = None)
+                    .or_insert(Some(index + 1));
+            }
+        }
+    }
+    let mut aliases = BTreeMap::new();
+    for (index, alias) in annotations.aliases.iter().enumerate() {
+        if aliases.insert(alias.name.as_str(), index).is_some() {
+            return Err(Error::new(
+                "type_scope",
+                format!("duplicate generated type alias {}", alias.name),
+            ));
+        }
+    }
+    let mut work = config.limits.max_analysis_steps;
+    let mut positions = vec![0usize; annotations.aliases.len()];
+    let mut dependants = vec![Vec::new(); annotations.aliases.len()];
+    for (index, alias) in annotations.aliases.iter().enumerate() {
+        let references = type_references(&alias.ty, &mut work)?;
+        for name in references.values {
+            if alias
+                .generics
+                .iter()
+                .chain(&alias.generic_packs)
+                .any(|generic| generic == name)
+            {
+                continue;
+            }
+            match declarations.get(name) {
+                Some(Some(position)) => positions[index] = positions[index].max(*position),
+                Some(None) => {
+                    return Err(Error::new(
+                        "type_scope",
+                        format!(
+                            "type alias {} has an ambiguous value dependency {name}",
+                            alias.name
+                        ),
+                    ))
+                }
+                None => {}
+            }
+        }
+        for name in references.types {
+            if alias
+                .generics
+                .iter()
+                .chain(&alias.generic_packs)
+                .any(|generic| generic == name)
+            {
+                continue;
+            }
+            if let Some(dependency) = aliases.get(name) {
+                crate::execution::reserve_ast_capacity(std::mem::size_of::<usize>() * 2)?;
+                dependants[*dependency].push(index);
+            }
+        }
+    }
+    let mut queue: VecDeque<_> = (0..positions.len()).collect();
+    while let Some(index) = queue.pop_front() {
+        for dependant in &dependants[index] {
+            if work == 0 {
+                return Err(Error::new("limit", "type alias scheduling budget exceeded"));
+            }
+            work -= 1;
+            crate::execution::charge_work(1)?;
+            if positions[*dependant] < positions[index] {
+                positions[*dependant] = positions[index];
+                queue.push_back(*dependant);
+            }
+        }
+    }
+    let mut scheduled = vec![Vec::new(); body.len() + 1];
+    for (index, position) in positions.into_iter().enumerate() {
+        scheduled[position].push(index);
+    }
+    Ok(scheduled)
 }
 
 pub fn validate_shape(body: &[Stmt], config: &Config) -> Result<()> {
@@ -594,7 +782,7 @@ fn starts_with_parenthesis(expr: &Expr) -> bool {
         _ => false,
     }
 }
-struct Printer<'a> {
+struct Printer<'a, 'd> {
     output: String,
     indent: &'a str,
     limit: usize,
@@ -612,8 +800,12 @@ struct Printer<'a> {
     unique_bindings:
         std::collections::BTreeMap<&'a str, Option<&'a crate::structure::RecoveredBindingInfo>>,
     reservation: crate::execution::OutputReservation,
+    available_aliases: std::collections::BTreeMap<&'a crate::type_ast::TypeExpr, &'a str>,
+    shadowed_types: std::collections::BTreeSet<String>,
+    type_work_remaining: usize,
+    display: &'d crate::presentation::DisplayNames,
 }
-impl<'a> Printer<'a> {
+impl<'a> Printer<'a, '_> {
     fn text(&mut self, text: &str) -> Result<()> {
         if self.output.len().saturating_add(text.len()) > self.limit {
             return Err(Error::new(
@@ -664,19 +856,302 @@ impl<'a> Printer<'a> {
             if n != 0 {
                 self.text(", ")?;
             }
-            self.text(name)?;
+            self.declared_identifier(name)?;
         }
         Ok(())
     }
+    fn local_name(&mut self, name: &str) -> Result<()> {
+        let display = self.display;
+        self.text(display.name(name))
+    }
+    fn printed_identifier(&self, name: &str) -> Result<String> {
+        let printed = self.display.name(name);
+        crate::execution::reserve_ast_capacity(printed.len())?;
+        Ok(printed.to_owned())
+    }
+    fn identifier_symbol(&self, name: &str) -> Result<String> {
+        crate::execution::reserve_ast_capacity(name.len())?;
+        Ok(name.to_owned())
+    }
+    fn declared_identifier(&mut self, name: &str) -> Result<()> {
+        let first_line = self.line;
+        let first_column = self.column + 1;
+        self.local_name(name)?;
+        if let Some(binding) = self.binding(name) {
+            self.push_region(GeneratedRegion {
+                node_id: self.regions.len(),
+                kind: RegionKind::Declaration,
+                proto: Some(binding.proto),
+                binding: Some(format!("p{}:b{}", binding.proto, binding.id)),
+                printed_name: Some(self.printed_identifier(name)?),
+                symbol: Some(self.identifier_symbol(name)?),
+                first_pc: Some(binding.first_pc),
+                last_pc: Some(binding.last_pc),
+                first_line,
+                last_line: self.line,
+                first_column,
+                last_column: self.column + 1,
+                transformations: if self.display.name(name) != name {
+                    vec!["scope_display_name".into()]
+                } else {
+                    Vec::new()
+                },
+            })?;
+        }
+        Ok(())
+    }
+    fn type_step(&mut self, nesting: usize) -> Result<()> {
+        if nesting > 64 || self.type_work_remaining == 0 {
+            return Err(Error::new(
+                "limit",
+                "type formatting complexity limit exceeded",
+            ));
+        }
+        self.type_work_remaining -= 1;
+        crate::execution::charge_work(1)
+    }
+    fn type_alias_name(&self, ty: &crate::type_ast::TypeExpr) -> Option<&'a str> {
+        use crate::type_ast::TypeExpr;
+        if !matches!(
+            ty,
+            TypeExpr::Record(_)
+                | TypeExpr::Function(_)
+                | TypeExpr::Union(_)
+                | TypeExpr::Intersection(_)
+        ) {
+            return None;
+        }
+        if !self.shadowed_types.is_empty() {
+            return None;
+        }
+        self.available_aliases.get(ty).copied()
+    }
+    fn type_width(
+        &mut self,
+        ty: &crate::type_ast::TypeExpr,
+        parent: u8,
+        limit: usize,
+        nesting: usize,
+    ) -> Result<usize> {
+        use crate::type_ast::TypeExpr;
+        self.type_step(nesting)?;
+        if let Some(name) = self.type_alias_name(ty) {
+            return Ok(name.chars().count().min(limit.saturating_add(1)));
+        }
+        let mut width = usize::from(type_precedence(ty) < parent) * 2;
+        let mut add = |count: usize| {
+            width = width.saturating_add(count).min(limit.saturating_add(1));
+        };
+        match ty {
+            TypeExpr::Unknown => add(7),
+            TypeExpr::Any | TypeExpr::Nil => add(3),
+            TypeExpr::Never => add(5),
+            TypeExpr::Boolean => add(7),
+            TypeExpr::Number | TypeExpr::String | TypeExpr::Thread | TypeExpr::Buffer => add(6),
+            TypeExpr::Named(name) | TypeExpr::Generic(name) => add(name.chars().count()),
+            TypeExpr::SingletonString(value) => {
+                add(crate::names::quote(value.as_bytes()).chars().count())
+            }
+            TypeExpr::Optional(inner) => {
+                add(1);
+                if width <= limit {
+                    width += self.type_width(inner, 3, limit - width, nesting + 1)?;
+                }
+            }
+            TypeExpr::Array(inner) => {
+                add(2);
+                if width <= limit {
+                    width += self.type_width(inner, 0, limit - width, nesting + 1)?;
+                }
+            }
+            TypeExpr::Union(items) | TypeExpr::Intersection(items) => {
+                add(items.len().saturating_sub(1).saturating_mul(3));
+                let precedence = type_precedence(ty);
+                for item in items {
+                    if width > limit {
+                        break;
+                    }
+                    width += self.type_width(item, precedence, limit - width, nesting + 1)?;
+                }
+            }
+            TypeExpr::Dictionary(key, value) => {
+                add(6);
+                for item in [key, value] {
+                    if width > limit {
+                        break;
+                    }
+                    width += self.type_width(item, 0, limit - width, nesting + 1)?;
+                }
+            }
+            TypeExpr::Record(fields) => {
+                add(4 + fields.len().saturating_sub(1).saturating_mul(2));
+                for (name, item) in fields {
+                    if width > limit {
+                        break;
+                    }
+                    let key_width = if crate::names::is_identifier(name) {
+                        name.chars().count()
+                    } else {
+                        crate::names::quote(name.as_bytes()).chars().count() + 2
+                    };
+                    width = width.saturating_add(key_width + 2);
+                    if width <= limit {
+                        width += self.type_width(item, 0, limit - width, nesting + 1)?;
+                    }
+                }
+            }
+            TypeExpr::Apply(name, items) => {
+                add(name.chars().count() + 2 + items.len().saturating_sub(1).saturating_mul(2));
+                for item in items {
+                    if width > limit {
+                        break;
+                    }
+                    width += self.type_width(item, 0, limit - width, nesting + 1)?;
+                }
+            }
+            TypeExpr::Function(function) => {
+                add(crate::type_ast::generic_declaration(
+                    &function.generics,
+                    &function.generic_packs,
+                )
+                .chars()
+                .count()
+                    + 6);
+                let parameter_count =
+                    function.parameters.len() + usize::from(function.variadic.is_some());
+                width = width.saturating_add(parameter_count.saturating_sub(1).saturating_mul(2));
+                for item in &function.parameters {
+                    if width > limit {
+                        break;
+                    }
+                    width += self.type_width(item, 0, limit - width, nesting + 1)?;
+                }
+                if width <= limit {
+                    if let Some(tail) = &function.variadic {
+                        width += self.tail_width(tail, limit - width, nesting + 1)?;
+                    }
+                }
+                if width <= limit {
+                    width += self.pack_width(&function.returns, limit - width, nesting + 1)?;
+                }
+            }
+        }
+        Ok(width.min(limit.saturating_add(1)))
+    }
+    fn tail_width(
+        &mut self,
+        tail: &crate::type_ast::PackTail,
+        limit: usize,
+        nesting: usize,
+    ) -> Result<usize> {
+        match tail {
+            crate::type_ast::PackTail::Generic(name) => {
+                Ok((name.chars().count() + 3).min(limit.saturating_add(1)))
+            }
+            crate::type_ast::PackTail::Variadic(ty) => Ok(3usize
+                .saturating_add(self.type_width(ty, 0, limit.saturating_sub(3), nesting + 1)?)
+                .min(limit.saturating_add(1))),
+        }
+    }
+    fn pack_width(
+        &mut self,
+        pack: &crate::type_ast::TypePack,
+        limit: usize,
+        nesting: usize,
+    ) -> Result<usize> {
+        self.type_step(nesting)?;
+        let count = pack.head.len() + usize::from(pack.tail.is_some());
+        let mut width = 2 + count.saturating_sub(1).saturating_mul(2);
+        for ty in &pack.head {
+            if width > limit {
+                break;
+            }
+            width += self.type_width(ty, 0, limit - width, nesting + 1)?;
+        }
+        if width <= limit {
+            if let Some(tail) = &pack.tail {
+                width += self.tail_width(tail, limit - width, nesting + 1)?;
+            }
+        }
+        Ok(width.min(limit.saturating_add(1)))
+    }
     fn type_expr(&mut self, ty: &crate::type_ast::TypeExpr, depth: usize) -> Result<()> {
-        if let crate::type_ast::TypeExpr::Record(fields) = ty {
-            if fields.len() > 1
-                && (self.options.multiline_tables
-                    || self.column + ty.luau().len() > self.options.line_width)
-            {
-                self.text("{\n")?;
-                for (name, ty) in fields {
-                    self.indentation(depth + 1)?;
+        self.type_expr_precedence(ty, 0, depth, 0)
+    }
+    fn type_expr_precedence(
+        &mut self,
+        ty: &crate::type_ast::TypeExpr,
+        parent: u8,
+        depth: usize,
+        nesting: usize,
+    ) -> Result<()> {
+        use crate::type_ast::TypeExpr;
+        self.type_step(nesting)?;
+        if let Some(name) = self.type_alias_name(ty) {
+            return self.text(name);
+        }
+        let parenthesized = type_precedence(ty) < parent;
+        if parenthesized {
+            self.text("(")?;
+        }
+        let available = self.options.line_width.saturating_sub(self.column);
+        let multiline = self.type_width(ty, 0, available, nesting + 1)? > available;
+        match ty {
+            TypeExpr::Unknown => self.text("unknown")?,
+            TypeExpr::Any => self.text("any")?,
+            TypeExpr::Never => self.text("never")?,
+            TypeExpr::Nil => self.text("nil")?,
+            TypeExpr::Boolean => self.text("boolean")?,
+            TypeExpr::Number => self.text("number")?,
+            TypeExpr::String => self.text("string")?,
+            TypeExpr::SingletonString(value) => {
+                self.text(&crate::names::quote(value.as_bytes()))?
+            }
+            TypeExpr::Thread => self.text("thread")?,
+            TypeExpr::Buffer => self.text("buffer")?,
+            TypeExpr::Named(name) | TypeExpr::Generic(name) => self.text(name)?,
+            TypeExpr::Optional(inner) => {
+                self.type_expr_precedence(inner, 3, depth, nesting + 1)?;
+                self.text("?")?;
+            }
+            TypeExpr::Union(items) | TypeExpr::Intersection(items) => {
+                let separator = if matches!(ty, TypeExpr::Union(_)) {
+                    "|"
+                } else {
+                    "&"
+                };
+                for (index, item) in items.iter().enumerate() {
+                    if index != 0 {
+                        if multiline {
+                            self.text("\n")?;
+                            self.indentation(depth + 1)?;
+                        } else {
+                            self.text(" ")?;
+                        }
+                        self.text(separator)?;
+                        self.text(" ")?;
+                    }
+                    self.type_expr_precedence(
+                        item,
+                        type_precedence(ty),
+                        if multiline { depth + 1 } else { depth },
+                        nesting + 1,
+                    )?;
+                }
+            }
+            TypeExpr::Record(fields) => {
+                let multiline = multiline || (fields.len() > 1 && self.options.multiline_tables);
+                self.text(if multiline && !fields.is_empty() {
+                    "{\n"
+                } else {
+                    "{ "
+                })?;
+                for (index, (name, item)) in fields.iter().enumerate() {
+                    if multiline {
+                        self.indentation(depth + 1)?;
+                    } else if index != 0 {
+                        self.text(", ")?;
+                    }
                     if crate::names::is_identifier(name) {
                         self.text(name)?;
                     } else {
@@ -685,27 +1160,255 @@ impl<'a> Printer<'a> {
                         self.text("]")?;
                     }
                     self.text(": ")?;
-                    self.type_expr(ty, depth + 1)?;
-                    self.text(",\n")?;
+                    self.type_expr_precedence(
+                        item,
+                        0,
+                        if multiline { depth + 1 } else { depth },
+                        nesting + 1,
+                    )?;
+                    if multiline {
+                        self.text(",\n")?;
+                    }
                 }
-                self.indentation(depth)?;
-                return self.text("}");
+                if multiline && !fields.is_empty() {
+                    self.indentation(depth)?;
+                    self.text("}")?;
+                } else {
+                    self.text(" }")?;
+                }
+            }
+            TypeExpr::Array(inner) => {
+                self.text("{")?;
+                if multiline {
+                    self.text("\n")?;
+                    self.indentation(depth + 1)?;
+                }
+                self.type_expr_precedence(
+                    inner,
+                    0,
+                    if multiline { depth + 1 } else { depth },
+                    nesting + 1,
+                )?;
+                if multiline {
+                    self.text("\n")?;
+                    self.indentation(depth)?;
+                }
+                self.text("}")?;
+            }
+            TypeExpr::Dictionary(key, value) => {
+                self.text("{")?;
+                if multiline {
+                    self.text("\n")?;
+                    self.indentation(depth + 1)?;
+                }
+                self.text("[")?;
+                self.type_expr_precedence(
+                    key,
+                    0,
+                    if multiline { depth + 1 } else { depth },
+                    nesting + 1,
+                )?;
+                self.text("]: ")?;
+                self.type_expr_precedence(
+                    value,
+                    0,
+                    if multiline { depth + 1 } else { depth },
+                    nesting + 1,
+                )?;
+                if multiline {
+                    self.text("\n")?;
+                    self.indentation(depth)?;
+                }
+                self.text("}")?;
+            }
+            TypeExpr::Apply(name, arguments) => {
+                self.text(name)?;
+                self.text("<")?;
+                for (index, argument) in arguments.iter().enumerate() {
+                    if multiline {
+                        self.text("\n")?;
+                        self.indentation(depth + 1)?;
+                    } else if index != 0 {
+                        self.text(", ")?;
+                    }
+                    self.type_expr_precedence(
+                        argument,
+                        0,
+                        if multiline { depth + 1 } else { depth },
+                        nesting + 1,
+                    )?;
+                    if multiline && index + 1 != arguments.len() {
+                        self.text(",")?;
+                    }
+                }
+                if multiline && !arguments.is_empty() {
+                    self.text("\n")?;
+                    self.indentation(depth)?;
+                }
+                self.text(">")?;
+            }
+            TypeExpr::Function(function) => {
+                let previous = self.shadowed_types.clone();
+                self.shadowed_types
+                    .extend(function.generics.iter().cloned());
+                self.shadowed_types
+                    .extend(function.generic_packs.iter().cloned());
+                self.text(&crate::type_ast::generic_declaration(
+                    &function.generics,
+                    &function.generic_packs,
+                ))?;
+                self.text("(")?;
+                self.type_parameters(
+                    &function.parameters,
+                    function.variadic.as_ref(),
+                    depth,
+                    nesting + 1,
+                    multiline,
+                )?;
+                self.text(") -> ")?;
+                self.type_pack(&function.returns, depth, nesting + 1)?;
+                self.shadowed_types = previous;
             }
         }
-        self.text(&ty.luau())
+        if parenthesized {
+            self.text(")")?;
+        }
+        Ok(())
+    }
+    fn type_tail(
+        &mut self,
+        tail: &crate::type_ast::PackTail,
+        depth: usize,
+        nesting: usize,
+    ) -> Result<()> {
+        match tail {
+            crate::type_ast::PackTail::Variadic(ty) => {
+                self.text("...")?;
+                self.type_expr_precedence(ty, 0, depth, nesting + 1)
+            }
+            crate::type_ast::PackTail::Generic(name) => {
+                self.text(name)?;
+                self.text("...")
+            }
+        }
+    }
+    fn type_parameters(
+        &mut self,
+        parameters: &[crate::type_ast::TypeExpr],
+        tail: Option<&crate::type_ast::PackTail>,
+        depth: usize,
+        nesting: usize,
+        multiline: bool,
+    ) -> Result<()> {
+        let count = parameters.len() + usize::from(tail.is_some());
+        for (index, ty) in parameters.iter().enumerate() {
+            if multiline {
+                self.text("\n")?;
+                self.indentation(depth + 1)?;
+            } else if index != 0 {
+                self.text(", ")?;
+            }
+            self.type_expr_precedence(
+                ty,
+                0,
+                if multiline { depth + 1 } else { depth },
+                nesting + 1,
+            )?;
+            if multiline && index + 1 != count {
+                self.text(",")?;
+            }
+        }
+        if let Some(tail) = tail {
+            if multiline {
+                self.text("\n")?;
+                self.indentation(depth + 1)?;
+            } else if !parameters.is_empty() {
+                self.text(", ")?;
+            }
+            self.type_tail(tail, if multiline { depth + 1 } else { depth }, nesting + 1)?;
+        }
+        if multiline && count != 0 {
+            self.text("\n")?;
+            self.indentation(depth)?;
+        }
+        Ok(())
+    }
+    fn type_pack(
+        &mut self,
+        pack: &crate::type_ast::TypePack,
+        depth: usize,
+        nesting: usize,
+    ) -> Result<()> {
+        let available = self.options.line_width.saturating_sub(self.column);
+        let multiline = self.pack_width(pack, available, nesting + 1)? > available;
+        self.text("(")?;
+        self.type_parameters(
+            &pack.head,
+            pack.tail.as_ref(),
+            depth,
+            nesting + 1,
+            multiline,
+        )?;
+        self.text(")")
+    }
+    fn type_alias(&mut self, alias: &'a crate::type_ast::TypeAlias) -> Result<()> {
+        let first_line = self.line;
+        let outer_types = self.shadowed_types.clone();
+        self.shadowed_types.extend(alias.generics.iter().cloned());
+        self.shadowed_types
+            .extend(alias.generic_packs.iter().cloned());
+        if alias.exported {
+            self.text("export ")?;
+        }
+        self.text("type ")?;
+        self.text(&alias.name)?;
+        self.text(&crate::type_ast::generic_declaration(
+            &alias.generics,
+            &alias.generic_packs,
+        ))?;
+        self.text(" = ")?;
+        self.type_expr(&alias.ty, 0)?;
+        self.text("\n\n")?;
+        self.shadowed_types = outer_types;
+        if alias.generics.is_empty() && alias.generic_packs.is_empty() {
+            self.available_aliases
+                .entry(&alias.ty)
+                .or_insert(&alias.name);
+        }
+        self.push_region(GeneratedRegion {
+            node_id: self.regions.len(),
+            kind: RegionKind::TypeAlias,
+            proto: alias.origin,
+            first_line,
+            last_line: self.line.saturating_sub(2),
+            first_column: 1,
+            last_column: 1,
+            transformations: vec!["generated_type_alias".into()],
+            ..GeneratedRegion::default()
+        })
     }
     fn body(&mut self, body: &[Stmt], depth: usize) -> Result<()> {
         for (index, stmt) in body.iter().enumerate() {
-            let blank = matches!(stmt, Stmt::Return(_))
+            self.body_statement(body, index, stmt, depth)?;
+        }
+        Ok(())
+    }
+    fn body_statement(
+        &mut self,
+        body: &[Stmt],
+        index: usize,
+        stmt: &Stmt,
+        depth: usize,
+    ) -> Result<()> {
+        let blank = matches!(stmt, Stmt::Return(_))
                 || matches!(stmt,Stmt::Local(_,values)if values.iter().any(|e|matches!(e,Expr::Function(_))))
                 || index.checked_sub(1).is_some_and(|previous| {
                     matches!(&body[previous],Stmt::Local(_,values)if values.iter().any(|e|matches!(e,Expr::Function(_))))
                 });
-            if index != 0 && self.options.blank_lines && blank {
-                self.text("\n")?;
-            }
-            self.stmt(stmt, depth, index != 0)?;
+        if index != 0 && self.options.blank_lines && blank {
+            self.text("\n")?;
         }
+        self.stmt(stmt, depth, index != 0)?;
         Ok(())
     }
     fn prefix(&mut self, expr: &Expr, depth: usize) -> Result<()> {
@@ -751,7 +1454,7 @@ impl<'a> Printer<'a> {
                     }
                 }
                 self.text("local ")?;
-                self.typed_names(names)?;
+                self.typed_names(names, depth)?;
                 if !values.is_empty() {
                     self.text(" = ")?;
                     self.list(values, depth)?;
@@ -806,7 +1509,7 @@ impl<'a> Printer<'a> {
                 body,
             } => {
                 self.text("for ")?;
-                self.text(variable)?;
+                self.declared_identifier(variable)?;
                 self.text(" = ")?;
                 self.expr(start, 0, depth)?;
                 self.text(", ")?;
@@ -865,6 +1568,16 @@ impl<'a> Printer<'a> {
         }
         for name in names {
             let binding = self.binding(name);
+            let mut transformations = Vec::new();
+            if self
+                .annotations
+                .is_some_and(|a| a.locals.contains_key(name))
+            {
+                transformations.push("local_type_annotation".into());
+            }
+            if self.display.name(name) != name {
+                transformations.push("scope_display_name".into());
+            }
             self.push_region(GeneratedRegion {
                 node_id: self.regions.len(),
                 kind: RegionKind::Declaration,
@@ -872,31 +1585,34 @@ impl<'a> Printer<'a> {
                 last_column: self.column + 1,
                 proto: binding.map(|b| b.proto).or(self.current_proto),
                 binding: binding.map(|b| format!("p{}:b{}", b.proto, b.id)),
+                printed_name: Some(self.printed_identifier(name)?),
+                symbol: Some(self.identifier_symbol(name)?),
                 first_pc: binding.map(|b| b.first_pc),
                 last_pc: binding.map(|b| b.last_pc),
                 first_line,
                 last_line: self.line,
-                transformations: if self
-                    .annotations
-                    .is_some_and(|a| a.locals.contains_key(name))
-                {
-                    vec!["local_type_annotation".into()]
-                } else {
-                    Vec::new()
-                },
+                transformations,
             })?;
         }
         Ok(())
     }
-    fn typed_names(&mut self, names: &[String]) -> Result<()> {
+    fn typed_names(&mut self, names: &[String], depth: usize) -> Result<()> {
         for (index, name) in names.iter().enumerate() {
             if index != 0 {
-                self.text(", ")?;
+                self.text(",")?;
+                if self.column + self.display.name(name).chars().count() + 1
+                    > self.options.line_width
+                {
+                    self.text("\n")?;
+                    self.indentation(depth + 1)?;
+                } else {
+                    self.text(" ")?;
+                }
             }
-            self.text(name)?;
+            self.local_name(name)?;
             if let Some(ty) = self.annotations.and_then(|a| a.locals.get(name)) {
                 self.text(": ")?;
-                self.text(&ty.luau())?;
+                self.type_expr(ty, depth)?;
             }
         }
         Ok(())
@@ -943,36 +1659,99 @@ impl<'a> Printer<'a> {
         let first_line = self.line;
         let first_column = self.column + 1;
         let outer = self.current_proto;
+        let outer_types = self.shadowed_types.clone();
+        self.shadowed_types
+            .extend(annotation.generics.iter().cloned());
+        self.shadowed_types
+            .extend(annotation.generic_packs.iter().cloned());
         self.current_proto = function.origin.or(outer);
         self.text("function")?;
         if let Some(name) = name {
             self.text(" ")?;
-            self.text(name)?;
+            self.local_name(name)?;
         }
         self.text(&crate::type_ast::generic_declaration(
             &annotation.generics,
             &annotation.generic_packs,
         ))?;
         self.text("(")?;
+        let available = self.options.line_width.saturating_sub(self.column + 1);
+        let mut parameter_width = function
+            .parameters
+            .len()
+            .saturating_sub(1)
+            .saturating_mul(2);
         for (index, name) in function.parameters.iter().enumerate() {
-            if index != 0 {
+            parameter_width =
+                parameter_width.saturating_add(self.display.name(name).chars().count());
+            if let Some(Some(ty)) = annotation.parameters.get(index) {
+                parameter_width = parameter_width.saturating_add(2);
+                if parameter_width <= available {
+                    parameter_width += self.type_width(ty, 0, available - parameter_width, 0)?;
+                }
+            }
+            if parameter_width > available {
+                break;
+            }
+        }
+        if function.vararg && parameter_width <= available {
+            parameter_width = parameter_width
+                .saturating_add(3 + usize::from(!function.parameters.is_empty()) * 2);
+            if let Some(tail) = &annotation.variadic {
+                parameter_width = parameter_width.saturating_add(2);
+                if parameter_width <= available {
+                    parameter_width += match tail {
+                        crate::type_ast::PackTail::Variadic(ty) => {
+                            self.type_width(ty, 0, available - parameter_width, 0)?
+                        }
+                        crate::type_ast::PackTail::Generic(name) => name.chars().count() + 3,
+                    };
+                }
+            }
+        }
+        let multiline_parameters = parameter_width > available;
+        for (index, name) in function.parameters.iter().enumerate() {
+            if multiline_parameters {
+                self.text("\n")?;
+                self.indentation(depth + 1)?;
+            } else if index != 0 {
                 self.text(", ")?;
             }
-            self.text(name)?;
+            self.declared_identifier(name)?;
             if let Some(Some(ty)) = annotation.parameters.get(index) {
                 self.text(": ")?;
-                self.text(&ty.luau())?;
+                self.type_expr(
+                    ty,
+                    if multiline_parameters {
+                        depth + 1
+                    } else {
+                        depth
+                    },
+                )?;
+            }
+            if multiline_parameters && (index + 1 != function.parameters.len() || function.vararg) {
+                self.text(",")?;
             }
         }
         if function.vararg {
-            if !function.parameters.is_empty() {
+            if multiline_parameters {
+                self.text("\n")?;
+                self.indentation(depth + 1)?;
+            } else if !function.parameters.is_empty() {
                 self.text(", ")?;
             }
             self.text("...")?;
             if let Some(tail) = &annotation.variadic {
                 self.text(": ")?;
                 match tail {
-                    crate::type_ast::PackTail::Variadic(ty) => self.text(&ty.luau())?,
+                    crate::type_ast::PackTail::Variadic(ty) => self.type_expr(
+                        ty,
+                        if multiline_parameters {
+                            depth + 1
+                        } else {
+                            depth
+                        },
+                    )?,
                     crate::type_ast::PackTail::Generic(name) => {
                         self.text(name)?;
                         self.text("...")?;
@@ -980,13 +1759,17 @@ impl<'a> Printer<'a> {
                 }
             }
         }
+        if multiline_parameters && (!function.parameters.is_empty() || function.vararg) {
+            self.text("\n")?;
+            self.indentation(depth)?;
+        }
         self.text(")")?;
         if let Some(returns) = &annotation.returns {
             self.text(": ")?;
             if returns.head.len() == 1 && returns.tail.is_none() {
-                self.text(&returns.head[0].luau())?;
+                self.type_expr(&returns.head[0], depth)?;
             } else {
-                self.text(&returns.luau())?;
+                self.type_pack(returns, depth, 0)?;
             }
         }
         self.text("\n")?;
@@ -1012,6 +1795,7 @@ impl<'a> Printer<'a> {
             ..GeneratedRegion::default()
         })?;
         self.current_proto = outer;
+        self.shadowed_types = outer_types;
         Ok(())
     }
     fn expr(&mut self, expr: &Expr, parent: u8, depth: usize) -> Result<()> {
@@ -1029,7 +1813,8 @@ impl<'a> Printer<'a> {
             self.text("(")?;
         }
         match expr {
-            Expr::Literal(text) | Expr::Name(text) | Expr::Global(text) => self.text(text)?,
+            Expr::Literal(text) | Expr::Global(text) => self.text(text)?,
+            Expr::Name(name) => self.local_name(name)?,
             Expr::Vararg => self.text("...")?,
             Expr::Single(value) => {
                 self.text("(")?;
@@ -1149,6 +1934,16 @@ impl<'a> Printer<'a> {
             kind: RegionKind::Expression,
             proto,
             binding: binding.map(|b| format!("p{}:b{}", b.proto, b.id)),
+            printed_name: if let Expr::Name(name) = expr {
+                Some(self.printed_identifier(name)?)
+            } else {
+                None
+            },
+            symbol: if let Expr::Name(name) = expr {
+                Some(self.identifier_symbol(name)?)
+            } else {
+                None
+            },
             first_pc: binding.map(|b| b.first_pc),
             last_pc: binding.map(|b| b.last_pc),
             first_line,
@@ -1182,6 +1977,16 @@ impl<'a> Printer<'a> {
         } else {
             self.list(args, depth)
         }
+    }
+}
+fn type_precedence(ty: &crate::type_ast::TypeExpr) -> u8 {
+    use crate::type_ast::TypeExpr;
+    match ty {
+        TypeExpr::Function(_) => 0,
+        TypeExpr::Union(_) => 1,
+        TypeExpr::Intersection(_) => 2,
+        TypeExpr::Optional(_) => 3,
+        _ => 4,
     }
 }
 fn estimated_table(fields: &[(Option<Expr>, Expr)]) -> usize {

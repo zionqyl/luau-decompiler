@@ -26,6 +26,7 @@ Usage:
                       [--input-format auto|luau-bytecode|luau-source|lua-source]
                       [--policy faithful|annotated|verified-typed]
                       [--entry-output script|function]
+                      [--naming roblox|snake_case|camelCase|PascalCase] [--module-name NAME]
   luau-decompile batch --out-dir DIR [--threads N] [--window N] [--manifest FILE.json]
                       [--batch-input-mib N] [--batch-output-mib N] [--batch-report FILE.json]
                       [--config CONFIG] [--force] INPUT...
@@ -76,6 +77,8 @@ struct Args {
     input_format: Option<luau_decompiler::input::InputFormat>,
     output_policy: Option<luau_decompiler::OutputPolicy>,
     entry_output: Option<luau_decompiler::EntryOutput>,
+    naming: Option<luau_decompiler::NameStyle>,
+    module_name: Option<String>,
     allow_remote: bool,
     json: bool,
 }
@@ -125,6 +128,8 @@ fn parse(args: impl IntoIterator<Item = String>) -> Result<Args, String> {
         input_format: None,
         output_policy: None,
         entry_output: None,
+        naming: None,
+        module_name: None,
         allow_remote: false,
         json: false,
     };
@@ -149,7 +154,7 @@ fn parse(args: impl IntoIterator<Item = String>) -> Result<Args, String> {
         let allowed = match arg.as_str() {
             "--config" => true,
             "--json" => result.command == "doctor",
-            "--input-format" | "--policy" | "--entry-output" => true,
+            "--input-format" | "--policy" | "--entry-output" | "--naming" | "--module-name" => true,
             "--allow-remote" => result.command == "serve",
             "--strict-required" | "--no-validation" | "--project" => true,
             "--quality-report" => result.command == "decompile",
@@ -201,6 +206,20 @@ fn parse(args: impl IntoIterator<Item = String>) -> Result<Args, String> {
             .ok_or_else(|| format!("option {arg} requires a value"))?;
         match arg.as_str() {
             "--config" => result.config = Some(value.into()),
+            "--naming" => {
+                result.naming = Some(match value.as_str() {
+                    "roblox" => luau_decompiler::NameStyle::Roblox,
+                    "snake_case" => luau_decompiler::NameStyle::SnakeCase,
+                    "camelCase" => luau_decompiler::NameStyle::CamelCase,
+                    "PascalCase" => luau_decompiler::NameStyle::PascalCase,
+                    _ => {
+                        return Err(
+                            "--naming expects roblox, snake_case, camelCase or PascalCase".into(),
+                        )
+                    }
+                })
+            }
+            "--module-name" => result.module_name = Some(value),
             "--input-format" => {
                 result.input_format = Some(match value.as_str() {
                     "auto" => luau_decompiler::input::InputFormat::Auto,
@@ -849,6 +868,12 @@ fn execute(mut args: Args) -> Result<(), String> {
     if let Some(entry) = args.entry_output {
         config.entry_output = entry;
     }
+    if let Some(naming) = args.naming {
+        config.naming = naming;
+    }
+    if let Some(name) = &args.module_name {
+        config.naming_options.module_name_hint = Some(name.clone());
+    }
     if args.strict_required && args.no_validation {
         return Err("--strict-required and --no-validation conflict".into());
     }
@@ -1001,6 +1026,28 @@ mod tests {
         assert!(thread_count("0").is_err());
         assert!(thread_count("65").is_err());
         assert_eq!(thread_count("2").unwrap(), 2);
+    }
+
+    #[test]
+    fn roblox_naming_and_module_hint_remain_explicit_presentation_options() {
+        let options = parse(
+            [
+                "decompile",
+                "input.bc",
+                "--naming",
+                "roblox",
+                "--module-name",
+                "Button",
+            ]
+            .map(str::to_string),
+        )
+        .unwrap();
+        assert_eq!(options.naming, Some(luau_decompiler::NameStyle::Roblox));
+        assert_eq!(options.module_name.as_deref(), Some("Button"));
+        assert!(parse(["decompile", "input.bc", "--naming", "guess"].map(str::to_string)).is_err());
+        let mut config = Config::default();
+        config.naming_options.module_name_hint = Some("Button\nModule".into());
+        assert_eq!(config.validate().unwrap_err().stage, "config");
     }
 
     #[test]

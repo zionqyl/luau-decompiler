@@ -166,6 +166,70 @@ def main(failure_context=None):
     if not args.admission_only and not args.legacy_only:
         primary_managed = managed
         try:
+            for atomic_target in ['intent', 'bootstrap', 'stage_owner', 'activation']:
+                managed = work / ('atomic interrupted '+atomic_target)
+                signal = work / (atomic_target+'.atomic-checkpoint')
+                source = installer.read_text(encoding='utf-8-sig')
+                marker = ('    $lock.Position=0;$lock.Write($intent,0,$intent.Length);$lock.Flush($true)' if atomic_target == 'intent' else
+                          '        try{$stream.Write($Bytes,0,$Bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}')
+                assert source.count(marker) == 1
+                escaped = str(signal).replace("'", "''")
+                condition = {'intent': '$true', 'bootstrap': '$Path -ceq $bootstrapPath', 'activation': '$Path -ceq $activationPath',
+                             'stage_owner': "[IO.Path]::GetFileName($Path) -ceq '.luau-stage-owner.json'"}[atomic_target]
+                pause = "if("+condition+"){$stream.Write($Bytes,0,[int]($Bytes.Length/2));$stream.Flush($true);[IO.File]::WriteAllText('"+escaped+"','ready');while(Test-Path -LiteralPath '"+escaped+"'){Start-Sleep -Milliseconds 100}}"
+                injected = work / (atomic_target+'-atomic-instrumented.ps1')
+                if atomic_target == 'intent':
+                    pause = "$lock.Position=0;$lock.Write($intent,0,[int]($intent.Length/2));$lock.Flush($true);[IO.File]::WriteAllText('"+escaped+"','ready');while(Test-Path -LiteralPath '"+escaped+"'){Start-Sleep -Milliseconds 100}"
+                    replacement = pause+'\n'+marker
+                else:
+                    replacement = marker.replace('try{', 'try{'+pause, 1)
+                injected.write_text(source.replace(marker, replacement, 1), encoding='utf-8')
+                process = subprocess.Popen([str(powershell), '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', str(injected),
+                                            '-Destination', str(managed), '-NoPath', '-Archive', str(archive),
+                                            '-ExpectedSha256', archive_sha, '-Preview'], cwd=work,
+                                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                try:
+                    deadline = time.monotonic()+45
+                    while not signal.exists():
+                        if process.poll() is not None:
+                            raise AssertionError(process.communicate()[1].decode('utf-8', 'replace'))
+                        if time.monotonic() >= deadline:
+                            raise AssertionError('atomic write checkpoint was not reached: '+atomic_target)
+                        time.sleep(.025)
+                    process.kill()
+                    process.communicate(timeout=10)
+                finally:
+                    if process.poll() is None:
+                        process.kill()
+                        process.communicate(timeout=10)
+                journal = (managed / '.install.lock').read_text(encoding='utf-8')
+                assert journal.startswith('LUAU-ATOMIC/1 ')
+                if atomic_target == 'intent':
+                    assert not journal.endswith('\n') and not list(managed.rglob('*.new-*'))
+                    local(archive)
+                    assert json.loads(install(['-Doctor', '-Json']).stdout)['passed']
+                    assert (managed / '.install.lock').stat().st_size == 0
+                    record('hard_kill_inside_lock_intent_write_retries_before_managed_file_creation',
+                           invoker_sha256=digest(injected.read_bytes()), fault='actual termination after a partial durable lock intent, before temporary creation')
+                    install(['-Uninstall'])
+                    continue
+                write = json.loads(journal.split(' ', 1)[1])
+                partial = managed / (write['path']+'.new-'+write['transaction_id'])
+                assert 0 < partial.stat().st_size < len(base64.b64decode(write['bytes']))
+                if atomic_target == 'stage_owner':
+                    original_partial = partial.read_bytes()
+                    partial.write_bytes(b'user-modified partial file')
+                    local(archive, success=False)
+                    assert partial.read_bytes() == b'user-modified partial file'
+                    partial.write_bytes(original_partial)
+                local(archive)
+                assert json.loads(install(['-Doctor', '-Json']).stdout)['passed']
+                assert not partial.exists() and (managed / '.install.lock').stat().st_size == 0
+                assert not list(managed.rglob('*.new-*')) and not list(managed.rglob('*.previous-*'))
+                record('hard_kill_inside_'+atomic_target+'_write_recovers_only_recorded_partial',
+                       invoker_sha256=digest(injected.read_bytes()), modified_partial_preservation_checked=atomic_target == 'stage_owner',
+                       fault='actual termination after a durable partial write inside Atomic-Bytes')
+                install(['-Uninstall'])
             checkpoints = {
                 'staging': "    if($Archive){$archivePath=(Resolve-Path -LiteralPath $Archive).Path}else{$resolved=Resolve-Release $stage;$archivePath=$resolved.path}",
                 'extraction': '        [IO.Compression.ZipFile]::ExtractToDirectory($archivePath,$expanded)',

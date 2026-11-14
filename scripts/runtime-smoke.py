@@ -48,6 +48,22 @@ def main():
               "behavioral_verification": "not_run_without_explicit_compiler_and_oracle", "arbitrary_source_execution": False}
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report, indent=2) + "\n")
+    inventory = json.loads((bundle / 'runtime-manifest.json').read_text(encoding='utf-8'))
+    tools = inventory['provenance']['quality_tools']
+    for field in ['protocol', 'analyzer_sha256', 'manifest_sha256', 'harness_sha256', 'upstream_revision',
+                  'definitions_sha256', 'definitions_revision', 'definitions_license_sha256']:
+        assert isinstance(tools.get(field), str) and tools[field], 'Missing runtime quality-tool provenance: '+field
+    analyzer_manifest = json.loads(analyzer.with_name(analyzer.name + '.manifest.json').read_text(encoding='utf-8'))
+    assert tools['protocol'] == analyzer_manifest['protocol'] == 'LQUAL/1'
+    definitions_lock = json.loads((bundle / 'definitions.lock.json').read_text(encoding='utf-8'))
+    assert tools['analyzer_sha256'] == report['analyzer_sha256']
+    assert tools['manifest_sha256'] == report['analyzer_manifest_sha256']
+    assert tools['harness_sha256'] == analyzer_manifest['source_sha256']
+    assert tools['upstream_revision'] == analyzer_manifest['upstream_revision'] == definitions_lock['analyzer_revision']
+    assert tools['definitions_sha256'] == report['definitions_sha256'] == definitions_lock['sha256']
+    assert tools['definitions_revision'] == definitions_lock['revision']
+    assert tools['definitions_license_sha256'] == digest((bundle / definitions_lock['license_path']).read_bytes())
+    rows.append({'id': 'runtime_quality_tool_provenance_matches_packaged_assets', 'passed': True})
     work = contextlib.nullcontext(str(pathlib.Path(args.work_dir).resolve())) if args.work_dir else tempfile.TemporaryDirectory(prefix="luau-runtime-smoke-")
     with work as temporary:
         directory = pathlib.Path(temporary)

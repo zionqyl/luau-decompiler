@@ -50,13 +50,8 @@ impl RecoveredBindings {
         }
         let mut groups = Groups((0..ssa.definitions.len()).collect());
         let registers = proto.max_stack as usize;
-        let mut reference = vec![false; registers];
         let mut pinned = vec![false; registers];
         for i in &proto.code {
-            if i.op == Opcode::Capture && i.a() == 1 {
-                reference[i.b()] = true;
-                pinned[i.b()] = true;
-            }
             let width = match i.op {
                 Opcode::ForNPrep | Opcode::ForNLoop => 3,
                 Opcode::ForGPrep | Opcode::ForGPrepInext | Opcode::ForGPrepNext => 3,
@@ -65,6 +60,34 @@ impl RecoveredBindings {
             };
             if width != 0 {
                 pinned[i.a()..(i.a() + width).min(registers)].fill(true);
+            }
+        }
+
+        for (block_id, block) in cfg.blocks.iter().enumerate() {
+            if !block.reachable {
+                continue;
+            }
+            let mut reaching = ssa.block_inputs[block_id].clone();
+            for index in block.start..block.end {
+                for register in ssa.effects[index].writes.registers() {
+                    let value = ssa.write_definition(index, register).unwrap();
+                    if ssa.open_captures_before[index].contains(register) {
+                        groups.join(reaching[register], value);
+                    }
+                    reaching[register] = value;
+                }
+                if index & 255 == 0 {
+                    crate::execution::checkpoint()?;
+                }
+                let instruction = &proto.code[index];
+                if instruction.op == Opcode::Capture && instruction.a() == 1 {
+                    let value = ssa.read_definition(index, instruction.b()).unwrap();
+                    if let Definition::Phi { incoming, .. } = &ssa.definitions[value] {
+                        for &(_, incoming) in incoming {
+                            groups.join(value, incoming);
+                        }
+                    }
+                }
             }
         }
         for (value, definition) in ssa.definitions.iter().enumerate() {
@@ -89,7 +112,7 @@ impl RecoveredBindings {
                 let live = ssa.effects[first]
                     .reads
                     .union(ssa.live_after[first].difference(ssa.effects[first].writes));
-                if live.contains(*register) {
+                if live.contains(*register) || ssa.open_captures_before[first].contains(*register) {
                     for &(_, incoming) in incoming {
                         groups.join(value, incoming);
                     }
@@ -125,6 +148,19 @@ impl RecoveredBindings {
                 }
             }
         }
+        let reference_roots: std::collections::BTreeSet<_> = proto
+            .code
+            .iter()
+            .enumerate()
+            .filter(|(index, instruction)| {
+                instruction.op == Opcode::Capture
+                    && instruction.a() == 1
+                    && cfg.blocks[cfg.instruction_block[*index]].reachable
+            })
+            .map(|(index, instruction)| {
+                groups.root(ssa.read_definition(index, instruction.b()).unwrap())
+            })
+            .collect();
         let mut roots = BTreeMap::<usize, Binding>::new();
         for (value, definition) in ssa.definitions.iter().enumerate() {
             let (register, pc, parameter) = match definition {
@@ -145,14 +181,14 @@ impl RecoveredBindings {
                 last_pc: pc,
                 debug_name: None,
                 parameter,
-                reference_cell: reference[register],
+                reference_cell: reference_roots.contains(&root),
             });
             item.first_pc = item.first_pc.min(pc);
             item.last_pc = item.last_pc.max(pc);
             item.parameter |= parameter;
         }
 
-        for (r, &reference_cell) in reference.iter().enumerate() {
+        for r in 0..registers {
             if !roots.values().any(|b| b.register == r) {
                 roots.insert(
                     groups.root(r),
@@ -163,7 +199,7 @@ impl RecoveredBindings {
                         last_pc: 0,
                         debug_name: None,
                         parameter: r < proto.num_params as usize,
-                        reference_cell,
+                        reference_cell: reference_roots.contains(&groups.root(r)),
                     },
                 );
             }

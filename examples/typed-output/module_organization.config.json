@@ -1,0 +1,14 @@
+{
+  "input_format": "luau_source",
+  "output_policy": "annotated",
+  "naming": "camelCase",
+  "validation": {
+    "mode": "strict_required",
+    "project": {
+      "modules": {
+        "signal": "export type Signal<T> = {value: T}\nlocal function new(): Signal<number> print('signal:new') return {value=1} end\nreturn {new=new}",
+        "debug": "local function new(): {enabled: boolean} print('debug:new') return {enabled=true} end\nreturn {new=new}"
+      }
+    }
+  }
+}

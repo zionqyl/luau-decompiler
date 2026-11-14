@@ -111,7 +111,7 @@ function Adapter.map_options(native, profile_name, base)
         end
     end
     if flat.naming~=nil then
-        if flat.naming~="snake_case" and flat.naming~="camelCase" and flat.naming~="PascalCase" then argument("unknown naming convention") end
+        if flat.naming~="snake_case" and flat.naming~="camelCase" and flat.naming~="PascalCase" and flat.naming~="roblox" then argument("unknown naming convention") end
         config.naming=flat.naming
     end
     if flat.annotation_verbosity~=nil then

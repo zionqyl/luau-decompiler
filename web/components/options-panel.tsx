@@ -44,8 +44,9 @@ export default function OptionsPanel({
         </select>
       </label>
       <label>
-        Fallback naming
+        Naming style
         <select value={options.naming} onChange={(event) => change("naming", event.target.value)}>
+          <option value="roblox">Roblox: services PascalCase, locals camelCase</option>
           <option value="snake_case">snake_case</option>
           <option value="camelCase">camelCase</option>
           <option value="PascalCase">PascalCase</option>
@@ -57,11 +58,11 @@ export default function OptionsPanel({
           checked={options.preserveNames}
           onChange={(event) => change("preserveNames", event.target.checked)}
         />
-        Preserve supplied/debug local names
+        Preserve source names; use debug hints
       </label>
       <p className="hint">
-        Turn this off to apply the style to eligible local bindings. Properties, keys, globals, and
-        exported contracts retain their meaning.
+        Checked source names stay as supplied. Bytecode naming applies the selected style to debug
+        and inferred hints. Properties, keys, globals, and exported contracts retain their meaning.
       </p>
       <div className="option-row">
         <label>

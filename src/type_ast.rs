@@ -11,6 +11,7 @@ pub enum TypeExpr {
     Boolean,
     Number,
     String,
+    SingletonString(String),
     Thread,
     Buffer,
     Named(String),
@@ -174,6 +175,7 @@ impl TypeExpr {
             Self::Boolean => (4, "boolean".into()),
             Self::Number => (4, "number".into()),
             Self::String => (4, "string".into()),
+            Self::SingletonString(value) => (4, crate::names::quote(value.as_bytes())),
             Self::Thread => (4, "thread".into()),
             Self::Buffer => (4, "buffer".into()),
             Self::Named(n) | Self::Generic(n) => (4, n.clone()),
@@ -307,6 +309,86 @@ pub fn generic_declaration(types: &[String], packs: &[String]) -> String {
 pub fn parse_type(source: &str) -> crate::Result<TypeExpr> {
     Parser::new(source)?.parse()
 }
+fn singleton_string(source: &str) -> crate::Result<String> {
+    let bytes = source.as_bytes();
+    let mut value = Vec::with_capacity(bytes.len().saturating_sub(2));
+    let mut at = 1;
+    while at + 1 < bytes.len() {
+        let byte = bytes[at];
+        at += 1;
+        if byte != b'\\' {
+            if matches!(byte, b'\n' | b'\r') {
+                return Err(crate::Error::new(
+                    "types",
+                    "newline in singleton string type",
+                ));
+            }
+            value.push(byte);
+            continue;
+        }
+        if at + 1 >= bytes.len() {
+            return Err(crate::Error::new(
+                "types",
+                "incomplete singleton string escape",
+            ));
+        }
+        let escaped = bytes[at];
+        at += 1;
+        match escaped {
+            b'\'' | b'"' | b'\\' => value.push(escaped),
+            b'a' => value.push(7),
+            b'b' => value.push(8),
+            b'f' => value.push(12),
+            b'n' => value.push(b'\n'),
+            b'r' => value.push(b'\r'),
+            b't' => value.push(b'\t'),
+            b'v' => value.push(11),
+            b'0'..=b'9' => {
+                let mut number = u16::from(escaped - b'0');
+                let mut digits = 1;
+                while digits < 3 && at + 1 < bytes.len() && bytes[at].is_ascii_digit() {
+                    number = number * 10 + u16::from(bytes[at] - b'0');
+                    at += 1;
+                    digits += 1;
+                }
+                value.push(u8::try_from(number).map_err(|_| {
+                    crate::Error::new("types", "singleton string decimal escape exceeds 255")
+                })?);
+            }
+            b'x' => {
+                let end = at
+                    .checked_add(2)
+                    .filter(|end| *end < bytes.len())
+                    .ok_or_else(|| {
+                        crate::Error::new("types", "incomplete singleton string hex escape")
+                    })?;
+                let digits = source
+                    .get(at..end)
+                    .filter(|digits| digits.as_bytes().iter().all(u8::is_ascii_hexdigit))
+                    .ok_or_else(|| {
+                        crate::Error::new("types", "invalid singleton string hex escape")
+                    })?;
+                value.push(u8::from_str_radix(digits, 16).map_err(|_| {
+                    crate::Error::new("types", "invalid singleton string hex escape")
+                })?);
+                at = end;
+            }
+            b'z' => {
+                while at + 1 < bytes.len() && bytes[at].is_ascii_whitespace() {
+                    at += 1;
+                }
+            }
+            _ => {
+                return Err(crate::Error::new(
+                    "types",
+                    "unsupported singleton string escape; use decimal byte escapes",
+                ))
+            }
+        }
+    }
+    String::from_utf8(value)
+        .map_err(|_| crate::Error::new("types", "singleton string type is not valid UTF-8"))
+}
 struct Parser {
     tokens: Vec<String>,
     at: usize,
@@ -329,7 +411,23 @@ impl Parser {
                 continue;
             }
             let start = at;
-            if b[at].is_ascii_alphabetic() || b[at] == b'_' {
+            if matches!(b[at], b'\'' | b'"') {
+                let quote = b[at];
+                at += 1;
+                while at < b.len() && b[at] != quote {
+                    if b[at] == b'\\' {
+                        at += 1;
+                    }
+                    at += 1;
+                }
+                if at >= b.len() {
+                    return Err(crate::Error::new(
+                        "types",
+                        "unterminated singleton string type",
+                    ));
+                }
+                at += 1;
+            } else if b[at].is_ascii_alphabetic() || b[at] == b'_' {
                 at += 1;
                 while at < b.len() && (b[at].is_ascii_alphanumeric() || b[at] == b'_') {
                     at += 1
@@ -415,7 +513,11 @@ impl Parser {
         if d > 64 {
             return Err(crate::Error::new("types", "type nesting limit"));
         }
-        let mut result = if self.eat("{") {
+        let mut result = if self.peek().starts_with(['\'', '"']) {
+            let value = singleton_string(&self.tokens[self.at])?;
+            self.at += 1;
+            TypeExpr::SingletonString(value)
+        } else if self.eat("{") {
             if self.eat("}") {
                 TypeExpr::Record(BTreeMap::new())
             } else if self.eat("[") {

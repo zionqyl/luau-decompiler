@@ -1,0 +1,18 @@
+{
+  "input_format": "luau_bytecode",
+  "output_policy": "annotated",
+  "naming": "roblox",
+  "formatting": {
+    "line_width": 100
+  },
+  "validation": {
+    "mode": "check",
+    "max_workers": 1,
+    "timeout_ms": 30000,
+    "max_attempts": 2,
+    "max_cache_bytes": 0
+  },
+  "naming_options": {
+    "module_name_hint": "Item"
+  }
+}

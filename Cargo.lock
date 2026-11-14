@@ -107,7 +107,7 @@ checksum = "65cd87c9a6d60536580b316ad985726104730a5151c99845f2490428ef91240a"
 
 [[package]]
 name = "luau-decompiler"
-version = "0.4.0-rc.4"
+version = "0.4.0-rc.5"
 dependencies = [
  "mio",
  "rayon",

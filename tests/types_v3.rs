@@ -1,4 +1,5 @@
 use luau_decompiler::structure::RecoveredBindingInfo;
+mod support;
 use luau_decompiler::type_ast::{parse_type, PackTail, TypeExpr, TypePack};
 use luau_decompiler::{
     ast::{Expr, Function, Stmt},
@@ -21,7 +22,11 @@ fn binding(id: usize, name: &str, parameter: bool) -> RecoveredBindingInfo {
         first_pc: 0,
         last_pc: 1,
         name: name.into(),
+        printed_name: name.into(),
+        name_hint: name.into(),
+        name_role: "local",
         debug_name: Some(name.into()),
+        naming_origin: "debug_metadata",
         parameter,
         captured: false,
         capture_mode: "none",
@@ -61,6 +66,7 @@ fn full_type_syntax_is_structural_bounded_and_cannot_inject_code() {
         "<T, R...>(T, R...) -> (T, R...)",
         "{player: Player, positions: {Vector3}}",
         "RBXScriptSignal<>",
+        "\"TweenService\" | 'Part'",
     ] {
         let ty = parse_type(source).unwrap();
         assert!(!ty.luau().is_empty());
@@ -73,10 +79,16 @@ fn full_type_syntax_is_structural_bounded_and_cannot_inject_code() {
         "{x:}",
         "function()end",
         "end",
+        "\"unterminated",
+        "\"bad\\999\"",
+        "\"bad\\xQ0\"",
+        "\"value\"; return 1",
     ] {
         assert!(parse_type(source).is_err(), "{source}");
     }
     assert!(parse_type(&format!("{}number{}", "{".repeat(100), "}".repeat(100))).is_err());
+    let singleton = TypeExpr::SingletonString("quote\"\\\n\0\u{03bb}".into());
+    assert_eq!(parse_type(&singleton.luau()).unwrap(), singleton);
 }
 #[test]
 fn identity_generics_preserve_an_interface_instead_of_sample_specialization() {
@@ -116,8 +128,8 @@ fn identity_generics_preserve_an_interface_instead_of_sample_specialization() {
         source.contains("function identity<T1>(value: T1): T1"),
         "{source}"
     );
-    assert!(source.contains("numberResult: number"), "{source}");
-    assert!(source.contains("stringResult: string"), "{source}");
+    assert!(source.contains("number_result: number"), "{source}");
+    assert!(source.contains("string_result: string"), "{source}");
     assert!(!source.contains("::"));
     assert_eq!(report.inferred_any, 0);
 }
@@ -164,8 +176,8 @@ fn metadata_parameter_tags_and_pc_intervals_are_preserved_without_tainting_reuse
         &[binding(0, "numberValue", true), later],
         &config(),
     );
-    assert!(source.contains("numberValue: number"), "{source}");
-    assert!(source.contains("laterString: string"), "{source}");
+    assert!(source.contains("number_value: number"), "{source}");
+    assert!(source.contains("later_string: string"), "{source}");
     assert!(report
         .preserved_metadata
         .iter()
@@ -1387,4 +1399,326 @@ fn later_scalar_loop_iterations_invalidate_dependent_binding_facts() {
         annotations.locals
     );
     assert!(!report.evidence.iter().any(|evidence| evidence.name == "y"));
+}
+
+fn type_layout_fixture() -> (Vec<Stmt>, luau_decompiler::type_ast::Annotations) {
+    use luau_decompiler::type_ast::{Annotations, FunctionAnnotation, FunctionType};
+    use std::collections::BTreeMap;
+    let entry = TypeExpr::Record(BTreeMap::from([
+        ("enabled".into(), TypeExpr::Boolean),
+        (
+            "weight".into(),
+            TypeExpr::Optional(Box::new(TypeExpr::Number)),
+        ),
+    ]));
+    let record = TypeExpr::Record(BTreeMap::from([
+        ("displayName".into(), TypeExpr::String),
+        (
+            "positions".into(),
+            TypeExpr::Array(Box::new(TypeExpr::Named("Vector3".into()))),
+        ),
+        (
+            "records".into(),
+            TypeExpr::Dictionary(Box::new(TypeExpr::String), Box::new(entry)),
+        ),
+    ]));
+    let callback = TypeExpr::Function(Box::new(FunctionType {
+        parameters: vec![record.clone(), TypeExpr::Optional(Box::new(record.clone()))],
+        returns: TypePack {
+            head: vec![record.clone(), TypeExpr::Nil],
+            tail: Some(PackTail::Variadic(Box::new(TypeExpr::String))),
+        },
+        ..FunctionType::default()
+    }));
+    let body = vec![
+        Stmt::Local(vec!["pending".into()], vec![Expr::Literal("nil".into())]),
+        Stmt::Local(
+            vec!["forward".into()],
+            vec![function(
+                &["value", "callback"],
+                true,
+                vec![Stmt::Return(vec![
+                    Expr::name("value"),
+                    Expr::Literal("nil".into()),
+                    Expr::Vararg,
+                ])],
+            )],
+        ),
+        Stmt::Return(vec![Expr::name("forward")]),
+    ];
+    let annotations = Annotations {
+        locals: BTreeMap::from([(
+            "pending".into(),
+            TypeExpr::Optional(Box::new(record.clone())),
+        )]),
+        functions: BTreeMap::from([(
+            0,
+            FunctionAnnotation {
+                parameters: vec![Some(record.clone()), Some(callback)],
+                variadic: Some(PackTail::Variadic(Box::new(TypeExpr::String))),
+                returns: Some(TypePack {
+                    head: vec![record, TypeExpr::Nil],
+                    tail: Some(PackTail::Variadic(Box::new(TypeExpr::String))),
+                }),
+                ..FunctionAnnotation::default()
+            },
+        )]),
+        strict: true,
+        ..Annotations::default()
+    };
+    (body, annotations)
+}
+
+#[test]
+fn type_layout_wraps_local_parameter_callback_and_return_annotations() {
+    let (body, annotations) = type_layout_fixture();
+    let mut config = config();
+    config.formatting.line_width = 80;
+    let source = format::format_typed(&body, &config, &annotations, 0, &[])
+        .unwrap()
+        .0;
+    assert!(source.contains("local pending: {\n"), "{source}");
+    assert!(source.contains("function forward(\n"), "{source}");
+    assert!(source.contains("callback: (\n"), "{source}");
+    assert!(
+        source.lines().all(|line| line.chars().count() <= 80),
+        "{source}"
+    );
+    assert_eq!(
+        source,
+        format::format_typed(&body, &config, &annotations, 0, &[])
+            .unwrap()
+            .0
+    );
+}
+
+#[test]
+fn type_layout_reuses_exact_aliases_without_capturing_function_generics() {
+    use luau_decompiler::type_ast::TypeAlias;
+    let (body, mut annotations) = type_layout_fixture();
+    let record = annotations.functions[&0].parameters[0].clone().unwrap();
+    annotations.aliases.push(TypeAlias {
+        name: "Payload".into(),
+        generics: Vec::new(),
+        generic_packs: Vec::new(),
+        ty: record,
+        exported: true,
+        origin: Some(0),
+    });
+    let source = format::format_typed(&body, &config(), &annotations, 0, &[])
+        .unwrap()
+        .0;
+    assert!(source.contains("local pending: Payload? = nil"), "{source}");
+    assert!(source.contains("value: Payload"), "{source}");
+    assert!(source.contains("(Payload, nil, ...string)"), "{source}");
+    annotations
+        .functions
+        .get_mut(&0)
+        .unwrap()
+        .generics
+        .push("Payload".into());
+    let shadowed = format::format_typed(&body, &config(), &annotations, 0, &[])
+        .unwrap()
+        .0;
+    assert!(shadowed.contains("value: {\n"), "{shadowed}");
+    assert!(!shadowed.contains("value: Payload"), "{shadowed}");
+}
+
+#[test]
+fn type_layout_places_import_dependent_aliases_after_their_values() {
+    use luau_decompiler::type_ast::{Annotations, TypeAlias};
+    let body = vec![
+        Stmt::Local(
+            vec!["RunService".into()],
+            vec![Expr::MethodCall(
+                Box::new(Expr::Global("game".into())),
+                "GetService".into(),
+                vec![Expr::Literal("\"RunService\"".into())],
+            )],
+        ),
+        Stmt::Local(
+            vec!["Signal".into()],
+            vec![Expr::Call(
+                Box::new(Expr::Global("require".into())),
+                vec![Expr::Literal("\"./signal\"".into())],
+            )],
+        ),
+        Stmt::Call(Expr::Call(
+            Box::new(Expr::Global("print".into())),
+            vec![Expr::Literal("\"initialized\"".into())],
+        )),
+        Stmt::Return(vec![Expr::name("Signal")]),
+    ];
+    let alias = |name: &str, ty| TypeAlias {
+        name: name.into(),
+        generics: Vec::new(),
+        generic_packs: Vec::new(),
+        ty,
+        exported: true,
+        origin: Some(0),
+    };
+    let annotations = Annotations {
+        aliases: vec![
+            alias("Foundational", TypeExpr::Array(Box::new(TypeExpr::Number))),
+            alias(
+                "Callback",
+                parse_type("<Subscription>(Subscription) -> Subscription").unwrap(),
+            ),
+            alias(
+                "Subscription",
+                TypeExpr::Apply("Signal.Signal".into(), vec![TypeExpr::Number]),
+            ),
+            alias(
+                "Shared",
+                TypeExpr::Record(std::collections::BTreeMap::from([(
+                    "changed".into(),
+                    TypeExpr::Named("Subscription".into()),
+                )])),
+            ),
+        ],
+        strict: true,
+        ..Annotations::default()
+    };
+    let source = format::format_typed(&body, &config(), &annotations, 0, &[])
+        .unwrap()
+        .0;
+    let foundation = source.find("export type Foundational").unwrap();
+    let callback = source.find("export type Callback").unwrap();
+    let service = source.find("local RunService").unwrap();
+    let import = source.find("local Signal").unwrap();
+    let dependent = source.find("export type Subscription").unwrap();
+    let shared = source.find("export type Shared").unwrap();
+    let effect = source.find("print(\"initialized\")").unwrap();
+    assert!(
+        foundation < callback
+            && callback < service
+            && service < import
+            && import < dependent
+            && dependent < shared
+            && shared < effect,
+        "{source}"
+    );
+}
+
+#[test]
+fn type_layout_bounds_deep_in_memory_types_before_rendering() {
+    let mut ty = TypeExpr::Number;
+    for _ in 0..300 {
+        ty = TypeExpr::Array(Box::new(ty));
+    }
+    let annotations = luau_decompiler::type_ast::Annotations {
+        locals: std::collections::BTreeMap::from([("value".into(), ty)]),
+        ..Default::default()
+    };
+    let error = format::format_typed(
+        &[Stmt::Local(vec!["value".into()], Vec::new())],
+        &config(),
+        &annotations,
+        0,
+        &[],
+    )
+    .unwrap_err();
+    assert_eq!(error.stage, "limit");
+    assert!(
+        error.message.contains("type") && error.message.contains("limit"),
+        "{error}"
+    );
+}
+
+#[test]
+#[ignore = "requires pinned parser/compiler and strict analyzer; final recursive type layout"]
+fn type_layout_final_attributed_output_passes_pinned_strict_analysis() {
+    let (body, annotations) = type_layout_fixture();
+    let mut config = config();
+    config.validation.mode = luau_decompiler::quality::ValidationMode::StrictRequired;
+    config.formatting.line_width = 80;
+    let mut source = format::format_typed(&body, &config, &annotations, 0, &[])
+        .unwrap()
+        .0;
+    let finalized = source.clone();
+    let result = luau_decompiler::quality::validate_source(
+        &mut source,
+        &mut None,
+        &mut types::TypeReport::default(),
+        &config,
+    )
+    .unwrap();
+    assert!(result.required_passed, "{:?}\n{source}", result.diagnostics);
+    assert_eq!(source, finalized);
+    assert_eq!(source.matches("Made by @zionqyl").count(), 1);
+}
+
+#[test]
+#[ignore = "requires pinned compiler, strict analyzer and typed oracle; dependency-aware module organization"]
+fn type_layout_whole_module_preserves_import_type_and_initialization_dependencies() {
+    use luau_decompiler::{input::InputFormat, processing::process, quality::GateStatus};
+    use std::{fs, path::Path};
+    let original = include_str!("source-corpus/module_organization.luau");
+    let mut config = config();
+    config.validation.mode = luau_decompiler::quality::ValidationMode::StrictRequired;
+    config.validation.project.modules.insert("signal".into(), "export type Signal<T> = {value: T}\nlocal function new(): Signal<number> print('signal:new') return {value=1} end\nreturn {new=new}".into());
+    config.validation.project.modules.insert("debug".into(), "local function new(): {enabled: boolean} print('debug:new') return {enabled=true} end\nreturn {new=new}".into());
+    let output = process(original.as_bytes(), InputFormat::LuauSource, &config).unwrap();
+    assert_eq!(
+        output.validation.strict_analysis,
+        GateStatus::Passed,
+        "{:?}\n{}",
+        output.validation.diagnostics,
+        output.source
+    );
+    assert!(output.validation.required_passed);
+    let positions = [
+        "export type Options",
+        "local RunService",
+        "local Modules",
+        "local Signal",
+        "local Debug",
+        "export type Changed",
+        "export type DebugState",
+        "export type Shared",
+        "local helperPrefix",
+        "local function makeName",
+        "local Module =",
+        "function Module.new",
+        "return Module",
+    ]
+    .map(|text| {
+        output
+            .source
+            .find(text)
+            .unwrap_or_else(|| panic!("missing {text}\n{}", output.source))
+    });
+    assert!(
+        positions.windows(2).all(|pair| pair[0] < pair[1]),
+        "{}",
+        output.source
+    );
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let tools = support::Toolset::checked(root, 14);
+    let destination = root.join("artifacts/type-layout-rc5");
+    fs::create_dir_all(&destination).unwrap();
+    fs::write(destination.join("module.final.luau"), &output.source).unwrap();
+    let setup = "getfenv(0).game={GetService=function(_,name) print('service',name) return {ClassName=name} end}\ngetfenv(0).require=function(name) print('import',name) if name=='./signal' then return {new=function() print('signal:new') return {value=1} end} end return {new=function() print('debug:new') return {enabled=true} end} end\n";
+    let probe = destination.join("probe.luau");
+    fs::write(&probe, "local module=... local state=module.new({enabled=true,speed=24}) return module.Name,module.Options.enabled,state.changed.value,state.debug.enabled").unwrap();
+    let probe_bytes = tools.compile(&probe, 0, 2).unwrap();
+    let probe_bytecode = destination.join("probe.bc");
+    fs::write(&probe_bytecode, probe_bytes).unwrap();
+    let mut observations = Vec::new();
+    for (label, source) in [
+        ("original", original),
+        ("formatted", output.source.as_str()),
+    ] {
+        let path = destination.join(format!("module.{label}.luau"));
+        fs::write(&path, format!("{setup}{source}")).unwrap();
+        let bytes = tools.compile(&path, 0, 2).unwrap();
+        observations.push(
+            tools
+                .observe_with_probe(&bytes, &destination, label, &[], Some(&probe_bytecode))
+                .unwrap(),
+        );
+    }
+    assert!(observations.iter().all(|observation| observation.complete));
+    assert_eq!(observations[0], observations[1]);
+    assert_eq!(output.source.matches("Made by @zionqyl").count(), 1);
 }

@@ -135,6 +135,8 @@ pub struct GeneratedRegion {
     pub kind: RegionKind,
     pub proto: Option<usize>,
     pub binding: Option<String>,
+    pub symbol: Option<String>,
+    pub printed_name: Option<String>,
     pub first_pc: Option<usize>,
     pub last_pc: Option<usize>,
     pub first_line: usize,
@@ -458,17 +460,25 @@ fn metadata_records(module: &Module) -> Vec<MetadataRecord> {
 struct Value {
     ty: TypeExpr,
     table: Option<usize>,
+    function: Option<usize>,
     returns: Option<TypePack>,
     literal_string: Option<String>,
+    literal_sources: BTreeSet<String>,
     reachable_tables: BTreeSet<usize>,
 }
 impl Value {
     fn ty(ty: TypeExpr) -> Self {
+        let literal_string = match &ty {
+            TypeExpr::SingletonString(value) => Some(value.clone()),
+            _ => None,
+        };
         Self {
             ty,
             table: None,
+            function: None,
             returns: None,
-            literal_string: None,
+            literal_string,
+            literal_sources: BTreeSet::new(),
             reachable_tables: BTreeSet::new(),
         }
     }
@@ -496,6 +506,8 @@ struct Engine<'a> {
     conservative_captures: bool,
     values: BTreeMap<String, Value>,
     observed: BTreeMap<String, Value>,
+    declaration_history: BTreeMap<String, Vec<Value>>,
+    class_argument_bindings: BTreeSet<String>,
     all: BTreeMap<String, TypeExpr>,
     tables: BTreeMap<usize, TableState>,
     table_parents: BTreeMap<usize, BTreeSet<usize>>,
@@ -635,6 +647,7 @@ impl Engine<'_> {
         let mut materialized = self.materialize_type(value.ty, 0)?;
         materialized.returns = value.returns;
         materialized.literal_string = value.literal_string;
+        materialized.literal_sources = value.literal_sources;
         Ok(materialized)
     }
     fn materialize_type(&mut self, ty: TypeExpr, depth: usize) -> Result<Value> {
@@ -766,11 +779,20 @@ impl Engine<'_> {
         let table = left.table.filter(|table| Some(*table) == right.table);
         let mut value = Value::ty(TypeExpr::union(self.resolve(left), self.resolve(right)));
         value.table = table;
+        value.function = left.function.filter(|id| Some(*id) == right.function);
         value
             .reachable_tables
             .extend(Self::value_tables(left).chain(Self::value_tables(right)));
         if left.literal_string == right.literal_string {
             value.literal_string = left.literal_string.clone();
+            if value.literal_string.is_some() {
+                value
+                    .literal_sources
+                    .extend(left.literal_sources.iter().cloned());
+                value
+                    .literal_sources
+                    .extend(right.literal_sources.iter().cloned());
+            }
         }
         value
     }
@@ -924,6 +946,12 @@ impl Engine<'_> {
         }
         for name in &scalar_changes {
             self.tick()?;
+            if let Some(history) = self.declaration_history.get_mut(name) {
+                if history.last() != Some(&Value::unknown()) {
+                    crate::execution::reserve_ast_capacity(std::mem::size_of::<Value>() + 128)?;
+                    history.push(Value::unknown());
+                }
+            }
             for value in self
                 .values
                 .get_mut(name)
@@ -936,6 +964,7 @@ impl Engine<'_> {
                 }
                 value.returns = None;
                 value.literal_string = None;
+                value.literal_sources.clear();
             }
             self.all.insert(name.clone(), TypeExpr::Unknown);
         }
@@ -1021,8 +1050,10 @@ impl Engine<'_> {
                         &Value {
                             ty: TypeExpr::Unknown,
                             table: Some(*id),
+                            function: None,
                             returns: None,
                             literal_string: None,
+                            literal_sources: BTreeSet::new(),
                             reachable_tables: BTreeSet::new(),
                         },
                         seen,
@@ -1052,14 +1083,26 @@ impl Engine<'_> {
         }
         v.ty.clone()
     }
-    fn set(&mut self, name: &str, value: Value) {
+    fn set(&mut self, name: &str, value: Value) -> Result<()> {
         let ty = self.resolve(&value);
         self.all
             .entry(name.into())
             .and_modify(|old| *old = TypeExpr::union(old.clone(), ty.clone()))
             .or_insert(ty);
         self.observed.insert(name.into(), value.clone());
+        let history = self.declaration_history.entry(name.into()).or_default();
+        if history.last() != Some(&value) {
+            crate::execution::charge_work(value.literal_sources.len())?;
+            crate::execution::reserve_ast_capacity(
+                std::mem::size_of::<Value>()
+                    .saturating_add(value.ty.metrics().nodes.saturating_mul(128))
+                    .saturating_add(value.reachable_tables.len().saturating_mul(32))
+                    .saturating_add(value.literal_sources.len().saturating_mul(160)),
+            )?;
+            history.push(value.clone());
+        }
         self.values.insert(name.into(), value);
+        Ok(())
     }
     fn global_path(expr: &Expr) -> Option<String> {
         match expr {
@@ -1076,18 +1119,27 @@ impl Engine<'_> {
                 value.literal_string = string_literal(e);
                 value
             }
-            Expr::Name(n) => self
-                .values
-                .get(n)
-                .cloned()
-                .or_else(|| {
-                    self.seeds
-                        .get(n)
-                        .or_else(|| self.known.get(n))
-                        .cloned()
-                        .map(Value::ty)
-                })
-                .unwrap_or_else(Value::unknown),
+            Expr::Name(n) => {
+                if let Some(value) = self.values.get(n) {
+                    crate::execution::charge_work(value.literal_sources.len())?;
+                }
+                let mut value = self
+                    .values
+                    .get(n)
+                    .cloned()
+                    .or_else(|| {
+                        self.seeds
+                            .get(n)
+                            .or_else(|| self.known.get(n))
+                            .cloned()
+                            .map(Value::ty)
+                    })
+                    .unwrap_or_else(Value::unknown);
+                if value.literal_string.is_some() {
+                    value.literal_sources.insert(n.clone());
+                }
+                value
+            }
             Expr::Global(n) => {
                 let value = Value::ty(
                     self.config
@@ -1126,6 +1178,7 @@ impl Engine<'_> {
                     (
                         "#",
                         TypeExpr::String
+                        | TypeExpr::SingletonString(_)
                         | TypeExpr::Array(_)
                         | TypeExpr::Dictionary(..)
                         | TypeExpr::Record(_),
@@ -1142,8 +1195,13 @@ impl Engine<'_> {
                 let (a, b) = (self.resolve(&a), self.resolve(&b));
                 Value::ty(match *op {
                     "==" | "~=" | "<" | "<=" | ">" | ">=" => TypeExpr::Boolean,
-                    ".." if matches!(a, TypeExpr::String | TypeExpr::Number)
-                        && matches!(b, TypeExpr::String | TypeExpr::Number) =>
+                    ".." if matches!(
+                        a,
+                        TypeExpr::String | TypeExpr::SingletonString(_) | TypeExpr::Number
+                    ) && matches!(
+                        b,
+                        TypeExpr::String | TypeExpr::SingletonString(_) | TypeExpr::Number
+                    ) =>
                     {
                         TypeExpr::String
                     }
@@ -1186,20 +1244,16 @@ impl Engine<'_> {
                         return Ok(Value {
                             ty: TypeExpr::Unknown,
                             table: Some(*child),
+                            function: None,
                             returns: None,
                             literal_string: None,
+                            literal_sources: BTreeSet::new(),
                             reachable_tables: BTreeSet::new(),
                         });
                     }
                 }
                 let ty = self.resolve(&o);
-                let mut value = Value::ty(match ty {
-                    TypeExpr::Record(fields) => fields.get(n).cloned().unwrap_or(TypeExpr::Unknown),
-                    TypeExpr::Named(class) if self.config.typing.roblox_api => {
-                        api().field(&class, n).unwrap_or(TypeExpr::Unknown)
-                    }
-                    _ => TypeExpr::Unknown,
-                });
+                let mut value = Value::ty(field_type(&ty, n, self.config.typing.roblox_api));
                 if let Some(table) = o.table.and_then(|id| self.tables.get(&id)) {
                     value
                         .reachable_tables
@@ -1257,8 +1311,10 @@ impl Engine<'_> {
                         .map(scalar_result)
                         .unwrap_or(TypeExpr::Unknown),
                     table: None,
+                    function: None,
                     returns,
                     literal_string: None,
+                    literal_sources: BTreeSet::new(),
                     reachable_tables: BTreeSet::new(),
                 };
                 if may_carry_table_alias(&value.ty) {
@@ -1274,8 +1330,10 @@ impl Engine<'_> {
                         .map(scalar_result)
                         .unwrap_or(TypeExpr::Unknown),
                     table: None,
+                    function: None,
                     returns,
                     literal_string: None,
+                    literal_sources: BTreeSet::new(),
                     reachable_tables: BTreeSet::new(),
                 };
                 if may_carry_table_alias(&value.ty) {
@@ -1353,8 +1411,10 @@ impl Engine<'_> {
                 Value {
                     ty: TypeExpr::Unknown,
                     table: Some(id),
+                    function: None,
                     returns: None,
                     literal_string: None,
+                    literal_sources: BTreeSet::new(),
                     reachable_tables: BTreeSet::new(),
                 }
             }
@@ -1424,8 +1484,13 @@ impl Engine<'_> {
         }
         if self.config.typing.roblox_api {
             if method.is_none() && Self::global_path(f).as_deref() == Some("Instance.new") {
-                if let Some(class) = args.first().and_then(string_literal) {
+                if let Some(class) = arguments
+                    .first()
+                    .and_then(|value| value.literal_string.clone())
+                {
                     if api().creatable.contains(&class) {
+                        self.class_argument_bindings
+                            .extend(arguments[0].literal_sources.iter().cloned());
                         self.last_call_aliases.clear();
                         return Ok(Some(TypePack {
                             head: vec![TypeExpr::Named(class)],
@@ -1437,8 +1502,13 @@ impl Engine<'_> {
             if method.map(String::as_str) == Some("GetService")
                 && matches!(ty,TypeExpr::Named(ref n)if n=="DataModel"||n=="ServiceProvider")
             {
-                if let Some(class) = args.first().and_then(string_literal) {
+                if let Some(class) = arguments
+                    .first()
+                    .and_then(|value| value.literal_string.clone())
+                {
                     if api().services.contains(&class) {
+                        self.class_argument_bindings
+                            .extend(arguments[0].literal_sources.iter().cloned());
                         self.last_call_aliases.clear();
                         return Ok(Some(TypePack {
                             head: vec![TypeExpr::Named(class)],
@@ -1490,8 +1560,12 @@ impl Engine<'_> {
         for value in arguments.iter().chain(&tail_values) {
             self.escape_tables(Self::value_tables(value))?;
         }
-        let uncertain_capture =
-            !effect_free_direct_function(f) && Self::value_tables(&receiver).next().is_some();
+        let known_local_function = receiver.function.is_some()
+            && Self::value_tables(&receiver)
+                .all(|id| self.tables.get(&id).is_some_and(|table| !table.escaped));
+        let uncertain_capture = !known_local_function
+            && !effect_free_direct_function(f)
+            && Self::value_tables(&receiver).next().is_some();
         if signature.is_none() || method.is_some() || uncertain_capture {
             self.escape_tables(Self::value_tables(&receiver))?;
         }
@@ -1584,7 +1658,7 @@ impl Engine<'_> {
         });
         for name in captures {
             self.tick()?;
-            let value = self.values.get_mut(&name).unwrap();
+            let mut value = self.values.remove(&name).unwrap();
             if value.table.is_none() && value.reachable_tables.is_empty() {
                 let ty = if self.conservative_captures {
                     TypeExpr::Unknown
@@ -1593,10 +1667,25 @@ impl Engine<'_> {
                 };
                 if ty != value.ty {
                     value.ty = ty;
-                    value.literal_string = None;
                     value.returns = None;
                 }
+                value.literal_string = None;
+                value.literal_sources.clear();
+            } else if let Some(known) = self
+                .known
+                .get(&name)
+                .filter(|ty| **ty != TypeExpr::Unknown && **ty != self.resolve(&value))
+            {
+                if let Some(table) = value.table.take() {
+                    value.reachable_tables.insert(table);
+                }
+                value.ty = known.clone();
+                value.literal_string = None;
+                value.literal_sources.clear();
+                value.returns = None;
             }
+            value.function = None;
+            self.values.insert(name, value);
         }
         let table_boundary = self.next_table;
         let before_revision = self.table_revision;
@@ -1607,9 +1696,17 @@ impl Engine<'_> {
             annotation.variadic = Some(PackTail::Generic("T".into()))
         }
         let safe_generics = generic_parameters(f);
+        let mut used_parameters = BTreeSet::new();
+        crate::ast::visit_body(&f.body, &mut |expr| {
+            if let Expr::Name(name) = expr {
+                if f.parameters.contains(name) {
+                    used_parameters.insert(name.clone());
+                }
+            }
+        });
         for (index, name) in f.parameters.iter().enumerate() {
             let ty = self.seeds.get(name).cloned().unwrap_or_else(|| {
-                if safe_generics.contains(name) {
+                if safe_generics.contains(name) && used_parameters.contains(name) {
                     TypeExpr::Generic(format!("T{}", index + 1))
                 } else {
                     TypeExpr::Unknown
@@ -1619,14 +1716,18 @@ impl Engine<'_> {
                 annotation.generics.push(generic.clone())
             }
             annotation.parameters.push(
-                if ty.useful() || ty == TypeExpr::Any || self.seeds.contains_key(name) {
+                if ty.useful()
+                    || ty == TypeExpr::Any
+                    || self.seeds.contains_key(name)
+                    || !used_parameters.contains(name)
+                {
                     Some(ty.clone())
                 } else {
                     None
                 },
             );
             let value = self.returned_value(Value::ty(ty))?;
-            self.set(name, value);
+            self.set(name, value)?;
         }
         self.return_stack.push(Vec::new());
         self.varargs.push(annotation.variadic.clone());
@@ -1688,6 +1789,7 @@ impl Engine<'_> {
         }
         self.values.extend(joined);
         let mut value = Value::ty(ty);
+        value.function = Some(id);
         crate::ast::visit_body(&f.body, &mut |expr| {
             if let Expr::Name(name) = expr {
                 if !f.parameters.contains(name) {
@@ -1790,7 +1892,7 @@ impl Engine<'_> {
                                 },
                             ))
                         });
-                        self.set(name, value);
+                        self.set(name, value)?;
                     }
                 }
                 Stmt::Assign(targets, values) => {
@@ -1798,7 +1900,7 @@ impl Engine<'_> {
                     for (index, target) in targets.iter().enumerate() {
                         let value = evaluated.get(index).cloned().unwrap_or_else(Value::unknown);
                         match target {
-                            Expr::Name(name) => self.set(name, value),
+                            Expr::Name(name) => self.set(name, value)?,
                             Expr::Field(object, name) => {
                                 let object = self.expr(object)?;
                                 let ty = self.resolve(&value);
@@ -1997,7 +2099,7 @@ impl Engine<'_> {
                     self.expr(start)?;
                     self.expr(limit)?;
                     self.expr(step)?;
-                    self.set(variable, Value::ty(TypeExpr::Number));
+                    self.set(variable, Value::ty(TypeExpr::Number))?;
                     self.loop_body(body, None)?;
                 }
                 Stmt::GenericFor {
@@ -2009,7 +2111,7 @@ impl Engine<'_> {
                         self.escape_tables(Self::value_tables(&value))?;
                     }
                     for n in variables {
-                        self.set(n, Value::unknown());
+                        self.set(n, Value::unknown())?;
                     }
                     self.loop_body(body, None)?;
                 }
@@ -2201,6 +2303,18 @@ fn literal_type(text: &str) -> TypeExpr {
         TypeExpr::Unknown
     }
 }
+fn field_type(ty: &TypeExpr, name: &str, roblox_api: bool) -> TypeExpr {
+    match ty {
+        TypeExpr::Record(fields) => fields.get(name).cloned().unwrap_or(TypeExpr::Unknown),
+        TypeExpr::Named(class) if roblox_api => {
+            api().field(class, name).unwrap_or(TypeExpr::Unknown)
+        }
+        TypeExpr::Union(types) => types.iter().fold(TypeExpr::Never, |field, ty| {
+            TypeExpr::union(field, field_type(ty, name, roblox_api))
+        }),
+        _ => TypeExpr::Unknown,
+    }
+}
 fn scalar_result(pack: &TypePack) -> TypeExpr {
     pack.head
         .first()
@@ -2217,6 +2331,7 @@ fn may_carry_table_alias(ty: &TypeExpr) -> bool {
         | TypeExpr::Boolean
         | TypeExpr::Number
         | TypeExpr::String
+        | TypeExpr::SingletonString(_)
         | TypeExpr::Thread
         | TypeExpr::Buffer
         | TypeExpr::Never => false,
@@ -2445,6 +2560,9 @@ fn refine_condition(condition: &Expr, truth: bool, values: &mut BTreeMap<String,
         } else {
             value.ty = TypeExpr::Nil;
             value.table = None;
+            value.function = None;
+            value.literal_string = None;
+            value.literal_sources.clear();
         }
     }
 }
@@ -2689,6 +2807,7 @@ pub fn reconstruct(
     let mut known = BTreeMap::new();
     let mut final_functions = BTreeMap::new();
     let mut final_types = BTreeMap::new();
+    let mut final_class_literals = BTreeMap::new();
     for iteration in 0..config.typing.max_iterations {
         crate::execution::checkpoint()?;
         let mut engine = Engine {
@@ -2698,6 +2817,8 @@ pub fn reconstruct(
             conservative_captures: iteration + 1 == config.typing.max_iterations,
             values: BTreeMap::new(),
             observed: BTreeMap::new(),
+            declaration_history: BTreeMap::new(),
+            class_argument_bindings: BTreeSet::new(),
             all: BTreeMap::new(),
             tables: BTreeMap::new(),
             table_parents: BTreeMap::new(),
@@ -2727,16 +2848,23 @@ pub fn reconstruct(
             }
         }
         let mut types = engine.all.clone();
-        for (name, value) in &engine.observed {
-            let ty = engine.resolve(value);
-            if let Some(id) = value.table {
-                let declaration = if engine.tables.contains_key(&id) {
-                    engine.declaration_type(value)
-                } else {
-                    TypeExpr::Unknown
-                };
-                types.insert(name.clone(), declaration);
-            } else if !value.reachable_tables.is_empty() && ty == TypeExpr::Unknown {
+        for (name, history) in &engine.declaration_history {
+            crate::execution::charge_work(history.len())?;
+            if history.iter().any(|value| value.table.is_some()) {
+                let declaration = history.iter().fold(TypeExpr::Never, |ty, value| {
+                    TypeExpr::union(ty, engine.declaration_type(value))
+                });
+                if types.get(name) != Some(&TypeExpr::Unknown)
+                    || engine
+                        .observed
+                        .get(name)
+                        .is_some_and(|value| value.table.is_some())
+                {
+                    types.insert(name.clone(), declaration);
+                }
+            } else if history.iter().any(|value| {
+                !value.reachable_tables.is_empty() && engine.resolve(value) == TypeExpr::Unknown
+            }) {
                 types.insert(name.clone(), TypeExpr::Unknown);
             }
         }
@@ -2765,12 +2893,35 @@ pub fn reconstruct(
             ));
         }
         report.function_return_arities = engine.return_arities;
+        final_class_literals.clear();
+        for name in &engine.class_argument_bindings {
+            let Some(history) = engine.declaration_history.get(name) else {
+                continue;
+            };
+            if let Some(ty) = history.iter().try_fold(TypeExpr::Never, |ty, value| {
+                value
+                    .literal_string
+                    .as_ref()
+                    .map(|literal| TypeExpr::union(ty, TypeExpr::SingletonString(literal.clone())))
+            }) {
+                final_class_literals.insert(name.clone(), ty);
+            }
+        }
         final_functions = engine.functions;
         let stable = types == known;
         known = types.clone();
         final_types = types;
         if stable {
             break;
+        }
+    }
+    for (name, ty) in final_class_literals {
+        if !origins
+            .get(&name)
+            .is_some_and(|(origin, _, _)| matches!(origin, TypeOrigin::ExternalContract))
+        {
+            final_types.insert(name.clone(), ty);
+            origins.insert(name, (TypeOrigin::Inference, "evaluated constant string history required by a pinned Roblox class lookup contract".into(), Vec::new()));
         }
     }
     let mut annotations = Annotations {

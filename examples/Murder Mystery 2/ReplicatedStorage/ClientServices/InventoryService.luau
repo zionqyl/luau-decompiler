@@ -1,11 +1,11 @@
 --!strict
 --[=[
-    Luau Decompiler 0.4.0-rc.4
+    Luau Decompiler 0.4.0-rc.5
     Made by @zionqyl
     https://github.com/zionqyl/luau-decompiler
 ]=]
 
-local table_1 = {
+local InventoryServiceModule = {
     [("CreateItemFrame")] = nil,
     [("CreateItemFrame")] = nil,
     [("CreateItemFrame")] = nil,
@@ -16,402 +16,302 @@ local table_1 = {
     [("CreateItemFrame")] = nil,
     [("CreateItemFrame")] = nil,
 }
-local require_value = require
-local game_value: DataModel = game
-local value_5: string = "ReplicatedStorage"
-local replicated_storage_service: Instance = game_value:GetService(value_5)
-local value_5_2: string = "Database"
-local database_child: Instance? = replicated_storage_service:WaitForChild(value_5_2)
-local value_5_3: string = "Sync"
-local require_result = require_value(database_child:WaitForChild(value_5_3))
-local require_value_2 = require
-local game_value_2: DataModel = game
-local value_6: string = "ReplicatedStorage"
-local replicated_storage_service_2: Instance = game_value_2:GetService(value_6)
-local value_6_2: string = "Modules"
-local modules_child: Instance? = replicated_storage_service_2:WaitForChild(value_6_2)
-local value_6_3: string = "ProfileData"
-local require_result_2 = require_value_2(modules_child:WaitForChild(value_6_3))
-local game_value_3: DataModel = game
-local value_5_7: string = "ReplicatedStorage"
-local replicated_storage_service_3: Instance = game_value_3:GetService(value_5_7)
-local value_5_8: string = "Remotes"
-local remotes_child: Instance? = replicated_storage_service_3:WaitForChild(value_5_8)
-local game_value_4: DataModel = game
-local value_6_4: string = "ReplicatedStorage"
-local replicated_storage_service_4: Instance = game_value_4:GetService(value_6_4)
-local value_6_5: string = "ClientServices"
-local client_services_child: Instance? = replicated_storage_service_4:WaitForChild(value_6_5)
-local require_value_3 = require
-local game_value_5: DataModel = game
-local value_8: string = "ReplicatedStorage"
-local replicated_storage_service_5: Instance = game_value_5:GetService(value_8)
-local value_8_2: string = "Modules"
-local modules_child_2: Instance? = replicated_storage_service_5:WaitForChild(value_8_2)
-local value_8_3: string = "WindowService"
-local require_result_3 = require_value_3(modules_child_2:WaitForChild(value_8_3))
-local require_value_4 = require
-local value_8_4: string = "ItemService"
-local require_result_4 = require_value_4(client_services_child:WaitForChild(value_8_4))
-local base_item_frame_value = require_result_4.BaseItemFrame
-local apply_filter
-do
-    local captured_value = require_result
-    apply_filter = function(argument_1, argument_2: string): ()
-        local value_3_6 = argument_1.Filters.Search or ""
-        local value_4_11 = argument_1.Filters.ClassFilter or nil
-        local frame_value = argument_1.Frames[argument_2].Frame
-        local value_5_11: boolean = false
-        if value_3_6 ~= "" then
-            if value_3_6 == nil then
-                value_5_11 = false
-            else
-                value_5_11 = true
-            end
-        end
-        local value_6_10: boolean = false
-        if value_5_11 then
-            local value_7_5 = captured_value[argument_1.ItemType][argument_2]
-            local lower_value = string.lower
-            local name_value = value_7_5.Name
-            if not name_value then
-                name_value = value_7_5.DisplayName or value_7_5.ItemName
-            end
-            local lower_result = lower_value(name_value)
-            if (string.find(lower_result, value_3_6)) == nil then
-                value_6_10 = false
-            else
-                value_6_10 = true
-            end
-        end
-        local value_3_7: boolean = true
-        if argument_1.Frames[argument_2].ItemClass ~= argument_1.Filters.ClassFilter then
-            if argument_1.Filters.ClassFilter ~= nil then
-                value_3_7 = false
-            else
-                value_3_7 = true
-            end
-        end
-        local value_7_7: boolean?
-        do
-            local take_fallback = not value_3_7
-            if not take_fallback then
-                value_7_7 = not value_5_11
-                take_fallback = not value_7_7
-            end
-            if take_fallback then
-                value_7_7 = value_5_11 and value_6_10
-            end
-        end
-        frame_value.Visible = value_7_7
+local requireResult = require(game:GetService("ReplicatedStorage"):WaitForChild("Database"):WaitForChild(
+    "Sync"
+))
+local requireResult2 = require(game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild(
+    "ProfileData"
+))
+local remotesChild: Instance? = game:GetService("ReplicatedStorage"):WaitForChild("Remotes")
+local clientServicesChild: Instance? = game:GetService("ReplicatedStorage"):WaitForChild(
+    "ClientServices"
+)
+local requireResult3 = require(game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild(
+    "WindowService"
+))
+local requireResult4 = require(clientServicesChild:WaitForChild("ItemService"))
+local baseItemFrameValue = requireResult4.BaseItemFrame
 
-        return
+local function applyFilter(argument1, argument2: string): ()
+    local value3 = argument1.Filters.Search or ""
+    local value4 = argument1.Filters.ClassFilter or nil
+    local frameValue = argument1.Frames[argument2].Frame
+    local value5: boolean = false
+    if value3 ~= "" then
+        if value3 == nil then
+            value5 = false
+        else
+            value5 = true
+        end
     end
-end
-local create_item_frame
-do
-    local captured_value_2, captured_value_3 = base_item_frame_value, require_result_4
-    create_item_frame = function<T1>(argument_1_2: T1, argument_2_2, argument_3: string, argument_4: number)
-        local cloned_value = captured_value_2:Clone()
-        local value_6_12 = captured_value_3
-        local value_8_6 = argument_2_2
-        local value_9_2: string = argument_3
-        local get_item_info_result = value_6_12:GetItemInfo(value_8_6, value_9_2)
-        if not get_item_info_result then
-            local warn_value = warn
-            local value_9_3: string = "InventoryService: No info found for item:"
-            local value_11_2: string = argument_3
-            local tostring_result = tostring(value_11_2)
-            local value_11_3: string = ", "
-            local value_13 = argument_2_2
-            warn_value(value_9_3 .. tostring_result .. value_11_3 .. (tostring(value_13)))
-
-            return nil
+    local value6: boolean = false
+    if value5 then
+        local value72 = requireResult[argument1.ItemType][argument2]
+        local lowerValue = string.lower
+        local nameValue = value72.Name
+        if not nameValue then
+            nameValue = value72.DisplayName or value72.ItemName
         end
-        local value_7_10 = captured_value_3
-        local value_9_4 = cloned_value
-        local value_10_2 = get_item_info_result
-        local value_11_4: number = argument_4
-        value_7_10:ApplyItemToFrame(value_9_4, value_10_2, value_11_4)
-        local value_7_12 = captured_value_3
-        local value_9_5 = cloned_value
-        local value_10_3 = get_item_info_result
-        value_7_12:ApplyTags(value_9_5, value_10_3)
-        local value_7_14 = captured_value_3
-        local value_9_6 = argument_2_2
-        local value_10_4: string = argument_3
-        local get_layout_order_result = value_7_14:GetLayoutOrder(value_9_6, value_10_4)
-        cloned_value.LayoutOrder = get_layout_order_result
-        local value_7_16: string? = nil
-        if argument_2_2 == "Weapons" then
-            if get_item_info_result.Event ~= nil then
-                value_7_16 = "Event"
-            else
-                if get_item_info_result.Season == nil then
-                    value_7_16 = "Classic"
-                else
-                    value_7_16 = "Current"
-                end
-            end
+        local lowerResult = lowerValue(nameValue)
+        if (string.find(lowerResult, value3)) == nil then
+            value6 = false
+        else
+            value6 = true
         end
-
-        return {ItemType = argument_2_2, Frame = cloned_value, ItemClass = value_7_16}
     end
+    local value32: boolean = true
+    if argument1.Frames[argument2].ItemClass ~= argument1.Filters.ClassFilter then
+        if argument1.Filters.ClassFilter ~= nil then
+            value32 = false
+        else
+            value32 = true
+        end
+    end
+    local value7: boolean?
+    do
+        local takeFallback = not value32
+        if not takeFallback then
+            value7 = not value5
+            takeFallback = not value7
+        end
+        if takeFallback then
+            value7 = value5 and value6
+        end
+    end
+    frameValue.Visible = value7
+
+    return
 end
-table_1.CreateItemFrame = create_item_frame
-local add_item
-do
-    local captured_value_4, captured_value_5 = table_1, apply_filter
-    add_item = function<T1>(argument_1_3: T1, argument_2_3, argument_3_2: string, argument_4_2: number)
-        local value_5_14 = captured_value_4
-        local item_type_value_2 = argument_2_3.ItemType
-        local value_8_11: string = argument_3_2
-        local value_9_7: number = argument_4_2
-        local create_item_frame_result = value_5_14:CreateItemFrame(
-            item_type_value_2,
-            value_8_11,
-            value_9_7
+
+InventoryServiceModule.CreateItemFrame = function(
+    argument1: unknown,
+    itemType,
+    argument3: string,
+    argument4: number
+)
+    local clonedValue = baseItemFrameValue:Clone()
+    local getItemInfoResult = requireResult4:GetItemInfo(itemType, argument3)
+    if not getItemInfoResult then
+        warn(
+            "InventoryService: No info found for item:" .. (tostring(argument3)) .. ", " .. (tostring(
+                itemType
+            ))
         )
-        if create_item_frame_result then
-            local sorted_i_ds_value = argument_2_3.SortedIDs
-            local value_8_12: string = argument_3_2
-            table.insert(sorted_i_ds_value, value_8_12)
-            local frames_value_3 = argument_2_3.Frames
-            frames_value_3[argument_3_2] = create_item_frame_result
-            captured_value_5(argument_2_3, argument_3_2)
-            if argument_2_3.ListFrame then
-                local frame_value_2 = create_item_frame_result.Frame
-                local list_frame_value_2 = argument_2_3.ListFrame
-                frame_value_2.Parent = list_frame_value_2
-            end
-        end
 
-        return create_item_frame_result
+        return nil
     end
-end
-table_1.AddItem = add_item
-local generate_inventory_info
-do
-    local captured_value_6 = table_1
-    generate_inventory_info = function<T1>(argument_1_4: T1, argument_2_4, argument_3_3, argument_4_3)
-        local table_5 = {
-            ItemType = 0,
-            Frames = 0,
-            Filters = 0,
-            SortedIDs = 0,
-            ListFrame = 0,
-        }
-        table_5.ItemType = argument_2_4
-        local table_6 = {}
-        table_5.Frames = table_6
-        table_6 = {ClassFilter = 0, Search = ""}
-        table_6["ClassFilter"] = nil
-        table_5.Filters = table_6
-        table_6 = {}
-        table_5.SortedIDs = table_6
-        table_5.ListFrame = argument_4_3
-        table_6 = argument_3_3
-        local value_7_18: nil = nil
-        local value_8_14: nil = nil
-        for key, value in table_6, value_7_18, value_8_14 do
-            local value_9_8, value_10_5 = key, value
-            local value_11_5: nil = nil
-            local value_12: nil = nil
-            local value_14 = value_9_8
-            local tonumber_value = tonumber
-            local tonumber_result = tonumber_value(value_14)
-            local value_11_6, value_12_2
-            if tonumber_result then
-                value_11_6 = value_10_5
-                value_12_2 = 1
+    requireResult4:ApplyItemToFrame(clonedValue, getItemInfoResult, argument4)
+    requireResult4:ApplyTags(clonedValue, getItemInfoResult)
+    clonedValue.LayoutOrder = (requireResult4:GetLayoutOrder(itemType, argument3))
+    local value7: string? = nil
+    if itemType == "Weapons" then
+        if getItemInfoResult.Event ~= nil then
+            value7 = "Event"
+        else
+            if getItemInfoResult.Season == nil then
+                value7 = "Classic"
             else
-                value_11_6 = value_9_8
-                value_12_2 = value_10_5
+                value7 = "Current"
             end
-            local value_13_2 = captured_value_6
-            local value_15 = table_5
-            local value_16 = value_11_6
-            local value_17 = value_12_2
-            value_13_2:AddItem(value_15, value_16, value_17)
         end
-
-        return table_5
     end
+
+    return {ItemType = itemType, Frame = clonedValue, ItemClass = value7}
 end
-table_1.GenerateInventoryInfo = generate_inventory_info
-local update_filter
-do
-    local captured_value_7 = apply_filter
-    update_filter = function<T1>(argument_1_5: T1, argument_2_5): ()
-        local frames_value_4 = argument_2_5.Frames
-        local value_4_13: nil = nil
-        local value_5_16: nil = nil
-        for key_2, value_2 in frames_value_4, value_4_13, value_5_16 do
-            local value_6_16, value_7_19 = key_2, value_2
-            local value_8_15 = captured_value_7
-            local value_9_9 = argument_2_5
-            local value_10_6 = value_6_16
-            value_8_15(value_9_9, value_10_6)
+InventoryServiceModule.AddItem = function(
+    argument1: unknown,
+    argument2,
+    argument3: string,
+    argument4: number
+)
+    local itemTypeValue = argument2.ItemType
+    local createItemFrameResult = InventoryServiceModule:CreateItemFrame(
+        itemTypeValue,
+        argument3,
+        argument4
+    )
+    if createItemFrameResult then
+        local sortedIDsValue = argument2.SortedIDs
+        table.insert(sortedIDsValue, argument3)
+        local framesValue = argument2.Frames
+        framesValue[argument3] = createItemFrameResult
+        applyFilter(argument2, argument3)
+        if argument2.ListFrame then
+            local frameValue = createItemFrameResult.Frame
+            frameValue.Parent = argument2.ListFrame
         end
-
-        return
     end
-end
-table_1.UpdateFilter = update_filter
 
-local function for_each_frame<T1>(argument_1_6: T1, argument_2_6, argument_3_4): ()
-    local frames_value_5 = argument_2_6.Frames
-    local value_5_17: nil = nil
-    local value_6_17: nil = nil
-    for key_3, value_18 in frames_value_5, value_5_17, value_6_17 do
-        local value_7_20, value_8_16 = key_3, value_18
-        local value_9_10 = argument_3_4
-        local value_10_7 = value_7_20
-        local frame_value_3 = value_8_16.Frame
-        value_9_10(value_10_7, frame_value_3)
+    return createItemFrameResult
+end
+InventoryServiceModule.GenerateInventoryInfo = function(
+    argument1: unknown,
+    itemType,
+    argument3,
+    listFrame
+)
+    local table5 = {
+        ItemType = 0,
+        Frames = 0,
+        Filters = 0,
+        SortedIDs = 0,
+        ListFrame = 0,
+    }
+    table5.ItemType = itemType
+    table5.Frames = {}
+    local table6 = {ClassFilter = 0, Search = ""}
+    table6["ClassFilter"] = nil
+    table5.Filters = table6
+    table5.SortedIDs = {}
+    table5.ListFrame = listFrame
+    table6 = argument3
+    local value7: nil = nil
+    local value8: nil = nil
+    for key, value in table6, value7, value8 do
+        local value9, value10 = key, value
+        local value11: nil = nil
+        local value12: nil = nil
+        local value14 = value9
+        local tonumberValue = tonumber
+        local tonumberResult = tonumberValue(value14)
+        local value112, value122
+        if tonumberResult then
+            value112 = value10
+            value122 = 1
+        else
+            value112 = value9
+            value122 = value10
+        end
+        local value13 = InventoryServiceModule
+        local value15 = table5
+        local value16 = value112
+        local value17 = value122
+        value13:AddItem(value15, value16, value17)
+    end
+
+    return table5
+end
+InventoryServiceModule.UpdateFilter = function(argument1: unknown, argument2): ()
+    local framesValue = argument2.Frames
+    local value4: nil = nil
+    local value5: nil = nil
+    for key2, value2 in framesValue, value4, value5 do
+        local value6, value7 = key2, value2
+        local value8 = applyFilter
+        local value9 = argument2
+        local value10 = value6
+        value8(value9, value10)
+    end
+
+    return
+end
+InventoryServiceModule.ForEachFrame = function(argument1: unknown, argument2, argument3): ()
+    local framesValue = argument2.Frames
+    local value5: nil = nil
+    local value6: nil = nil
+    for key3, value18 in framesValue, value5, value6 do
+        local value7, value8 = key3, value18
+        local value9 = argument3
+        local value10 = value7
+        local frameValue = value8.Frame
+        value9(value10, frameValue)
+    end
+
+    return
+end
+InventoryServiceModule.ApplyChangesToInventoryInfo = function(
+    argument1: unknown,
+    argument2,
+    argument3: string,
+    argument4: number
+)
+    if argument4 ~= nil then
+        if 0 < argument4 then
+            if not argument2.Frames[argument3] then
+                InventoryServiceModule:AddItem(argument2, argument3, argument4)
+
+                return
+            end
+            local amountValue = argument2.Frames[argument3].Frame.Container.Amount
+            amountValue.Text = (requireResult4:GetAmountText(argument4))
+
+            return
+        end
+    end
+    InventoryServiceModule:RemoveItem(argument2, argument3)
+
+    return
+end
+InventoryServiceModule.ConnectSearchBox = function(argument1: unknown, argument2, argument3)
+    local getPropertyChangedSignalResult = argument3:GetPropertyChangedSignal("Text")
+    local value6
+    do
+        local closureReady
+        value6 = function()
+            if not closureReady then
+                return
+            end
+            local filtersValue = argument2.Filters
+            filtersValue.Search = (string.lower(argument3.Text))
+            InventoryServiceModule:UpdateFilter(argument2)
+
+            return
+        end
+        closureReady = true
+    end
+    getPropertyChangedSignalResult:Connect(value6)
+
+    return
+end
+InventoryServiceModule.AutoUpdate = function(argument1: unknown, argument2)
+    local eventValue = remotesChild:WaitForChild("Inventory"):WaitForChild("InventoryDataChanged").Event
+    local value5
+    do
+        local closureReady2
+        value5 = function(argument12: string, argument22: string, argument3: number)
+            if not closureReady2 then
+                return
+            end
+            if argument12 ~= argument2.ItemType then
+                return
+            end
+            if argument12 == "Toys" then
+                local value1: string = "Emotes"
+            end
+            InventoryServiceModule:ApplyChangesToInventoryInfo(argument2, argument22, argument3)
+
+            return
+        end
+        closureReady2 = true
+    end
+    argument2.UpdateConnection = (eventValue:Connect(value5))
+
+    return
+end
+InventoryServiceModule.RemoveItem = function(argument1: unknown, argument2, argument3: string): ()
+    argument2.Frames[argument3].Frame:Destroy()
+    local framesValue = argument2.Frames
+    local value6: nil = nil
+    framesValue[argument3] = value6
+    table.remove(argument2.SortedIDs, table.find(argument2.SortedIDs, argument3))
+
+    return
+end
+InventoryServiceModule.ClearInventory = function(argument1: unknown, argument2): ()
+    local framesValue = argument2.Frames
+    local value4: nil = nil
+    local value5: nil = nil
+    for key4, value20 in framesValue, value4, value5 do
+        local value6, value7 = key4, value20
+        local frameValue = value7.Frame
+        frameValue:Destroy()
+    end
+    argument2.Frames = {}
+    if argument2.UpdateConnection then
+        argument2.UpdateConnection:Disconnect()
     end
 
     return
 end
 
-table_1.ForEachFrame = for_each_frame
-local apply_changes_to_inventory_info
-do
-    local captured_value_8, captured_value_9 = table_1, require_result_4
-    apply_changes_to_inventory_info = function<T1>(argument_1_7: T1, argument_2_7, argument_3_5: string, argument_4_4: number)
-        if argument_4_4 ~= nil then
-            if 0 < argument_4_4 then
-                if not argument_2_7.Frames[argument_3_5] then
-                    local value_6_18 = captured_value_8
-                    local value_8_17 = argument_2_7
-                    local value_9_11: string = argument_3_5
-                    local value_10_8: number = argument_4_4
-                    value_6_18:AddItem(value_8_17, value_9_11, value_10_8)
-
-                    return
-                end
-                local amount_value = argument_2_7.Frames[argument_3_5].Frame.Container.Amount
-                local value_7_22 = captured_value_9
-                local value_9_12: number = argument_4_4
-                local get_amount_text_result = value_7_22:GetAmountText(value_9_12)
-                amount_value.Text = get_amount_text_result
-
-                return
-            end
-        end
-        local value_5_20 = captured_value_8
-        local value_7_24 = argument_2_7
-        local value_8_19: string = argument_3_5
-        value_5_20:RemoveItem(value_7_24, value_8_19)
-
-        return
-    end
-end
-table_1.ApplyChangesToInventoryInfo = apply_changes_to_inventory_info
-local connect_search_box
-do
-    local captured_value_10 = table_1
-    connect_search_box = function<T1>(argument_1_8: T1, argument_2_8, argument_3_6)
-        local value_6_22: string = "Text"
-        local get_property_changed_signal_result = argument_3_6:GetPropertyChangedSignal(
-            value_6_22
-        )
-        local value_6_23: (() -> ())?
-        do
-            local captured_value_11, captured_value_12, captured_value_13, closure_ready
-            value_6_23 = function(): ()
-                if not closure_ready then
-                    return
-                end
-                local filters_value_5 = captured_value_11.Filters
-                local lower_result_2 = string.lower(captured_value_12.Text)
-                filters_value_5.Search = lower_result_2
-                local value_1_2 = captured_value_13
-                local value_3_9 = captured_value_11
-                value_1_2:UpdateFilter(value_3_9)
-
-                return
-            end
-            captured_value_11, captured_value_12, captured_value_13 = argument_2_8, argument_3_6, captured_value_10
-            closure_ready = true
-        end
-        get_property_changed_signal_result:Connect(value_6_23)
-
-        return
-    end
-end
-table_1.ConnectSearchBox = connect_search_box
-local auto_update
-do
-    local captured_value_14, captured_value_15 = remotes_child, table_1
-    auto_update = function<T1>(argument_1_9: T1, argument_2_9)
-        local value_3_10: Instance? = captured_value_14
-        local value_5_24: string = "Inventory"
-        local inventory_child = value_3_10:WaitForChild(value_5_24)
-        local value_5_25: string = "InventoryDataChanged"
-        local event_value_2 = inventory_child:WaitForChild(value_5_25).Event
-        local value_5_26: ((string, string, number) -> ())?
-        do
-            local captured_value_16, captured_value_17, closure_ready_2
-            value_5_26 = function(argument_1_10: string, argument_2_10: string, argument_3_7: number): ()
-                if not closure_ready_2 then
-                    return
-                end
-                if argument_1_10 ~= captured_value_16.ItemType then
-                    return
-                end
-                if argument_1_10 == "Toys" then
-                    local value_1_4: string = "Emotes"
-                end
-                local value_4_20 = captured_value_17
-                local value_6_24 = captured_value_16
-                local value_7_25: string = argument_2_10
-                local value_8_20: number = argument_3_7
-                value_4_20:ApplyChangesToInventoryInfo(value_6_24, value_7_25, value_8_20)
-
-                return
-            end
-            captured_value_16, captured_value_17 = argument_2_9, captured_value_15
-            closure_ready_2 = true
-        end
-        local connection = event_value_2:Connect(value_5_26)
-        argument_2_9.UpdateConnection = connection
-
-        return
-    end
-end
-table_1.AutoUpdate = auto_update
-
-local function remove_item<T1>(argument_1_11: T1, argument_2_11, argument_3_8: string): ()
-    argument_2_11.Frames[argument_3_8].Frame:Destroy()
-    local frames_value_9 = argument_2_11.Frames
-    local value_6_26: nil = nil
-    frames_value_9[argument_3_8] = value_6_26
-    table.remove(argument_2_11.SortedIDs, table.find(argument_2_11.SortedIDs, argument_3_8))
-
-    return
-end
-
-table_1.RemoveItem = remove_item
-
-local function clear_inventory<T1>(argument_1_12: T1, argument_2_12): ()
-    local frames_value_10 = argument_2_12.Frames
-    local value_4_23: nil = nil
-    local value_5_29: nil = nil
-    for key_4, value_19 in frames_value_10, value_4_23, value_5_29 do
-        local value_6_27, value_7_26 = key_4, value_19
-        local frame_value_6 = value_7_26.Frame
-        frame_value_6:Destroy()
-    end
-    frames_value_10 = {}
-    argument_2_12.Frames = frames_value_10
-    if argument_2_12.UpdateConnection then
-        argument_2_12.UpdateConnection:Disconnect()
-    end
-
-    return
-end
-
-table_1.ClearInventory = clear_inventory
-
-return table_1
+return InventoryServiceModule

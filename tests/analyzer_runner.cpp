@@ -3,10 +3,12 @@
 #include "Luau/Ast.h"
 #include "Luau/BuiltinDefinitions.h"
 #include "Luau/Compiler.h"
+#include "Luau/ConstraintSolver.h"
 #include "Luau/ConfigResolver.h"
 #include "Luau/Frontend.h"
 #include "Luau/Parser.h"
 #include "Luau/Symbol.h"
+#include "Luau/Scope.h"
 #include "Luau/ToString.h"
 #include "Luau/Type.h"
 #include "Luau/TypeArena.h"
@@ -376,6 +378,72 @@ struct DefinitionLimits {
     DefinitionLimits(){FInt::LuauTypeInferIterationLimit.value=1000000;FInt::LuauTypeCloneIterationLimit.value=2000000;FInt::LuauTarjanChildLimit.value=1000000;}
     ~DefinitionLimits(){FInt::LuauTypeInferIterationLimit.value=iterations;FInt::LuauTypeCloneIterationLimit.value=clones;FInt::LuauTarjanChildLimit.value=children;}
 };
+static std::set<std::string> metadataClasses(const std::string& definitions,const std::string& key) {
+    size_t end=definitions.find('\n');
+    if(end==std::string::npos||definitions.compare(0,13,"--#METADATA#{")!=0)return {};
+    size_t cursor=definitions.find('"'+key+'"');
+    if(cursor==std::string::npos||cursor>=end)return {};
+    cursor=definitions.find('[',cursor);
+    if(cursor==std::string::npos||cursor>=end)return {};
+    std::set<std::string> names;
+    while(++cursor<end) {
+        char c=definitions[cursor];
+        if(c==']')return names;
+        if(c==' '||c=='\t'||c==',')continue;
+        if(c!='"'||names.size()>=4096)throw std::runtime_error("invalid pinned class metadata");
+        size_t first=++cursor;
+        while(cursor<end&&definitions[cursor]!='"') {
+            c=definitions[cursor++];
+            if(!((c>='A'&&c<='Z')||(c>='a'&&c<='z')||(c>='0'&&c<='9')||c=='_')||cursor-first>256)throw std::runtime_error("invalid pinned class name");
+        }
+        if(cursor==first||cursor>=end)throw std::runtime_error("invalid pinned class metadata boundary");
+        names.insert(definitions.substr(first,cursor-first));
+    }
+    throw std::runtime_error("truncated pinned class metadata");
+}
+struct MagicRobloxClass final:Luau::MagicFunction {
+    size_t argumentIndex;
+    std::map<std::string,Luau::TypeId> classes;
+    MagicRobloxClass(size_t argumentIndex,std::map<std::string,Luau::TypeId> classes):argumentIndex(argumentIndex),classes(std::move(classes)){}
+    std::optional<Luau::WithPredicate<Luau::TypePackId>> handleOldSolver(Luau::TypeChecker&,const std::shared_ptr<Luau::Scope>&,const Luau::AstExprCall&,Luau::WithPredicate<Luau::TypePackId>) override{return std::nullopt;}
+    bool infer(const Luau::MagicFunctionCallContext& context) override {
+        auto arguments=Luau::flatten(context.arguments).first;
+        if(arguments.size()<=argumentIndex||(context.callSite->self&&argumentIndex==0))return false;
+        std::string name;
+        size_t sourceIndex=argumentIndex-(context.callSite->self?1:0);
+        if(context.callSite->args.size>sourceIndex) {
+            if(auto literal=context.callSite->args.data[sourceIndex]->as<Luau::AstExprConstantString>())name.assign(literal->value.data,literal->value.size);
+        }
+        if(name.empty()) {
+            auto singleton=Luau::get<Luau::SingletonType>(Luau::follow(arguments[argumentIndex]));
+            if(auto value=Luau::get<Luau::StringSingleton>(singleton))name=value->value;
+        }
+        auto found=classes.find(name);
+        if(found==classes.end())return false;
+        auto result=context.solver->arena->addTypePack({found->second});
+        Luau::asMutable(context.result)->ty.emplace<Luau::BoundTypePack>(result);
+        return true;
+    }
+};
+static void installRobloxClassContracts(Luau::GlobalTypes& globals,const std::string& definitions) {
+    auto classes=[&](const std::string& key) {
+        std::map<std::string,Luau::TypeId> result;
+        for(const auto& name:metadataClasses(definitions,key)) {
+            auto type=globals.globalScope->lookupType(name);
+            if(type&&Luau::get<Luau::ExternType>(Luau::follow(type->type)))result.emplace(name,type->type);
+        }
+        return result;
+    };
+    auto serviceProvider=globals.globalScope->lookupType("ServiceProvider");
+    if(serviceProvider)if(auto type=Luau::get<Luau::ExternType>(Luau::follow(serviceProvider->type))) {
+        auto method=type->props.find("GetService");
+        if(method!=type->props.end()&&method->second.readTy&&Luau::get<Luau::FunctionType>(Luau::follow(*method->second.readTy)))Luau::attachMagicFunction(Luau::follow(*method->second.readTy),std::make_shared<MagicRobloxClass>(1,classes("SERVICES")));
+    }
+    if(auto instance=Luau::tryGetGlobalBinding(globals,"Instance"))if(auto type=Luau::get<Luau::TableType>(Luau::follow(instance->typeId))) {
+        auto constructor=type->props.find("new");
+        if(constructor!=type->props.end()&&constructor->second.readTy&&Luau::get<Luau::FunctionType>(Luau::follow(*constructor->second.readTy)))Luau::attachMagicFunction(Luau::follow(*constructor->second.readTy),std::make_shared<MagicRobloxClass>(0,classes("CREATABLE_INSTANCES")));
+    }
+}
 struct AnalyzerContext {
     struct StrictConfig:Luau::NullConfigResolver {StrictConfig(){defaultConfig.mode=Luau::Mode::Strict;}};
     Resolver resolver;
@@ -393,6 +461,7 @@ struct AnalyzerContext {
         for(auto& error:loaded.parseResult.errors)bootstrap.push_back(diagnostic("definitions_syntax",error.getMessage(),"Roblox",error.getLocation()));
         if(loaded.module)for(auto& error:loaded.module->errors)bootstrap.push_back(diagnostic("definitions_type",Luau::toString(error),"Roblox",error.location));
         if(!loaded.success&&bootstrap.empty())bootstrap.push_back(diagnostic("definitions","pinned definitions rejected","Roblox",{}));
+        if(bootstrap.empty())installRobloxClassContracts(frontend.globals,definitions);
     }
     static Luau::FrontendOptions settings(){Luau::FrontendOptions value;value.retainFullTypeGraphs=true;value.runLintChecks=false;value.moduleTimeLimitSec=5.0;return value;}
     bool compatible(const AnalysisRequest& request) const {return !projectLoaded||projectDefinitions==request.extra;}

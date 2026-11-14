@@ -53,7 +53,7 @@ JSON uses defaults and rejects unknown fields. [config-v3.json](examples/config-
 | `profile`, `bytecode_encoding` | `auto`/`luau-vN`; independently `auto` (default), `upstream`, `roblox_opcode227`, or `roblox_signed_74171870`. [Representation recognition and authenticity limits](docs/bytecode-representations.md). |
 | `control_flow` | `auto`, `structured`, `dispatcher`; fallback is explicitly reported. |
 | `vector_constructor` | Optional trusted immutable identifier path; Roblox spelling is an explicit contract. |
-| `naming`, `naming_options`, `name_overrides`, `indent` | `snake_case`/`camelCase`/`PascalCase`; debug/descriptive switches, identity overrides, at most 16 spaces/tabs. |
+| `naming`, `naming_options`, `name_overrides`, `indent` | `roblox`/`snake_case`/`camelCase`/`PascalCase`; debug/descriptive switches, identity overrides, at most 16 spaces/tabs. |
 | `formatting` | Width, multiline calls/tables, blank lines, local functions; scalar/multiple-result contexts remain intact. |
 | `typing` | `annotated`/`off`, `extensive`/`useful`, strict directive, aliases, finite iterations/nodes, API signatures and contracts. |
 | `validation` | `check` (default), `strict_required`, `off`; server-owned tool/definition paths, bounded workers/cache/time/attempts and project. |
@@ -61,6 +61,14 @@ JSON uses defaults and rejects unknown fields. [config-v3.json](examples/config-
 | `limits` | Input/strings/prototypes/instructions/constants/depth/blocks/output/shared work. |
 
 Use `p<proto>:b<binding>` overrides from the same input's `bindings`. IDs are deterministic for that bytecode and naming-independent; different compilation settings can change them. Legacy name `pN:rM` overrides select the first binding of a register, not later reuse. Type overrides require recovered identities. Exact spelling is retained; absent/duplicate/colliding overrides fail. Globals, properties and string keys are never renamed.
+
+The `roblox` presentation preset uses PascalCase for proven service aliases and camelCase for ordinary locals/functions. Existing names remain evidence rather than a claim of recovering erased original spelling. `naming_options.module_name_hint` (CLI `--module-name Button`) optionally labels a returned module table; it supplies no runtime or class contract. CLI `--naming roblox` selects the preset. Other styles retain their existing casing rules. Binding reports distinguish debug metadata, overrides, dataflow roles, instruction hints and neutral fallbacks.
+
+On the bytecode path, valid debug names supply preferred hints before the selected casing is applied. On the source path, `use_debug_names: true` preserves original source spelling; disable it to recase eligible source bindings. Explicit overrides retain their exact spelling on both paths.
+
+Binding `name` remains the unique internal symbol used by AST/type/capture relationships; `printed_name` is its spelling in the selected finalized output. `name_hint`, `name_role` and `naming_origin` expose the evidence used by presentation. Use `pN:bM`, rather than either spelling, as the binding identity. A bounded lexical presentation pass permits sibling scopes to reuse names while reserving visible ancestors, globals, explicit overrides and type-dependent value spellings. Source-map regions retain binding identities and report printed names. This additive report distinction matters when consuming rc.5 output: internal names need not equal emitted identifiers.
+
+Compiler inlining can expand one prototype into several source scopes. Its logical `pN:bM` identity can therefore occur more than once. Within one result, source-map `symbol` matches `bindings.name` to distinguish those occurrences; `printed_name` is reconciled using that symbol. Internal allocator spelling is not a cross-configuration identity.
 
 `typing.binding_types` and `typing.globals` are explicit external contracts, not recovered annotations. `validation.project` contains `entry`, virtual `modules`, exact `requires`, `external_globals`, and root `instance_types`. Static resolution never executes modules. Dynamic/missing dependencies and unknown DataModel children remain diagnostics. API definitions are a pinned snapshot, not a claim to match every client build.
 

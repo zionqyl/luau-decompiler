@@ -3,8 +3,8 @@ $ErrorActionPreference='Stop'
 $taskRoot=Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'release-integrity.ps1')
 $requirements=Get-Content -LiteralPath tests/release-requirements-rc.json -Raw | ConvertFrom-Json
-if($requirements.schema -ne 1 -or $requirements.version -cne '0.4.0-rc.4'){throw 'Unexpected candidate requirements manifest.'}
-Assert-RequiredIdentities @('source_inputs','source_behavior_rc','source_rc2','types_rc','output_policy','scale_quality_rc','attribution') $requirements.mandatory_targets 'Candidate mandatory targets'
+if($requirements.schema -ne 1 -or $requirements.version -cne '0.4.0-rc.5'){throw 'Unexpected candidate requirements manifest.'}
+Assert-RequiredIdentities @('source_inputs','source_behavior_rc','source_rc2','types_rc','types_rc5','types_v3','recovery_rc5','output_policy','scale_quality_rc','attribution') $requirements.mandatory_targets 'Candidate mandatory targets'
 function Read-FreshEvidence([string]$Path) {
     if(-not(Test-Path -LiteralPath $Path) -or (Get-Item -LiteralPath $Path).LastWriteTimeUtc -lt $NotBefore){throw ('Missing or stale candidate evidence: '+$Path)}
     Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
@@ -288,6 +288,16 @@ foreach($case in $examples.examples){
     $validated=@($case.validation.attempts|Where-Object{$_.source_sha256 -ceq $case.output_sha256 -and $_.syntax -ceq 'passed' -and $_.compilation -ceq 'passed' -and $_.strict_analysis -ceq 'passed'})
     if($validated.Count -ne 1 -or $case.behavior -cne 'not_run_by_example_generator; independent controlled release matrices are separate'){throw ('Example final-source validation identity or behavioral scope is incorrect: '+$case.id)}
 }
+$organizationPath=$requirements.organization_example_manifest
+if($organizationPath -cne 'examples/typed-output/module_organization.manifest.json' -or -not(Test-Path -LiteralPath $organizationPath)){throw 'Whole-module organization example receipt is missing'}
+$organization=Get-Content -LiteralPath $organizationPath -Raw|ConvertFrom-Json
+if($organization.version -cne $requirements.version -or $organization.known_source -cne 'tests/source-corpus/module_organization.luau' -or $organization.configuration -cne 'module_organization.config.json' -or $organization.output -cne 'module_organization.luau'){throw 'Whole-module organization example identities changed'}
+Assert-ExampleHash 'target/release/luau-decompile.exe' $organization.executable_sha256 'organization executable'
+Assert-ExampleHash 'scripts/generate-examples-rc.ps1' $organization.generator_sha256 'organization generator'
+Assert-ExampleHash $organization.known_source $organization.known_source_sha256 'organization known source'
+Assert-ExampleHash (Join-Path 'examples/typed-output' $organization.configuration) $organization.configuration_sha256 'organization configuration'
+Assert-ExampleHash (Join-Path 'examples/typed-output' $organization.output) $organization.output_sha256 'organization final source'
+if($organization.validation.output_policy -cne 'annotated' -or -not $organization.validation.required_passed -or $organization.validation.strict_analysis -cne 'passed' -or $organization.validation.analyzer_sha256 -cne $tools.analyzer_sha256 -or $organization.validation.definitions_sha256 -cne $tools.definitions_sha256 -or $organization.analyzer_manifest_sha256 -cne $tools.manifest_sha256){throw 'Whole-module organization strict/tool result is incomplete; it is not a verified-typed claim'}
 $currentLivePath='docs/results/madium-live-rc2.json'
 if(Test-Path -LiteralPath $currentLivePath){
     $live=Get-Content -LiteralPath $currentLivePath -Raw|ConvertFrom-Json

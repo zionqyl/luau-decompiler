@@ -1,6 +1,6 @@
 # Candidate limitations and untested environments
 
-This is the supported boundary for `0.4.0-rc.4`. Final release readiness depends on the frozen-source gate and packaged acceptance, not on a claim of universal compatibility or an issue-free implementation. The [support matrix](support-matrix-rc.md), [input contract](source-input.md), [output policies](output-policies.md), and [validation procedure](validation.md) give the detailed interfaces.
+This is the implemented boundary for `0.4.0-rc.5`. Rc.4 platform and publication results below remain historical. Final release readiness depends on the frozen-source gate and packaged acceptance, not on a claim of universal compatibility or an issue-free implementation. The [support matrix](support-matrix-rc.md), [input contract](source-input.md), [output policies](output-policies.md), and [validation procedure](validation.md) give the detailed interfaces.
 
 | Area | Boundary |
 | --- | --- |

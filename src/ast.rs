@@ -457,14 +457,65 @@ pub fn visit_body(body: &[Stmt], f: &mut impl FnMut(&Expr)) {
     }
 }
 
-fn substitute_expr(expr: &mut Expr, name: &str, value: &Expr, blocked: &mut bool) -> bool {
-    substitute_at(expr, name, value, blocked, 0)
+fn substitute_expr(
+    expr: &mut Expr,
+    name: &str,
+    value: &Expr,
+    blocked: &mut bool,
+    observable: &BTreeSet<String>,
+) -> bool {
+    let mut stable = value.pure();
+    visit_expr(value, &mut |expr| {
+        if let Expr::Name(name) = expr {
+            stable &= !observable.contains(name);
+        }
+    });
+    if stable {
+        return substitute_stable(expr, name, value, 0);
+    }
+    substitute_at(expr, name, value, blocked, observable, 0)
+}
+fn substitute_stable(expr: &mut Expr, name: &str, value: &Expr, depth: usize) -> bool {
+    if depth > 64 {
+        return false;
+    }
+    if matches!(expr, Expr::Name(found) if found == name) {
+        *expr = value.clone().scalar();
+        return true;
+    }
+    match expr {
+        Expr::Unary(_, inner) | Expr::Single(inner) | Expr::Field(inner, _) => {
+            substitute_stable(inner, name, value, depth + 1)
+        }
+        Expr::Binary(_, left, right) | Expr::Index(left, right) => {
+            substitute_stable(left, name, value, depth + 1)
+                || substitute_stable(right, name, value, depth + 1)
+        }
+        Expr::Call(target, args) | Expr::MethodCall(target, _, args) => {
+            substitute_stable(target, name, value, depth + 1)
+                || args
+                    .iter_mut()
+                    .any(|arg| substitute_stable(arg, name, value, depth + 1))
+        }
+        Expr::Table(fields) => fields.iter_mut().any(|(key, field)| {
+            key.as_mut()
+                .is_some_and(|key| substitute_stable(key, name, value, depth + 1))
+                || substitute_stable(field, name, value, depth + 1)
+        }),
+        Expr::IfElse(condition, yes, no) => {
+            substitute_stable(condition, name, value, depth + 1)
+                || substitute_stable(yes, name, value, depth + 1)
+                || substitute_stable(no, name, value, depth + 1)
+        }
+        _ => false,
+    }
 }
 fn substitute_at(
     expr: &mut Expr,
     name: &str,
     value: &Expr,
     blocked: &mut bool,
+    observable: &BTreeSet<String>,
     depth: usize,
 ) -> bool {
     if depth > 64 {
@@ -478,47 +529,55 @@ fn substitute_at(
         *expr = value.clone().scalar();
         return true;
     }
+    if !value.pure() && matches!(expr, Expr::Name(name) if observable.contains(name)) {
+        *blocked = true;
+        return false;
+    }
     let found = match expr {
         Expr::Unary(_, v) | Expr::Single(v) | Expr::Field(v, _) => {
-            substitute_at(v, name, value, blocked, depth + 1)
+            substitute_at(v, name, value, blocked, observable, depth + 1)
         }
         Expr::Binary(op, left, right) => {
-            let found = substitute_at(left, name, value, blocked, depth + 1);
+            let found = substitute_at(left, name, value, blocked, observable, depth + 1);
 
             if matches!(*op, "and" | "or") {
                 *blocked = true;
             }
-            found || substitute_at(right, name, value, blocked, depth + 1)
+            found || substitute_at(right, name, value, blocked, observable, depth + 1)
         }
         Expr::Index(object, key) => {
-            substitute_at(object, name, value, blocked, depth + 1)
-                || substitute_at(key, name, value, blocked, depth + 1)
+            substitute_at(object, name, value, blocked, observable, depth + 1)
+                || substitute_at(key, name, value, blocked, observable, depth + 1)
         }
         Expr::Call(func, args) => {
-            let mut found = substitute_at(func, name, value, blocked, depth + 1);
+            let mut found = substitute_at(func, name, value, blocked, observable, depth + 1);
             for arg in args {
                 if !found {
-                    found = substitute_at(arg, name, value, blocked, depth + 1);
+                    found = substitute_at(arg, name, value, blocked, observable, depth + 1);
                 }
             }
             found
         }
-        Expr::MethodCall(object, _, _) => substitute_at(object, name, value, blocked, depth + 1),
+        Expr::MethodCall(object, _, _) => {
+            substitute_at(object, name, value, blocked, observable, depth + 1)
+        }
         Expr::Table(fields) => {
             let mut found = false;
             for (key, v) in fields {
                 if !found {
                     if let Some(key) = key {
-                        found = substitute_at(key, name, value, blocked, depth + 1);
+                        found = substitute_at(key, name, value, blocked, observable, depth + 1);
                     }
                 }
                 if !found {
-                    found = substitute_at(v, name, value, blocked, depth + 1);
+                    found = substitute_at(v, name, value, blocked, observable, depth + 1);
                 }
             }
             found
         }
-        Expr::IfElse(cond, _, _) => substitute_at(cond, name, value, blocked, depth + 1),
+        Expr::IfElse(cond, _, _) => {
+            substitute_at(cond, name, value, blocked, observable, depth + 1)
+        }
         _ => false,
     };
     if !found && !expr.pure() {
@@ -527,21 +586,38 @@ fn substitute_at(
     found
 }
 
-fn substitute_next(stmt: &mut Stmt, name: &str, value: &Expr) -> bool {
+fn substitute_next(
+    stmt: &mut Stmt,
+    name: &str,
+    value: &Expr,
+    observable: &BTreeSet<String>,
+) -> bool {
     let mut blocked = false;
     match stmt {
-        Stmt::Assign(targets, values) if targets.iter().all(|e| matches!(e, Expr::Name(_))) => {
+        Stmt::Assign(targets, values)
+            if targets.iter().all(|target| match target {
+                Expr::Name(_) => true,
+                Expr::Field(object, _) => {
+                    matches!(&**object, Expr::Name(name) if !observable.contains(name))
+                }
+                Expr::Index(object, key) => {
+                    matches!(&**object, Expr::Name(name) if !observable.contains(name))
+                        && matches!(&**key, Expr::Literal(_))
+                }
+                _ => false,
+            }) =>
+        {
             values
                 .iter_mut()
-                .any(|e| substitute_expr(e, name, value, &mut blocked))
+                .any(|e| substitute_expr(e, name, value, &mut blocked, observable))
         }
         Stmt::Local(_, values) | Stmt::Return(values) => values
             .iter_mut()
-            .any(|e| substitute_expr(e, name, value, &mut blocked)),
+            .any(|e| substitute_expr(e, name, value, &mut blocked, observable)),
         Stmt::Call(expr)
         | Stmt::If {
             condition: expr, ..
-        } => substitute_expr(expr, name, value, &mut blocked),
+        } => substitute_expr(expr, name, value, &mut blocked, observable),
         _ => false,
     }
 }
@@ -695,8 +771,138 @@ pub fn optimize_checked(
         ));
     }
     let live = NameBits::new(names.len());
-    optimize_block(body, protected, observable, &names, &live, 0)?;
-    Ok(work)
+    let mut forwarding = ForwardingBudget {
+        remaining: max_work.saturating_sub(work),
+        used: 0,
+    };
+    optimize_block(
+        body,
+        protected,
+        observable,
+        &names,
+        &live,
+        &mut forwarding,
+        0,
+    )?;
+    Ok(work.saturating_add(forwarding.used))
+}
+
+struct ForwardingBudget {
+    remaining: usize,
+    used: usize,
+}
+fn read_count_bounded(
+    stmt: &Stmt,
+    name: &str,
+    budget: &mut ForwardingBudget,
+) -> crate::Result<Option<usize>> {
+    enum Node<'a> {
+        Statement(&'a Stmt),
+        Expression(&'a Expr),
+    }
+    let mut pending = vec![Node::Statement(stmt)];
+    let mut count = 0usize;
+    while let Some(node) = pending.pop() {
+        if !budget.charge(1) {
+            return Ok(None);
+        }
+        if budget.used & 255 == 0 {
+            crate::execution::checkpoint()?;
+        }
+        match node {
+            Node::Expression(expr) => match expr {
+                Expr::Name(found) => count += usize::from(found == name),
+                Expr::Unary(_, value) | Expr::Single(value) | Expr::Field(value, _) => {
+                    pending.push(Node::Expression(value))
+                }
+                Expr::Binary(_, left, right) | Expr::Index(left, right) => {
+                    pending.push(Node::Expression(left));
+                    pending.push(Node::Expression(right));
+                }
+                Expr::Call(target, args) | Expr::MethodCall(target, _, args) => {
+                    pending.push(Node::Expression(target));
+                    pending.extend(args.iter().map(Node::Expression));
+                }
+                Expr::Table(fields) => {
+                    for (key, value) in fields {
+                        if let Some(key) = key {
+                            pending.push(Node::Expression(key));
+                        }
+                        pending.push(Node::Expression(value));
+                    }
+                }
+                Expr::Function(function) => {
+                    pending.extend(function.body.iter().map(Node::Statement))
+                }
+                Expr::IfElse(condition, yes, no) => pending.extend([
+                    Node::Expression(condition),
+                    Node::Expression(yes),
+                    Node::Expression(no),
+                ]),
+                _ => {}
+            },
+            Node::Statement(stmt) => match stmt {
+                Stmt::Local(_, values) | Stmt::Return(values) => {
+                    pending.extend(values.iter().map(Node::Expression))
+                }
+                Stmt::Assign(targets, values) => {
+                    pending.extend(
+                        targets
+                            .iter()
+                            .filter(|target| !matches!(target, Expr::Name(_)))
+                            .map(Node::Expression),
+                    );
+                    pending.extend(values.iter().map(Node::Expression));
+                }
+                Stmt::Call(expr) => pending.push(Node::Expression(expr)),
+                Stmt::If { condition, yes, no } => {
+                    pending.push(Node::Expression(condition));
+                    pending.extend(yes.iter().chain(no).map(Node::Statement));
+                }
+                Stmt::While { condition, body }
+                | Stmt::Repeat {
+                    until: condition,
+                    body,
+                } => {
+                    pending.push(Node::Expression(condition));
+                    pending.extend(body.iter().map(Node::Statement));
+                }
+                Stmt::NumericFor {
+                    start,
+                    limit,
+                    step,
+                    body,
+                    ..
+                } => {
+                    pending.extend([
+                        Node::Expression(start),
+                        Node::Expression(limit),
+                        Node::Expression(step),
+                    ]);
+                    pending.extend(body.iter().map(Node::Statement));
+                }
+                Stmt::GenericFor {
+                    iterators, body, ..
+                } => {
+                    pending.extend(iterators.iter().map(Node::Expression));
+                    pending.extend(body.iter().map(Node::Statement));
+                }
+                Stmt::Do(body) => pending.extend(body.iter().map(Node::Statement)),
+                _ => {}
+            },
+        }
+    }
+    Ok(Some(count))
+}
+impl ForwardingBudget {
+    fn charge(&mut self, amount: usize) -> bool {
+        if amount > self.remaining {
+            return false;
+        }
+        self.remaining -= amount;
+        self.used = self.used.saturating_add(amount);
+        true
+    }
 }
 
 fn optimize_block(
@@ -705,6 +911,7 @@ fn optimize_block(
     observable: &BTreeSet<String>,
     names: &BTreeMap<String, usize>,
     live_out: &NameBits,
+    forwarding: &mut ForwardingBudget,
     depth: usize,
 ) -> crate::Result<()> {
     if depth > 256 {
@@ -739,6 +946,7 @@ fn optimize_block(
     let mut live = live_out.clone();
     let mut next_live_out = live.clone();
     let mut next: Option<usize> = None;
+    let mut forward = std::collections::VecDeque::<(usize, NameBits)>::new();
     let mut removed = vec![false; body.len()];
     for index in (0..body.len()).rev() {
         if index & 255 == 0 {
@@ -746,12 +954,34 @@ fn optimize_block(
         }
         match &mut body[index] {
             Stmt::If { yes, no, .. } => {
-                optimize_block(yes, protected, observable, names, &live, depth + 1)?;
-                optimize_block(no, protected, observable, names, &live, depth + 1)?;
+                optimize_block(
+                    yes,
+                    protected,
+                    observable,
+                    names,
+                    &live,
+                    forwarding,
+                    depth + 1,
+                )?;
+                optimize_block(
+                    no,
+                    protected,
+                    observable,
+                    names,
+                    &live,
+                    forwarding,
+                    depth + 1,
+                )?;
             }
-            Stmt::Do(inner) => {
-                optimize_block(inner, protected, observable, names, &live, depth + 1)?
-            }
+            Stmt::Do(inner) => optimize_block(
+                inner,
+                protected,
+                observable,
+                names,
+                &live,
+                forwarding,
+                depth + 1,
+            )?,
             Stmt::While { body: inner, .. }
             | Stmt::Repeat { body: inner, .. }
             | Stmt::NumericFor { body: inner, .. }
@@ -759,7 +989,15 @@ fn optimize_block(
                 let mut carried = live.clone();
 
                 add_body_names(inner, names, &mut carried);
-                optimize_block(inner, protected, observable, names, &carried, depth + 1)?;
+                optimize_block(
+                    inner,
+                    protected,
+                    observable,
+                    names,
+                    &carried,
+                    forwarding,
+                    depth + 1,
+                )?;
             }
             _ => {}
         }
@@ -784,12 +1022,77 @@ fn optimize_block(
                     unreachable!()
                 };
                 let value = values[0].clone();
-                removed[index] = substitute_next(&mut body[next_index], &name, &value);
+                removed[index] = substitute_next(&mut body[next_index], &name, &value, observable);
+            }
+            if !removed[index]
+                && !observable.contains(&name)
+                && !protected.contains(&name)
+                && forwarding.remaining != 0
+            {
+                let Stmt::Assign(_, values) = &body[index] else {
+                    unreachable!()
+                };
+                let value = values[0].clone();
+                let mut dependencies = BTreeSet::new();
+                let mut dependency_cost = 0usize;
+                visit_expr(&value, &mut |expr| {
+                    dependency_cost = dependency_cost.saturating_add(1);
+                    if let Expr::Name(name) = expr {
+                        dependencies.insert(name.clone());
+                    }
+                });
+                let stable_value =
+                    value.pure() && dependencies.iter().all(|name| !observable.contains(name));
+                let candidates = if forwarding.charge(dependency_cost) {
+                    forward.as_slices()
+                } else {
+                    (&[][..], &[][..])
+                };
+                for (target, live_after) in candidates.0.iter().chain(candidates.1) {
+                    let Some(reads) = read_count_bounded(&body[*target], &name, forwarding)? else {
+                        break;
+                    };
+                    if reads == 1 {
+                        if !live_after.contains(names[&name])
+                            && substitute_next(&mut body[*target], &name, &value, observable)
+                        {
+                            removed[index] = true;
+                        }
+                        break;
+                    }
+                    if reads != 0 {
+                        break;
+                    }
+                    let transparent = matches!(&body[*target], Stmt::Assign(targets, values)
+                        if targets.len() == 1 && values.len() == 1
+                            && matches!(&targets[0], Expr::Name(target)
+                                if target != &name
+                                    && !observable.contains(target)
+                                    && !dependencies.contains(target))
+                            && matches!(values[0], Expr::Literal(_)))
+                        || stable_value && match &body[*target] {
+                            Stmt::Assign(targets, _) => targets.iter().all(|target| {
+                                !matches!(target, Expr::Name(target) if target == &name || dependencies.contains(target))
+                            }),
+                            Stmt::Local(targets, _) => targets.iter().all(|target| target != &name && !dependencies.contains(target)),
+                            Stmt::Call(_) => true,
+                            _ => false,
+                        };
+                    if !transparent {
+                        break;
+                    }
+                }
             }
         }
         if !removed[index] {
             next = Some(index);
             next_live_out = live.clone();
+            if forwarding.charge(names.len().div_ceil(64).max(1)) {
+                forward.push_front((index, live.clone()));
+                forward.truncate(16);
+            } else {
+                forward.clear();
+            }
         }
 
         transfer(&body[index], names, &mut live);
@@ -914,6 +1217,75 @@ mod tests {
             100,
             "budget rejection must precede optimizer mutations"
         );
+    }
+    #[test]
+    fn forwarding_exhaustion_preserves_large_baseline_optimization() {
+        let mut body = Vec::new();
+        for index in 0..4096 {
+            let name = format!("temporary_{index}");
+            body.push(assign(&name, Expr::Literal(index.to_string())));
+            body.push(Stmt::Call(Expr::Call(
+                Box::new(Expr::Global("observe".into())),
+                vec![Expr::name(&name)],
+            )));
+        }
+        let budget = body.len() * collect_names(&body).len().div_ceil(64);
+        let work = optimize_checked(&mut body, &BTreeSet::new(), &BTreeSet::new(), budget).unwrap();
+        assert_eq!(work, budget);
+        assert_eq!(body.len(), 4096);
+        for (index, statement) in body.iter().enumerate() {
+            assert!(matches!(statement, Stmt::Call(Expr::Call(_, arguments))
+                if matches!(&arguments[0], Expr::Literal(value) if value == &index.to_string())));
+        }
+    }
+    #[test]
+    fn service_aliases_cross_only_independent_literal_assignments() {
+        let mut body = vec![
+            assign("game_alias", Expr::Global("game".into())),
+            assign("service_name", Expr::Literal("\"TweenService\"".into())),
+            Stmt::Return(vec![Expr::MethodCall(
+                Box::new(Expr::name("game_alias")),
+                "GetService".into(),
+                vec![Expr::name("service_name")],
+            )]),
+        ];
+        optimize(&mut body, &BTreeSet::new());
+        assert_eq!(body.len(), 1);
+        let Stmt::Return(values) = &body[0] else {
+            panic!("return required")
+        };
+        assert!(matches!(&values[0], Expr::MethodCall(object, _, args)
+            if matches!(&**object, Expr::Global(name) if name == "game")
+                && matches!(&args[0], Expr::Literal(value) if value == "\"TweenService\"")));
+        let mut body = vec![
+            assign(
+                "snapshot",
+                Expr::Field(Box::new(Expr::name("object")), "Value".into()),
+            ),
+            assign("object", Expr::Literal("nil".into())),
+            Stmt::Return(vec![Expr::name("snapshot")]),
+        ];
+        optimize(&mut body, &BTreeSet::new());
+        assert_eq!(body.len(), 3);
+    }
+    #[test]
+    fn captured_callee_reads_prevent_effectful_argument_motion() {
+        let mut body = vec![
+            assign(
+                "snapshot",
+                Expr::Field(Box::new(Expr::name("object")), "Value".into()),
+            ),
+            Stmt::Return(vec![Expr::Call(
+                Box::new(Expr::name("selected")),
+                vec![Expr::name("snapshot")],
+            )]),
+        ];
+        optimize_with_observable(
+            &mut body,
+            &BTreeSet::new(),
+            &BTreeSet::from(["selected".into()]),
+        );
+        assert_eq!(body.len(), 2);
     }
     #[test]
     fn sequential_temporary_lifetimes_do_not_exhaust_lexical_slots() {

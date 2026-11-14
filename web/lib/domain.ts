@@ -82,7 +82,7 @@ export const initialOptions: Options = {
   profile: "auto",
   flow: "auto",
   verbosity: "extensive",
-  naming: "snake_case",
+  naming: "roblox",
   preserveNames: true,
   indent: "    ",
   width: 100,
@@ -146,6 +146,15 @@ export function configuration(
 ) {
   const projectModules = { ...modules };
   delete projectModules[entry];
+  const moduleNameHint = Array.from(
+    entry
+      .split("/")
+      .at(-1)
+      ?.replace(/\.(?:luau|lua|bc|bin)$/i, "")
+      .replace(/[\0\r\n]/g, "_") || "",
+  )
+    .slice(0, 64)
+    .join("");
   return {
     bytecode_encoding: options.encoding,
     profile: options.profile,
@@ -153,7 +162,10 @@ export function configuration(
     output_policy: options.policy,
     entry_output: options.entry,
     naming: options.naming,
-    naming_options: { use_debug_names: options.preserveNames },
+    naming_options: {
+      use_debug_names: options.preserveNames,
+      module_name_hint: moduleNameHint || null,
+    },
     name_overrides: contracts.names,
     indent: options.indent,
     formatting: {

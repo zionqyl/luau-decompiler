@@ -32,13 +32,46 @@ function Hash([string]$Path){
 }
 function Hash-Bytes([byte[]]$Bytes){$algorithm=[Security.Cryptography.SHA256]::Create();try{([BitConverter]::ToString($algorithm.ComputeHash($Bytes))).Replace('-','').ToLowerInvariant()}finally{$algorithm.Dispose()}}
 function Emit-Json($Value){$text=$Value|ConvertTo-Json -Depth 20;[regex]::Replace($text,'[^\x00-\x7f]',{param($match)'\u'+([int][char]$match.Value).ToString('x4')})}
+function Clear-AtomicWrite {$lock.SetLength(0);$lock.Position=0;$lock.Flush($true)}
+function Recover-AtomicWrite {
+    if(-not $lock -or $lock.Length -eq 0){return}
+    if($lock.Length -gt 2097152){throw 'Atomic write ownership exceeds its size limit; files were preserved'}
+    $lock.Position=0
+    $data=[byte[]]::new([int]$lock.Length)
+    $read=0
+    while($read -lt $data.Length){$count=$lock.Read($data,$read,$data.Length-$read);if(-not $count){throw 'Atomic write ownership could not be read'};$read+=$count}
+    $text=$utf8.GetString($data)
+    $prefix='LUAU-ATOMIC/1 '
+    if(-not $text.EndsWith("`n") -and ($prefix.StartsWith($text,[StringComparison]::Ordinal) -or $text.StartsWith($prefix,[StringComparison]::Ordinal))){Clear-AtomicWrite;return}
+    if(-not $text.StartsWith($prefix,[StringComparison]::Ordinal)){throw 'Unknown installation lock contents were preserved'}
+    $plan=$text.Substring($prefix.Length)|ConvertFrom-Json
+    if($plan.product -cne $product -or $plan.transaction_id -cnotmatch '^[0-9a-f]{32}$' -or $plan.path -cnotmatch '^(\.luau-(bootstrap|activation|installation)\.json|current|install\.ps1|release\.json|luau-decompile\.cmd|\.staging-[0-9a-f]{32}/\.luau-stage-owner\.json)$'){throw 'Invalid atomic write ownership; files were preserved'}
+    $target=Safe-Path $root $plan.path
+    $temporary=Safe-Path $root ($plan.path+'.new-'+$plan.transaction_id)
+    $expected=[Convert]::FromBase64String($plan.bytes)
+    if($expected.Length -gt 1048576){throw 'Atomic write content exceeds its size limit'}
+    if(Test-Path -LiteralPath $temporary){
+        if(-not(Test-Path -LiteralPath $temporary -PathType Leaf) -or (Get-Item -LiteralPath $temporary).Length -gt $expected.Length){throw 'Modified atomic write was preserved'}
+        $actual=[IO.File]::ReadAllBytes($temporary)
+        for($index=0;$index -lt $actual.Length;$index++){if($actual[$index] -ne $expected[$index]){throw 'Modified atomic write was preserved'}}
+        Remove-Item -LiteralPath $temporary
+    }
+    Clear-AtomicWrite
+}
 function Atomic-Bytes([string]$Path,[byte[]]$Bytes){
-    $temporary=$Path+'.new-'+[Guid]::NewGuid().ToString('N')
+    if(-not $lock -or $Bytes.Length -gt 1048576){throw 'Atomic writes require a held installation lock and at most 1 MiB'}
+    Recover-AtomicWrite
+    $transactionId=[Guid]::NewGuid().ToString('N')
+    $relative=$Path.Substring($root.Length+1).Replace('\','/')
+    $temporary=$Path+'.new-'+$transactionId
+    $plan=[ordered]@{product=$product;transaction_id=$transactionId;path=$relative;bytes=[Convert]::ToBase64String($Bytes)}
+    $intent=$utf8.GetBytes('LUAU-ATOMIC/1 '+($plan|ConvertTo-Json -Compress)+"`n")
+    $lock.Position=0;$lock.Write($intent,0,$intent.Length);$lock.Flush($true)
     try{
         $stream=[IO.FileStream]::new($temporary,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None,4096,[IO.FileOptions]::WriteThrough)
         try{$stream.Write($Bytes,0,$Bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}
-        if(Test-Path -LiteralPath $Path){$backup=$Path+'.previous-'+[Guid]::NewGuid().ToString('N');[IO.File]::Replace($temporary,$Path,$backup);Remove-Item -LiteralPath $backup}else{[IO.File]::Move($temporary,$Path)}
-    }finally{if(Test-Path -LiteralPath $temporary){Remove-Item -LiteralPath $temporary}}
+        if(Test-Path -LiteralPath $Path){[IO.File]::Replace($temporary,$Path,[NullString]::Value)}else{[IO.File]::Move($temporary,$Path)}
+    }finally{Recover-AtomicWrite}
 }
 function Atomic-Text([string]$Path,[string]$Value){Atomic-Bytes $Path ($utf8.GetBytes($Value))}
 function Safe-Path([string]$Base,[string]$Relative){
@@ -289,6 +322,7 @@ $lock=$null;$stage=$null
 try{
     for($attempt=0;$attempt -lt 50;$attempt++){try{$lock=[IO.File]::Open($lockPath,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None);break}catch [IO.IOException]{Start-Sleep -Milliseconds 100}}
     if(-not $lock){throw 'Another installation operation is active; retry after it finishes'}
+    Recover-AtomicWrite
     Complete-Activation
     Recover-Bootstrap
     $existingSnapshot=Read-Metadata -Snapshot

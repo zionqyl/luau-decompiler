@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": "0.4.0-rc.4",
+  "version": "0.4.0-rc.5",
   "preserved_requirements": "release-requirements-v3.json",
   "source_families": [
     "method_receiver",
@@ -335,11 +335,52 @@
     "source_inputs",
     "source_behavior_rc",
     "types_rc",
+    "types_rc5",
+    "types_v3",
+    "recovery_rc5",
     "output_policy",
     "scale_quality_rc",
     "source_rc2",
     "attribution"
   ],
+  "required_test_identities": {
+    "source_inputs": [
+      "generic_type_spacing_preserves_runtime_comparison_boundaries"
+    ],
+    "lib": [
+      "ast::tests::forwarding_exhaustion_preserves_large_baseline_optimization"
+    ],
+    "recovery_rc5": [
+      "button_capture_lifetimes_preserve_event_snapshots_and_factory_state",
+      "closing_cells_and_fresh_closure_identity_remain_distinct",
+      "property_snapshots_precede_mutable_callee_resolution"
+    ],
+    "types_rc5": [
+      "evaluated_class_literals_keep_precision_through_aliases_and_matching_joins",
+      "conflicting_and_reference_captured_class_names_do_not_claim_one_class",
+      "captured_table_rebinding_retains_both_declaration_shapes_and_return_types",
+      "table_declaration_history_keeps_loop_widening_after_later_rebinding",
+      "unused_callback_parameters_expose_unknown_without_a_meaningless_generic",
+      "known_closures_do_not_hide_opaque_mutation_of_captured_tables",
+      "scope_display_names_reuse_siblings_but_preserve_ancestor_captures",
+      "scope_display_names_pin_type_dependencies_globals_and_unresolved_symbols",
+      "scope_display_collision_work_remains_linear_for_repeated_hints",
+      "scope_debug_hints_follow_configured_case_and_preserve_exact_overrides",
+      "known_local_parameter_mutation_keeps_table_field_types_conservative",
+      "retained_class_aliases_pass_actual_strict_analysis_without_casts",
+      "captured_table_rebinding_compiles_strictly_and_preserves_repeated_reads",
+      "scope_display_output_passes_strict_analysis_and_preserves_captures",
+      "reused_prototypes_report_printed_names_by_expanded_symbol"
+    ],
+    "types_v3": [
+      "type_layout_wraps_local_parameter_callback_and_return_annotations",
+      "type_layout_reuses_exact_aliases_without_capturing_function_generics",
+      "type_layout_places_import_dependent_aliases_after_their_values",
+      "type_layout_bounds_deep_in_memory_types_before_rendering",
+      "type_layout_final_attributed_output_passes_pinned_strict_analysis",
+      "type_layout_whole_module_preserves_import_type_and_initialization_dependencies"
+    ]
+  },
   "mandatory_adapter": "adapter/test-rc.luau",
   "packaging_boundary_case_ids": [
     "installer_changes_have_an_independent_packaged_gate_owner",
@@ -364,6 +405,15 @@
     "nested_unknown",
     "recursive_record_clean",
     "sdk_calls_clean",
+    "service_literal_precision",
+    "service_alias_precision",
+    "instance_alias_precision",
+    "service_dynamic_boundary",
+    "service_wrong_class",
+    "service_nonservice_class",
+    "instance_noncreatable_class",
+    "service_extra_argument",
+    "instance_invalid_parent",
     "context_module_number",
     "context_changed_module_reject",
     "context_module_removed",
@@ -420,7 +470,10 @@
     }
   ],
   "example_manifest": "examples/typed-output/manifest-rc.json",
+  "organization_example_manifest": "examples/typed-output/module_organization.manifest.json",
   "measured_evidence_reports": [
+    "docs/results/performance-rc5.json",
+    "docs/results/readability-rc5.json",
     "docs/results/performance-rc.json",
     "docs/results/native-functions-rc.json",
     "docs/results/madium-live-rc.json",

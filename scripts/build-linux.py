@@ -150,6 +150,12 @@ def main():
              for path in sorted(output.rglob("*")) if path.is_file() and path.name != "runtime-manifest.json"]
     provenance = {"schema": 1, "product": "luau-decompiler", "version": packages[metadata["resolve"]["root"]]["version"], "target": "linux-x64", "platform": platform.platform(), "architecture": platform.machine(),
                   "compiler": compiler_version, "upstream_revision": actual, "files": files,
+                  "provenance": {"executable_sha256": digest(binary_dir / "luau-decompile"), "quality_tools": {
+                      "protocol": manifest['protocol'], "analyzer_sha256": manifest['binary_sha256'],
+                      "manifest_sha256": digest(analyzer.with_name(analyzer.name + '.manifest.json')),
+                      "harness_sha256": manifest['source_sha256'], "upstream_revision": actual,
+                      "definitions_sha256": digest(definitions), "definitions_revision": definitions_lock['revision'],
+                      "definitions_license_sha256": digest(root / definitions_lock['license_path'])}},
                   "validation": "build and analyzer version only; run scripts/runtime-smoke.py for runtime acceptance"}
     (output / "runtime-manifest.json").write_text(json.dumps(provenance, indent=2) + "\n")
     print(output)

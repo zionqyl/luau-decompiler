@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { unzipSync, zipSync, strToU8 } from "fflate";
+import { configuration, contractMaps, initialOptions } from "../lib/domain.ts";
 const execute = promisify(execFile);
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 export async function installAudit(context) {
@@ -179,7 +180,11 @@ export async function runUI({
       await readFile(resolve(root, "examples/Murder Mystery 2/manifest.json"), "utf8"),
     );
     assert.equal(showcaseIndex.status, "available");
-    assert.equal(showcaseIndex.entries.length, requiredCorpus.published_outputs);
+    assert.equal(showcaseIndex.entries.length, requiredCorpus.current_generation_outputs);
+    assert.equal(
+      showcaseIndex.entries.length + showcaseIndex.historical_entries_not_packaged.length,
+      requiredCorpus.published_outputs,
+    );
     assert.ok(showcaseIndex.entries.length > 0);
     await page.getByText("Owner-authorized MM2 examples", { exact: true }).click();
     if (showcaseIndex.entries.length) {
@@ -473,14 +478,41 @@ export async function runUI({
     if (existsSync(capturedPath)) {
       const packet = await readFile(capturedPath);
       assert.equal(hash(packet), capturedHash);
-      const expectedPath =
-        process.env.LUAU_BROWSER_CAPTURE_SOURCE ||
+      const expectedPath = resolve(work, "captured-native.current.luau");
+      const capturedConfig = resolve(work, "captured-native.current.config.json");
+      const capturedQualityPath = resolve(work, "captured-native.current.json");
+      await writeFile(
+        capturedConfig,
+        JSON.stringify(configuration(initialOptions, "captured-native.bc", {}, contractMaps("{}"))),
+      );
+      const currentNative =
+        process.env.LUAU_BROWSER_NATIVE_CLI ||
         resolve(
           root,
-          "artifacts/rc3-mm2/snapshot/generations/rc4-5b-final/processed-by-hash",
-          capturedHash,
-          "output.luau",
+          "target/release/luau-decompile" + (process.platform === "win32" ? ".exe" : ""),
         );
+      await assert.rejects(
+        execute(
+          currentNative,
+          [
+            "decompile",
+            capturedPath,
+            "--config",
+            capturedConfig,
+            "-o",
+            expectedPath,
+            "--quality-report",
+            capturedQualityPath,
+            "--force",
+          ],
+          { cwd: root, timeout: 45000 },
+        ),
+        (error) => error.code === 1,
+      );
+      const capturedQuality = JSON.parse(await readFile(capturedQualityPath, "utf8"));
+      assert.equal(capturedQuality.complete, true);
+      assert.equal(capturedQuality.validation.strict_analysis, "failed");
+      assert.equal(capturedQuality.validation.required_passed, false);
       const expected = await readFile(expectedPath, "utf8");
       await clear();
       await page.evaluate((bytes) => {
@@ -514,12 +546,14 @@ export async function runUI({
         passed: true,
         input_sha256: capturedHash,
         source_sha256: hash(expected),
+        native_cli_sha256: hash(await readFile(currentNative)),
+        native_configuration_sha256: hash(await readFile(capturedConfig)),
         representation: observed.result.representation.profile,
         compilation: "passed",
         strict: "failed",
         verified: false,
         scope:
-          "Optional private fixture, not required for CI: one retained real MM2 script-getter packet; default automatic browser processing agrees with final native annotated source; policy requirements differ; no captured code executed",
+          "Optional private fixture, not required for CI: one retained script-getter packet from the MM2 client session; browser and current native use the same verified-typed settings and retain identical unverified source. This does not establish ownership or behavior; captured code is never executed.",
       });
     }
     await clear();
@@ -633,8 +667,8 @@ export async function runUI({
     });
     await clear();
     await importFiles([["renamed.luau", "local snake_value:number=42 return snake_value"]]);
-    await page.getByLabel("Preserve supplied/debug local names").uncheck();
-    await page.getByLabel("Fallback naming").selectOption("camelCase");
+    await page.getByLabel("Preserve source names; use debug hints").uncheck();
+    await page.getByLabel("Naming style").selectOption("camelCase");
     await run();
     await select("renamed.luau");
     assert.match(await source(), /snakeValue/);

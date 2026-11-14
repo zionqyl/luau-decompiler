@@ -311,6 +311,7 @@ def prepare_showcase(destination, version):
         total = 0
         paths = set()
         generations = {generation["identity"]:generation for generation in corpus["generations"]}
+        historical = []
         identity = portable_engine_text_identity()
         target.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(manifest_path, target / "manifest.json")
@@ -319,8 +320,14 @@ def prepare_showcase(destination, version):
             if not path:
                 continue
             generation = generations.get(row.get("generation"))
-            if not generation or generation.get("engine_version") != version or generation.get("portable_engine_text_sha256") != identity:
-                raise RuntimeError("Public showcase engine text identity differs from this release; regenerate its manifest from matching processing provenance")
+            if not generation:
+                raise RuntimeError("Public showcase source lacks its generation receipt")
+            historical_generation = generation.get("engine_version") != version
+            if historical_generation:
+                if generation.get("historical") is not True or not re.fullmatch(r"[0-9a-f]{64}", generation.get("portable_engine_text_sha256", "")):
+                    raise RuntimeError("Historical showcase generation lacks an explicit immutable engine identity")
+            elif generation.get("portable_engine_text_sha256") != identity:
+                raise RuntimeError("Current showcase engine text identity differs from this release; regenerate the affected outputs")
             relative = pathlib.PurePosixPath(path)
             if relative.is_absolute() or any(part in (".", "..", "") or "\\" in part or ":" in part for part in path.split("/")):
                 raise RuntimeError("Unsafe public showcase path")
@@ -333,16 +340,21 @@ def prepare_showcase(destination, version):
                 raise RuntimeError("Public showcase source is missing or outside its corpus")
             size = source.stat().st_size
             total += size
-            if len(index["entries"]) >= 1024 or size > 2 * 1024 * 1024 or total > 64 * 1024 * 1024:
+            if len(paths) > 1024 or size > 2 * 1024 * 1024 or total > 64 * 1024 * 1024:
                 raise RuntimeError("Public showcase exceeds its bounded static preview capacity")
-            if digest(source) != row["source_sha256"] or not row["complete"] or ("Luau Decompiler " + version) not in source.read_text(encoding="utf-8"):
+            if digest(source) != row["source_sha256"] or not row["complete"] or ("Luau Decompiler " + generation["engine_version"]) not in source.read_text(encoding="utf-8"):
                 raise RuntimeError("Public showcase source differs from its finalized generation")
+            if historical_generation:
+                historical.append({"path":path,"sha256":row["source_sha256"],"engine_version":generation["engine_version"],"generation":row["generation"]})
+                continue
             output = target / pathlib.Path(*relative.parts)
             output.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, output)
             validation = row.get("validation") or {}
             index["entries"].append({"path":"examples/Murder Mystery 2/"+path,"bytes":size,"sha256":row["source_sha256"],"class":row["class"],"strict_analysis":validation.get("strict_analysis","not_run"),"required_passed":validation.get("required_passed",False)})
-        index.update({"status":"available","scope":"Owner-authorized MM2 client-accessible outputs only; unrelated Roblox engine/dependency content excluded; this is not the complete game","rights":corpus["rights"],"coverage":corpus["coverage"],"snapshot":corpus["snapshot"],"manifest_sha256":digest(manifest_path),"generations":corpus["generations"]})
+        if len(index["entries"]) != corpus["current_generation_outputs"] or len(paths) != corpus["published_outputs"]:
+            raise RuntimeError("Current and historical showcase counts do not reconcile with the corpus manifest")
+        index.update({"status":"available","scope":"Selected current-engine owner-authorized MM2 client outputs. Historical outputs remain in the repository with their original generation receipts; this is not the complete game.","rights":corpus["rights"],"historical_coverage":corpus["coverage"],"current_subset_quality":corpus["current_subset_quality"],"historical_entries_not_packaged":historical,"snapshot":corpus["snapshot"],"manifest_sha256":digest(manifest_path),"generations":corpus["generations"]})
     (destination / "mm2-showcase.json").write_text(json.dumps(index,indent=2)+"\n",encoding="utf-8")
 
 

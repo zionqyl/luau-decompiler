@@ -33,6 +33,7 @@ Build a fast, reliable Rust decompiler and source-processing library that produc
 ## Types and output quality
 
 - Prefer precise annotations, readable aliases, useful optional types, and consistent formatting. Keep metadata, inference, retained source types, and external contracts distinguishable.
+- Organize recovered modules around foundational types, services, dependency references/imports, dependent interfaces, helpers/constants, module setup, factories, related public implementations, and the final return when dependencies and effects permit. Keep value-dependent aliases after their bindings, preserve runtime initialization order and lexical/capture resolution, and use blank lines without decorative section comments.
 - Never infer classes or complete interfaces from suggestive names or isolated runtime observations.
 - Preserve alias dependencies through logical expressions, control-flow joins, loops, calls, and return-pack adjustment. Account for reachable mutation and escape.
 - Measure annotation quality recursively, including nested types and variadic packs. Expose broad `any`, unknowns, and assumptions instead of hiding them in scores.

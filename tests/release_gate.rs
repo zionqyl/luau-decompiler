@@ -107,15 +107,17 @@ fn mandatory_gate_invalidates_stale_success_when_package_manifest_is_unavailable
             "quality_v3",
             "native_v3_model",
             "profile_hash_layout_v3",
-            "source_inputs",
-            "source_behavior_rc",
-            "source_rc2",
-            "types_rc",
-            "output_policy",
-            "attribution",
-            "scale_quality_rc",
         ] {
             fs::write(isolated.join(format!("tests/{target}.rs")), "").unwrap();
+        }
+        let requirements: serde_json::Value =
+            serde_json::from_str(include_str!("release-requirements-rc.json")).unwrap();
+        for target in requirements["mandatory_targets"].as_array().unwrap() {
+            fs::write(
+                isolated.join(format!("tests/{}.rs", target.as_str().unwrap())),
+                "",
+            )
+            .unwrap();
         }
         if let Some(manifest) = manifest {
             fs::write(isolated.join("Cargo.toml"), manifest).unwrap();

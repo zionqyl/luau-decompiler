@@ -1,10 +1,10 @@
 {
     "schema":  1,
-    "version":  "0.4.0-rc.4",
-    "executable_sha256":  "5b1316e78fa183aafe32c46471ce31cb3601778a5650b26898e7a27743a7953d",
-    "generator_sha256":  "6f056ff42bd29a92fab1c86f9d4d84291ebe6c3deeb9823c646a069e784a1fb1",
+    "version":  "0.4.0-rc.5",
+    "executable_sha256":  "36c81f2589bda731036dd505886d6676e67bca2f759bf0789d5b08e4feb8cfb4",
+    "generator_sha256":  "f19c17a1e7b7879a2c5f7a8e03930438b3dee0e85e8c87a91e9dfcba5f7a642e",
     "compiler_sha256":  "870665fdc7e751eb266ea8beec2cda64762c9b6b689e8a466feedaaeefc8dd3d",
-    "analyzer_manifest_sha256":  "ee9136903659e89732473046b9c40895cd63a65853e968ff9992f4b827bd65ec",
+    "analyzer_manifest_sha256":  "b555875703c4c16a07b59a9613cff41d4df29f01c38f6b29e395885116d0e66c",
     "examples":  [
                      {
                          "id":  "verified_bytecode",
@@ -16,7 +16,7 @@
                          "configuration":  "verified_bytecode.config.json",
                          "configuration_sha256":  "206d04de0e1cdc3f4c48e85d7d5f43f9d72a9a81b0a8916fdad78d50864258aa",
                          "output":  "verified_bytecode.luau",
-                         "output_sha256":  "d4dc78026f81297cffb3a23f2f203c58d5fc99cbf53e70356f8fdb1ca7db06eb",
+                         "output_sha256":  "7a062bfdd312abd959e6949c4863a756c50b96816c0ec5afb9e9fad87ea2a20b",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -63,7 +63,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "d4dc78026f81297cffb3a23f2f203c58d5fc99cbf53e70356f8fdb1ca7db06eb",
+                                                                 "source_sha256":  "7a062bfdd312abd959e6949c4863a756c50b96816c0ec5afb9e9fad87ea2a20b",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -72,15 +72,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  826689,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  714003,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
-                                            "compiler_micros":  55,
-                                            "analyzer_micros":  171,
+                                            "compiler_micros":  96,
+                                            "analyzer_micros":  424,
                                             "recovery_transform_failures":  [
 
                                                                             ]
@@ -277,7 +277,7 @@
                          "configuration":  "roblox_identity.config.json",
                          "configuration_sha256":  "c8c6523997c88bef5a12447fb0150051db57b3cfd50cea54cd7f12a750481bf2",
                          "output":  "roblox_identity.luau",
-                         "output_sha256":  "d3f2dfc161179f7422f2fa0144d73cd76c52e32132fdaabb7056d8bb460196ad",
+                         "output_sha256":  "d0dfdb92525def50a7e808cab50b20730fba01214dcc2c2fdbaf52e0e17643e5",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -325,7 +325,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "d3f2dfc161179f7422f2fa0144d73cd76c52e32132fdaabb7056d8bb460196ad",
+                                                                 "source_sha256":  "d0dfdb92525def50a7e808cab50b20730fba01214dcc2c2fdbaf52e0e17643e5",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -334,15 +334,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  853915,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  777842,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
                                             "compiler_micros":  53,
-                                            "analyzer_micros":  220,
+                                            "analyzer_micros":  200,
                                             "recovery_transform_failures":  [
 
                                                                             ]
@@ -502,7 +502,7 @@
                          "configuration":  "roblox_position.config.json",
                          "configuration_sha256":  "c8c6523997c88bef5a12447fb0150051db57b3cfd50cea54cd7f12a750481bf2",
                          "output":  "roblox_position.luau",
-                         "output_sha256":  "764cbed63b05a29a2b6b76c7f7b2819dd3d1372ce6834d86d9793757a4d89fe0",
+                         "output_sha256":  "3e1d81c79dfc78d1d751ebe299c0941b9cef3ec130272d03412ee849623554e2",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -550,7 +550,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "764cbed63b05a29a2b6b76c7f7b2819dd3d1372ce6834d86d9793757a4d89fe0",
+                                                                 "source_sha256":  "3e1d81c79dfc78d1d751ebe299c0941b9cef3ec130272d03412ee849623554e2",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -559,15 +559,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  763175,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  810481,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
-                                            "compiler_micros":  71,
-                                            "analyzer_micros":  352,
+                                            "compiler_micros":  141,
+                                            "analyzer_micros":  420,
                                             "recovery_transform_failures":  [
 
                                                                             ]
@@ -788,7 +788,7 @@
                          "configuration":  "player_snapshot.config.json",
                          "configuration_sha256":  "c8c6523997c88bef5a12447fb0150051db57b3cfd50cea54cd7f12a750481bf2",
                          "output":  "player_snapshot.luau",
-                         "output_sha256":  "a792f9a28b4137ed4668e17745e0bc722579cb16d5c137fc58c879291c503118",
+                         "output_sha256":  "ae196b5f8b5094e464f14be6ba55e4727e33c85d6e763a370409eb22dee98f76",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -836,7 +836,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "a792f9a28b4137ed4668e17745e0bc722579cb16d5c137fc58c879291c503118",
+                                                                 "source_sha256":  "ae196b5f8b5094e464f14be6ba55e4727e33c85d6e763a370409eb22dee98f76",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -845,15 +845,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  846833,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  757748,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
-                                            "compiler_micros":  88,
-                                            "analyzer_micros":  520,
+                                            "compiler_micros":  129,
+                                            "analyzer_micros":  501,
                                             "recovery_transform_failures":  [
 
                                                                             ]
@@ -1085,7 +1085,7 @@
                          "configuration":  "generic_identity.config.json",
                          "configuration_sha256":  "5477253a6649216c82f1da8ce22b1cdb23f7708bb3dc470076adfa6a0f1d3faf",
                          "output":  "generic_identity.luau",
-                         "output_sha256":  "a3af48d1cdf9c69a914d6bba03e40fbb0f41e016a822fdd81404b5ae9d6d6410",
+                         "output_sha256":  "8f7d94fbbdd91f1d414ba24459e2f04da66615e9f3219a49dc62a279fcf4e65e",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -1132,7 +1132,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "a3af48d1cdf9c69a914d6bba03e40fbb0f41e016a822fdd81404b5ae9d6d6410",
+                                                                 "source_sha256":  "8f7d94fbbdd91f1d414ba24459e2f04da66615e9f3219a49dc62a279fcf4e65e",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -1141,15 +1141,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  886805,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  780518,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
-                                            "compiler_micros":  44,
-                                            "analyzer_micros":  193,
+                                            "compiler_micros":  74,
+                                            "analyzer_micros":  233,
                                             "recovery_transform_failures":  [
 
                                                                             ]
@@ -1219,7 +1219,7 @@
                          "configuration":  "generic_vararg.config.json",
                          "configuration_sha256":  "5477253a6649216c82f1da8ce22b1cdb23f7708bb3dc470076adfa6a0f1d3faf",
                          "output":  "generic_vararg.luau",
-                         "output_sha256":  "853f6c7938fd8ac5c2de9ab2b5687ae0787d52a2be89f5b5d1540325a7f47a28",
+                         "output_sha256":  "a4989862bec4de8721edea02f6d16751944c7f8387c1442cdaf5a14a94927853",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -1266,7 +1266,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "853f6c7938fd8ac5c2de9ab2b5687ae0787d52a2be89f5b5d1540325a7f47a28",
+                                                                 "source_sha256":  "a4989862bec4de8721edea02f6d16751944c7f8387c1442cdaf5a14a94927853",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -1275,15 +1275,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  847672,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  719936,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
-                                            "compiler_micros":  62,
-                                            "analyzer_micros":  163,
+                                            "compiler_micros":  67,
+                                            "analyzer_micros":  224,
                                             "recovery_transform_failures":  [
 
                                                                             ]
@@ -1353,7 +1353,7 @@
                          "configuration":  "inferred_returns.config.json",
                          "configuration_sha256":  "5477253a6649216c82f1da8ce22b1cdb23f7708bb3dc470076adfa6a0f1d3faf",
                          "output":  "inferred_returns.luau",
-                         "output_sha256":  "4df5a726705d5ed7b418a9f8c3988658ca86621098db3f17cf5de1736d664992",
+                         "output_sha256":  "25402d06a85c237e02476fa16f46e1edf28dc4e4e79adaa30cd7589f7593d290",
                          "validation":  {
                                             "output_policy":  "verified_typed",
                                             "meaningful_typing":  {
@@ -1400,7 +1400,7 @@
                                             "attempts":  [
                                                              {
                                                                  "strategy":  "annotated",
-                                                                 "source_sha256":  "4df5a726705d5ed7b418a9f8c3988658ca86621098db3f17cf5de1736d664992",
+                                                                 "source_sha256":  "25402d06a85c237e02476fa16f46e1edf28dc4e4e79adaa30cd7589f7593d290",
                                                                  "syntax":  "passed",
                                                                  "compilation":  "passed",
                                                                  "strict_analysis":  "passed",
@@ -1409,15 +1409,15 @@
                                                              }
                                                          ],
                                             "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
-                                            "analyzer_sha256":  "ec78618cb5f02b1266b30964196e8cf48a5507c7dc0a9dfff25a31f6d00cc59b",
+                                            "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
                                             "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
-                                            "context_sha256":  "dedee74e21872594f3aaee8a3dcbe42f142f7f8c47d228586e1267bf4dbcbc75",
-                                            "elapsed_micros":  893956,
+                                            "context_sha256":  "b8872d532396fb9c3c65cfe058ea2e7778229f34535c53334551d0cc3513ed0c",
+                                            "elapsed_micros":  705332,
                                             "cache_hit":  false,
                                             "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
                                             "selected_strategy":  "annotated",
-                                            "compiler_micros":  80,
-                                            "analyzer_micros":  284,
+                                            "compiler_micros":  94,
+                                            "analyzer_micros":  338,
                                             "recovery_transform_failures":  [
 
                                                                             ]

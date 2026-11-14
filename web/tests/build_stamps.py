@@ -89,7 +89,21 @@ def main():
             example = corpus / "StarterGui/Example.luau"
             example.parent.mkdir()
             example.write_bytes(b"--[=[\n    Luau Decompiler test\n    Made by @zionqyl\n    https://github.com/zionqyl/luau-decompiler\n]=]\n\nreturn 1\n")
-            document = {"release":"test","rights":{"permission":"owned synthetic regression fixture"},"snapshot":"controlled-test","coverage":{},"generations":[{"identity":"test-generation","engine_version":"test","portable_engine_text_sha256":builder.portable_engine_text_identity()}],"files":[{"output_path":"StarterGui/Example.luau","generation":"test-generation","source_sha256":builder.digest(example),"complete":True,"class":"LocalScript","validation":{"strict_analysis":"not_run","required_passed":False}}]}
+            historical = corpus / "StarterGui/Historical.luau"
+            historical.write_bytes(example.read_bytes().replace(b"Decompiler test", b"Decompiler old"))
+            document = {
+                "release": "test", "rights": {"permission": "owned synthetic regression fixture"},
+                "snapshot": "controlled-test", "coverage": {}, "current_subset_quality": {},
+                "current_generation_outputs": 1, "published_outputs": 2,
+                "generations": [
+                    {"identity": "test-generation", "engine_version": "test", "portable_engine_text_sha256": builder.portable_engine_text_identity()},
+                    {"identity": "old-generation", "engine_version": "old", "historical": True, "portable_engine_text_sha256": "c" * 64},
+                ],
+                "files": [
+                    {"output_path": "StarterGui/Example.luau", "generation": "test-generation", "source_sha256": builder.digest(example), "complete": True, "class": "LocalScript", "validation": {"strict_analysis": "not_run", "required_passed": False}},
+                    {"output_path": "StarterGui/Historical.luau", "generation": "old-generation", "source_sha256": builder.digest(historical), "complete": True, "class": "LocalScript", "validation": {"strict_analysis": "not_run", "required_passed": False}},
+                ],
+            }
             destination=temporary / "web/public/examples"
             destination.mkdir(parents=True)
             manifest_path=corpus / "manifest.json"
@@ -98,6 +112,14 @@ def main():
             if (destination / "Murder Mystery 2/StarterGui/Example.luau").read_bytes()!=example.read_bytes():
                 raise AssertionError("Static showcase changed the finalized source bytes")
             rows.append({"id":"matching_corpus_generation_exact_source_copy","passed":True})
+            index = json.loads((destination / "mm2-showcase.json").read_text(encoding="utf-8"))
+            if len(index["entries"]) != 1 or len(index["historical_entries_not_packaged"]) != 1 or (destination / "Murder Mystery 2/StarterGui/Historical.luau").exists():
+                raise AssertionError("Historical source was relabeled or copied as a current engine output")
+            rows.append({"id":"historical_and_current_showcase_counts_reconcile_without_reprocessing","passed":True})
+            original_historical = historical.read_bytes()
+            historical.write_bytes(b"modified historical source")
+            rows.append({"id":"unpackaged_historical_source_integrity_is_still_checked","passed":True,"diagnostic":rejected(lambda:builder.prepare_showcase(destination,"test"),"differs from its finalized generation")})
+            historical.write_bytes(original_historical)
             document["generations"][0]["portable_engine_text_sha256"]="stale"
             manifest_path.write_text(json.dumps(document))
             rows.append({"id":"stale_same_version_corpus_generation_rejected","passed":True,"diagnostic":rejected(lambda:builder.prepare_showcase(destination,"test"),"engine text identity differs")})

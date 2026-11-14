@@ -13,6 +13,7 @@ pub mod input;
 pub mod names;
 mod parallel;
 pub mod platform;
+pub mod presentation;
 pub mod processing;
 pub mod profiles;
 pub mod quality;
@@ -238,6 +239,17 @@ fn decompile_inner(input: &[u8], config: &Config) -> Result<Decompiled> {
     }
     let validation_start = Instant::now();
     let validation = quality::validate_reconstruction(&mut reconstruction, &module, config)?;
+    execution::reserve_ast_capacity(reconstruction.recovered_bindings.len().saturating_mul(96))?;
+    let displayed_bindings: std::collections::BTreeMap<_, _> = reconstruction
+        .source_map
+        .iter()
+        .filter_map(|region| region.symbol.as_ref().zip(region.printed_name.as_ref()))
+        .collect();
+    for binding in &mut reconstruction.recovered_bindings {
+        if let Some(printed) = displayed_bindings.get(&binding.name) {
+            binding.printed_name = (*printed).clone();
+        }
+    }
     let validation_micros = validation_start.elapsed().as_micros().min(u64::MAX as u128) as u64;
     execution::checkpoint()?;
     let source = reconstruction.source;

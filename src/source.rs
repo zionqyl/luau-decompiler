@@ -472,6 +472,11 @@ struct Annotation {
     type_only: bool,
 }
 
+struct TypeSpacing {
+    after_colon: Vec<bool>,
+    compact_before: Vec<bool>,
+}
+
 struct Parser<'a> {
     source: &'a str,
     tokens: &'a [Token],
@@ -485,7 +490,7 @@ struct Parser<'a> {
     bindings: Vec<Binding>,
     annotations: Vec<Annotation>,
     lines: Vec<Option<usize>>,
-    type_spaces: Vec<bool>,
+    type_spacing: TypeSpacing,
     token_bindings: Vec<Option<usize>>,
     statements: usize,
     loops: usize,
@@ -535,7 +540,10 @@ impl<'a> Parser<'a> {
             bindings: Vec::new(),
             annotations: Vec::new(),
             lines: vec![None; tokens.len() + 1],
-            type_spaces: vec![false; tokens.len() + 1],
+            type_spacing: TypeSpacing {
+                after_colon: vec![false; tokens.len() + 1],
+                compact_before: vec![false; tokens.len() + 1],
+            },
             token_bindings: vec![None; tokens.len() + 1],
             statements: 0,
             loops: 0,
@@ -984,14 +992,19 @@ impl<'a> Parser<'a> {
         if !self.eat("<") {
             return Ok(());
         }
+        self.type_spacing.compact_before[self.at - 1] = true;
+        self.type_spacing.compact_before[self.at] = true;
         self.luau_only("generics")?;
         loop {
             self.identifier()?;
-            self.eat("...");
+            if self.eat("...") {
+                self.type_spacing.compact_before[self.at - 1] = true;
+            }
             if !self.eat(",") {
                 break;
             }
         }
+        self.type_spacing.compact_before[self.at] = true;
         self.expect(">")
     }
     fn function_body(&mut self, method: bool) -> Result<usize> {
@@ -1461,7 +1474,7 @@ impl<'a> Parser<'a> {
         let start = self.at;
         let any_start = self.type_any_count;
         let nested_start = self.annotations.len();
-        self.type_spaces[start] = true;
+        self.type_spacing.after_colon[start] = true;
         let old_pack_root = self.type_pack_root;
         self.type_pack_root = matches!(role, "return" | "variadic").then_some(self.depth + 1);
         let old_type_context = self.type_context;
@@ -1551,14 +1564,14 @@ impl<'a> Parser<'a> {
                     self.type_expression(0)?;
                     self.expect("]")?;
                     self.expect(":")?;
-                    self.type_spaces[self.at] = true;
+                    self.type_spacing.after_colon[self.at] = true;
                     self.type_expression(0)?;
                 } else if (crate::names::is_identifier(self.peek())
                     || matches!(self.peek(), "read" | "write"))
                     && self.look(1) == ":"
                 {
                     self.at += 2;
-                    self.type_spaces[self.at] = true;
+                    self.type_spacing.after_colon[self.at] = true;
                     self.type_expression(0)?;
                 } else {
                     self.type_expression(0)?;
@@ -1614,6 +1627,8 @@ impl<'a> Parser<'a> {
             self.identifier()?;
         }
         if self.eat("<") {
+            self.type_spacing.compact_before[self.at - 1] = true;
+            self.type_spacing.compact_before[self.at] = true;
             if self.peek() == ">" {
                 return Err(self.error("generic application requires an argument"));
             }
@@ -1623,9 +1638,11 @@ impl<'a> Parser<'a> {
                     break;
                 }
             }
+            self.type_spacing.compact_before[self.at] = true;
             self.expect(">")?;
         }
         if self.eat("...") {
+            self.type_spacing.compact_before[self.at - 1] = true;
             if self.type_pack_item != Some(self.depth) && self.type_pack_root != Some(self.depth) {
                 return Err(self.error("generic type pack outside a pack position"));
             }
@@ -1652,7 +1669,7 @@ impl<'a> Parser<'a> {
             loop {
                 if crate::names::is_identifier(self.peek()) && self.look(1) == ":" {
                     self.at += 2;
-                    self.type_spaces[self.at] = true;
+                    self.type_spacing.after_colon[self.at] = true;
                 }
                 tail = self.peek() == "..." || self.look(1) == "...";
                 let old_item = self.type_pack_item;
@@ -1681,6 +1698,7 @@ fn immutable_source_type(ty: &TypeExpr) -> bool {
     match ty {
         TypeExpr::Number
         | TypeExpr::String
+        | TypeExpr::SingletonString(_)
         | TypeExpr::Boolean
         | TypeExpr::Nil
         | TypeExpr::Thread
@@ -2210,7 +2228,7 @@ pub(crate) fn process(source: &str, format: InputFormat, config: &Config) -> Res
         source,
         &lexed,
         &parser.lines,
-        &parser.type_spaces,
+        &parser.type_spacing,
         &insertions,
         &replacements,
         config,
@@ -2279,7 +2297,7 @@ fn render(
     source: &str,
     lexed: &Lexed,
     lines: &[Option<usize>],
-    type_spaces: &[bool],
+    type_spacing: &TypeSpacing,
     insertions: &BTreeMap<usize, String>,
     replacements: &BTreeMap<usize, String>,
     config: &Config,
@@ -2357,7 +2375,9 @@ fn render(
             line_start = true;
         }
         if !line_start
-            && (needs_space(previous, current) || (previous == ":" && type_spaces[index]))
+            && !type_spacing.compact_before[index]
+            && (needs_space(previous, current)
+                || (previous == ":" && type_spacing.after_colon[index]))
         {
             printer.text(" ")?;
         }

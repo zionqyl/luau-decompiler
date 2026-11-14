@@ -63,6 +63,8 @@ pub enum NameStyle {
     CamelCase,
     #[serde(rename = "PascalCase", alias = "pascal_case")]
     PascalCase,
+    #[serde(rename = "roblox")]
+    Roblox,
 }
 
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -79,12 +81,14 @@ pub enum ControlFlowMode {
 pub struct NamingOptions {
     pub use_debug_names: bool,
     pub infer_descriptive_names: bool,
+    pub module_name_hint: Option<String>,
 }
 impl Default for NamingOptions {
     fn default() -> Self {
         Self {
             use_debug_names: true,
             infer_descriptive_names: true,
+            module_name_hint: None,
         }
     }
 }
@@ -205,6 +209,19 @@ impl Config {
     }
 
     pub fn validate(&self) -> Result<()> {
+        if self
+            .naming_options
+            .module_name_hint
+            .as_ref()
+            .is_some_and(|name| {
+                name.is_empty() || name.len() > 256 || name.contains(['\0', '\n', '\r'])
+            })
+        {
+            return Err(Error::new(
+                "config",
+                "module_name_hint must contain 1..256 bytes without NUL or line breaks",
+            ));
+        }
         if self.meaningful_typing.min_useful_annotations == 0
             || !(1..=100).contains(&self.meaningful_typing.min_binding_coverage_percent)
             || !(1..=100).contains(&self.meaningful_typing.min_useful_annotation_percent)

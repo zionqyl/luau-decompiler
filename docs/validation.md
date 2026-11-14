@@ -1,6 +1,6 @@
 # Candidate validation and release evidence
 
-This document describes the `0.4.0-rc.4` workflow. The final optimized gate, packaged executable checks, and matching source/tool/report identities determine release readiness. Individual development runs and the existence of a report file do not establish a passing final candidate. See the [candidate assessment](release-candidate.md) for the current status and [remaining limits](remaining-limitations-rc.md) for the supported boundary.
+This document describes the `0.4.0-rc.5` workflow. The final optimized gate, packaged executable checks, and matching source/tool/report identities determine release readiness. Individual development runs and the existence of a report file do not establish a passing final candidate. See the [candidate assessment](release-candidate.md) for the current status and [remaining limits](remaining-limitations-rc.md) for the supported boundary.
 
 ## Independent results
 
@@ -21,6 +21,8 @@ Prepare the pinned tools using the [development instructions](development.md), t
 Ordinary Cargo tests do not replace ignored compiler/oracle/analyzer matrices. `validate.ps1` verifies the first-party comment rule, pinned assets, required source/case identities, ordinary and ignored tests, adapter mocks, malformed-input coverage, and source/tool freshness. `release.ps1` owns that optimized gate once, then packages and comprehensively checks the exact extracted runtime. CI calls this driver instead of repeating formatting, Clippy and package acceptance. Each platform and live executor still needs its own evidence; a Windows gate does not certify another environment.
 
 Ordinary tests run once through `cargo test --all-targets`. Required ignored compiler/oracle/analyzer cases are then selected with `--ignored`, so ordinary cases are not run a second time. The single `runtime-smoke.py` owner includes the former unique missing-analyzer/strict-benchmark negative, per-request formatting, authentication, source/bytecode, batches and controlled behavioral checks. The two staging smoke wrappers were retired only after these assertions migrated.
+
+The candidate manifest also lists required rc.5 test identities. The driver checks their presence without executing them again, then selects the ignored `recovery_rc5`, `types_rc5`, and `types_v3` compiler/strict/oracle cases. The source module-ordering example has a separate annotated/strict receipt: its strict pass is retained alongside a failed meaningful-typing gate. The seven existing verified examples remain mandatory positives. Browser export acceptance, installer interruption scenarios, and final extracted-runtime acceptance keep their separate boundary owners.
 
 For a semantic-only contributor run, `./scripts/validate.ps1 -Release` is the alternative entry point. After that exact snapshot passes, `./scripts/release.ps1 -PackageOnly` reuses its unchanged code/test/fixture/command/config/tool/binary identities. Markdown-only differences are recorded separately; original semantic timestamps are retained. A changed relevant input requires affected verification and a new matching gate. Do not run both full entry points for one unchanged snapshot.
 

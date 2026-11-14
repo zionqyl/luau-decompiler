@@ -162,8 +162,11 @@ def corpus_metrics(rows, results):
             "reconstructed": lambda item: bool(item.get("complete") and item.get("source_path")),
             "strict_attempted": lambda item: item.get("validation", {}).get("strict_analysis") in {"passed", "failed"},
             "strict_passed": lambda item: item.get("validation", {}).get("strict_analysis") == "passed",
+            "strict_failed": lambda item: item.get("validation", {}).get("strict_analysis") == "failed",
             "compilation_passed": lambda item: item.get("validation", {}).get("compilation") == "passed",
+            "compilation_failed": lambda item: item.get("validation", {}).get("compilation") == "failed",
             "meaningful_typing_passed": lambda item: item.get("validation", {}).get("meaningful_typing", {}).get("passed") is True,
+            "meaningful_typing_failed": lambda item: item.get("validation", {}).get("meaningful_typing", {}).get("passed") is False,
             "strict_and_meaningful": lambda item: item.get("validation", {}).get("strict_analysis") == "passed" and item.get("validation", {}).get("meaningful_typing", {}).get("passed") is True,
             "validated_decoding_passed": lambda item: item.get("decoding") == "passed" or bool(item.get("complete")),
             "verified_typed": lambda item: item.get("validation", {}).get("output_policy") == "verified_typed" and item.get("validation", {}).get("required_passed") is True,
@@ -193,6 +196,103 @@ def corpus_metrics(rows, results):
     return {"observations": counts(rows), "instances": counts(list(objects.values())), "unique_serialized_buffers": counts(list(unique.values()))}
 
 
+def hash_identity(value, field):
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+        raise ValueError("invalid generation hash: " + field)
+    return value
+
+
+def configuration_filename(value):
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_.-]{1,128}\.json", value):
+        raise ValueError("generation configuration_file must be a safe JSON basename")
+    return value
+
+
+def generation_metadata(directory, name, raw, report, previous, current):
+    value = {"identity": name, "report_sha256": digest(raw), "engine_version": report["engine_version"],
+             "executable_sha256": hash_identity(report["executable_sha256"], "executable_sha256"),
+             "configuration_sha256": hash_identity(report["configuration_sha256"], "configuration_sha256"),
+             "historical": name != current, "evidence_status": "current" if name == current else "historical",
+             "reported_unique_results": len(report["results"])}
+    compatible = next((item for item in previous if all(item.get(key) == value[key]
+                      for key in ("identity", "report_sha256", "engine_version", "executable_sha256", "configuration_sha256"))), {})
+    metadata = {**compatible, **report}
+    for key in ("engine_source_identity", "portable_engine_text_sha256"):
+        if key in metadata:
+            value[key] = hash_identity(metadata[key], key)
+    kind = metadata.get("configuration_kind", "per_input" if "configurations_by_input" in metadata else "uniform")
+    value["configuration_kind"] = kind
+    if kind == "per_input":
+        configurations = metadata.get("configurations_by_input")
+        if not isinstance(configurations, dict) or len(configurations) > 50000:
+            raise ValueError("invalid per-input generation configuration map")
+        normalized = {}
+        for sha, entry in configurations.items():
+            hash_identity(sha, "configuration input")
+            if not isinstance(entry, dict) or not isinstance(entry.get("configuration"), dict):
+                raise ValueError("per-input generation lacks its exact configuration")
+            normalized[sha] = {"configuration": entry["configuration"],
+                               "configuration_sha256": hash_identity(entry.get("configuration_sha256"), "per-input configuration"),
+                               "configuration_file": configuration_filename(entry.get("configuration_file"))}
+        if digest(json_bytes(normalized)) != value["configuration_sha256"]:
+            raise ValueError("per-input configuration bundle hash does not match canonical json_bytes map")
+        if set(report["results"]) - set(normalized):
+            raise ValueError("per-input generation result lacks a configuration identity")
+        value["configurations_by_input"] = normalized
+        value["configuration_hash_basis"] = "sha256 of canonical json_bytes(configurations_by_input)"
+    elif kind == "uniform":
+        configuration_file = configuration_filename(metadata.get("configuration_file", "generation.config.json"))
+        configuration_path = directory / "generations" / name / configuration_file
+        configuration = metadata.get("configuration")
+        if configuration_path.exists():
+            data = configuration_path.read_bytes()
+            if digest(data) != value["configuration_sha256"]:
+                raise ValueError("generation configuration file hash changed")
+            actual = json.loads(data)
+            if configuration is not None and configuration != actual:
+                raise ValueError("generation configuration metadata differs from its file")
+            configuration = actual
+        if configuration is not None:
+            if not isinstance(configuration, dict):
+                raise ValueError("generation configuration must be an object")
+            value.update({"configuration": configuration, "configuration_file": configuration_file})
+    else:
+        raise ValueError("unsupported generation configuration kind")
+    if len(json_bytes(value.get("configurations_by_input", value.get("configuration", {})))) > 4 << 20:
+        raise ValueError("public generation configurations exceed their total bound")
+    allowed_tools = {"analyzer_sha256", "analyzer_manifest_sha256", "compiler_sha256", "harness_sha256",
+                     "definitions_sha256", "definitions_license_sha256"}
+    if isinstance(metadata.get("tool_hashes"), dict):
+        value["tool_hashes"] = {key: hash_identity(item, key) for key, item in metadata["tool_hashes"].items() if key in allowed_tools}
+    for key in ("definitions_revision", "upstream_revision"):
+        if key in metadata:
+            revision = metadata[key]
+            if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+                raise ValueError("invalid generation revision: " + key)
+            value[key] = revision
+    return value
+
+
+def public_validation(item):
+    validation = item.get("validation") or {"strict_analysis": "not_run", "required_passed": False}
+    fields = {"output_policy", "reconstruction_complete", "syntax", "compilation", "strict_analysis", "required_passed",
+              "explicit_any", "inferred_any", "inferred_unknown", "type_traversal_exhausted", "external_contract_any",
+              "external_contract_unknown", "unmeasured_external_contracts", "type_assertions", "expressions_analyzed",
+              "analyzer_revision", "analyzer_sha256", "definitions_sha256", "context_sha256", "selected_strategy"}
+    output = {key: value for key, value in validation.items() if key in fields and isinstance(value, (str, int, bool, type(None)))}
+    meaningful = validation.get("meaningful_typing")
+    if isinstance(meaningful, dict):
+        output["meaningful_typing"] = {key: value for key, value in meaningful.items() if isinstance(value, (int, bool))}
+        if isinstance(meaningful.get("failures"), list):
+            output["meaningful_typing"]["failure_count"] = len(meaningful["failures"])
+            output["meaningful_typing"]["failures"] = [str(value)[:512] for value in meaningful["failures"][:8]]
+    output["diagnostic_count"] = item.get("diagnostic_count", len(validation.get("diagnostics", [])))
+    for key in ("missing_dependencies", "external_globals", "external_assumptions", "unmeasured_external_contracts", "recovery_transform_failures", "attempts"):
+        if isinstance(validation.get(key), list):
+            output[key + "_count"] = len(validation[key])
+    return output
+
+
 def export_corpus(args):
     directory = private_directory(args.directory)
     capture_bytes = (directory / "manifest.json").read_bytes()
@@ -203,8 +303,11 @@ def export_corpus(args):
     if scope.get("schema") != 1 or scope.get("place_id") != capture["client"].get("place_id") or not scope.get("permission"):
         raise ValueError("publication scope lacks matching place identity or supplied permission")
     classifications = classify_corpus(capture["scripts"], scope)
+    destination = pathlib.Path(args.publish_directory).resolve() if args.publish_directory else None
+    previous_public = json.loads((destination / "manifest.json").read_bytes()) if destination and (destination / "manifest.json").exists() else {}
     outcomes = {}
     generations = []
+    current_results = {}
     for name in [args.fallback_generation, args.generation]:
         if not name:
             continue
@@ -213,7 +316,9 @@ def export_corpus(args):
         path = directory / "generations" / name / "processing.json"
         raw = path.read_bytes()
         report = json.loads(raw)
-        generations.append({"identity": name, "report_sha256": digest(raw), "engine_version": report["engine_version"], "executable_sha256": report["executable_sha256"], "configuration_sha256": report["configuration_sha256"]})
+        generations.append(generation_metadata(directory, name, raw, report, previous_public.get("generations", []), args.generation))
+        if name == args.generation:
+            current_results = report["results"]
         for sha, result in report["results"].items():
             outcomes[sha] = {**result, "generation": name}
     metrics = {"whole_inventory": corpus_metrics(capture["scripts"], outcomes)}
@@ -227,16 +332,23 @@ def export_corpus(args):
         item = outcomes.get(row.get("bytecode_sha256"), {})
         if classifications[row["id"]] == "mm2_project_scope" and item.get("complete") and item.get("source_path"):
             variants.setdefault(row["output_path"].casefold(), set()).add((object_identity(row), row["bytecode_sha256"]))
-    destination = pathlib.Path(args.publish_directory).resolve() if args.publish_directory else None
     previous = {}
-    if destination and (destination / "manifest.json").exists():
-        previous = {row["output_path"]: row["source_sha256"] for row in json.loads((destination / "manifest.json").read_bytes()).get("files", []) if row.get("source_sha256") and row.get("output_path")}
+    if previous_public:
+        previous = {row["output_path"]: row["source_sha256"] for row in previous_public.get("files", []) if row.get("source_sha256") and row.get("output_path")}
+    current_written = set()
     for row in capture["scripts"]:
         if classifications[row["id"]] != "mm2_project_scope":
             continue
         item = outcomes.get(row.get("bytecode_sha256"), {})
         parts = row.get("capture_segments") or row["inventory_segments"]
-        record = {"instance_identity": capture["snapshot"] + ":object:" + str(object_identity(row)), "observations": [{"identity": row["instance_identity"], "id": row["id"], "captured_at_unix_ms": row.get("captured_at")}], "class": row["class"], "original_segments": [{"name": part["name"], "name_base64": part["name_base64"], "identity": part["identity"]} for part in parts], "extraction": row["extraction"], "input_sha256": row.get("bytecode_sha256"), "input_bytes": row.get("bytecode_bytes"), "complete": bool(item.get("complete")), "generation": item.get("generation"), "source_sha256": item.get("source_sha256"), "validation": item.get("validation", {"strict_analysis": "not_run", "required_passed": False}), "error": item.get("error"), "behavior": "not_run; captured code never executed"}
+        record = {"instance_identity": capture["snapshot"] + ":object:" + str(object_identity(row)), "observations": [{"identity": row["instance_identity"], "id": row["id"], "captured_at_unix_ms": row.get("captured_at")}], "class": row["class"], "original_segments": [{"name": part["name"], "name_base64": part["name_base64"], "identity": part["identity"]} for part in parts], "extraction": row["extraction"], "input_sha256": row.get("bytecode_sha256"), "input_bytes": row.get("bytecode_bytes"), "complete": bool(item.get("complete")), "generation": item.get("generation"), "historical": item.get("generation") != args.generation if item else None, "source_sha256": item.get("source_sha256"), "validation": public_validation(item), "error": item.get("error"), "behavior": "not_run; captured code never executed"}
+        if item:
+            generation = next(g for g in generations if g["identity"] == item["generation"])
+            configuration = generation.get("configurations_by_input", {}).get(row.get("bytecode_sha256"), generation)
+            record["configuration_sha256"] = configuration["configuration_sha256"]
+            record["configuration_file"] = configuration.get("configuration_file")
+            if item.get("configuration_sha256", record["configuration_sha256"]) != record["configuration_sha256"]:
+                raise ValueError("result configuration identity differs from its generation")
         if item.get("complete") and item.get("source_path"):
             source_path = (directory / item["source_path"]).resolve()
             if not source_path.is_relative_to(directory):
@@ -256,6 +368,8 @@ def export_corpus(args):
                 suffix = digest((str(object_identity(row)) + ":" + row["bytecode_sha256"]).encode())[:12]
                 relative = relative.with_name(relative.stem + "~" + suffix + relative.suffix)
             record["output_path"] = relative.as_posix()
+            if item["generation"] == args.generation:
+                current_written.add(relative.as_posix().casefold())
             previous_hash = written.get(relative.as_posix().casefold())
             if previous_hash is not None and previous_hash != item["source_sha256"]:
                 raise ValueError("distinct source versions collided in the publication hierarchy")
@@ -281,6 +395,11 @@ def export_corpus(args):
         else:
             records[identity] = row
     public = {"schema": 1, "release": generations[-1]["engine_version"], "snapshot": capture["snapshot"], "scope": "Client-accessible snapshot; reviewed MM2 project paths only. Authorship of erased source is not established by a path. Engine, dependency candidates and unknown attribution are excluded from publication.", "environment": capture["client"], "rights": {"permission": scope["permission"], "tool_license": "MIT; does not license third-party code", "original_notices": "No original source comments/notices available in retained bytecode; none fabricated or removed from recovered source."}, "capture_manifest_sha256": digest(capture_bytes), "classification_sha256": digest(scope_bytes), "classification_basis": scope["classification_basis"], "generations": generations, "coverage": metrics, "published_outputs": len(written), "source_observations": sum(bool(row.get("output_path")) for row in published), "published_source_bytes": total_bytes, "files": list(records.values()), "limitations": ["Observation identities are inventory-record identities; terminal captured segment identities identify actual objects. Repeated observations are preserved without inflating object or file counts.", "Unknown or later-loaded and server-only scripts are outside the observed snapshot.", "Compilation and strict typing are source-quality results, not captured-code behavioral equivalence.", "Signature structure can be recognized; cryptographic authenticity is not verified."]}
+    public["current_generation"] = args.generation
+    public["current_generation_outputs"] = len(current_written)
+    public["coverage_basis"] = "composite_generations" if any(generation["historical"] for generation in generations) else "current_generation"
+    public["coverage_note"] = "Coverage combines current selected results and explicitly historical fallback results; it is not a full current-engine corpus pass." if public["coverage_basis"] == "composite_generations" else "Coverage uses this generation only; unprocessed inputs remain in the inventory denominator."
+    public["current_subset_quality"] = corpus_metrics([row for row in capture["scripts"] if classifications[row["id"]] == "mm2_project_scope" and row.get("bytecode_sha256") in current_results], current_results)
     if destination:
         atomic_bytes(destination / "manifest.json", json_bytes(public))
     if args.report:

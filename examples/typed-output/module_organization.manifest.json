@@ -1,0 +1,137 @@
+{
+    "schema":  1,
+    "version":  "0.4.0-rc.5",
+    "executable_sha256":  "36c81f2589bda731036dd505886d6676e67bca2f759bf0789d5b08e4feb8cfb4",
+    "generator_sha256":  "f19c17a1e7b7879a2c5f7a8e03930438b3dee0e85e8c87a91e9dfcba5f7a642e",
+    "known_source":  "tests/source-corpus/module_organization.luau",
+    "known_source_sha256":  "c8608df3972f5b6e44019628e488d9ec9eee9232107f53035841aada006ed51b",
+    "configuration":  "module_organization.config.json",
+    "configuration_sha256":  "1914add7eba70e050865215ab3c9f7acd1f3d4b13a0ca6210b097378e3041758",
+    "output":  "module_organization.luau",
+    "output_sha256":  "4cad7ebf6cd88bea249f036a7c9b2c83c6c29600148a00c5a1069d0dd39883f3",
+    "validation":  {
+                       "output_policy":  "annotated",
+                       "meaningful_typing":  {
+                                                 "passed":  false,
+                                                 "emitted_annotations":  10,
+                                                 "useful_annotations":  9,
+                                                 "runtime_annotations":  6,
+                                                 "eligible_bindings":  8,
+                                                 "annotated_bindings":  4,
+                                                 "binding_coverage_percent":  50,
+                                                 "useful_annotation_percent":  90,
+                                                 "failures":  [
+                                                                  "binding annotation coverage 50% is below required 75%",
+                                                                  "useful annotation coverage 90% is below required 100%"
+                                                              ]
+                                             },
+                       "reconstruction_complete":  true,
+                       "syntax":  "passed",
+                       "compilation":  "passed",
+                       "strict_analysis":  "passed",
+                       "required_passed":  true,
+                       "diagnostics":  [
+
+                                       ],
+                       "missing_dependencies":  [
+
+                                                ],
+                       "external_globals":  [
+
+                                            ],
+                       "external_assumptions":  [
+
+                                                ],
+                       "explicit_any":  0,
+                       "inferred_any":  0,
+                       "inferred_unknown":  0,
+                       "type_traversal_exhausted":  false,
+                       "external_contract_any":  0,
+                       "external_contract_unknown":  0,
+                       "unmeasured_external_contracts":  [
+
+                                                         ],
+                       "type_assertions":  0,
+                       "expressions_analyzed":  73,
+                       "attempts":  [
+                                        {
+                                            "strategy":  "annotated",
+                                            "source_sha256":  "4cad7ebf6cd88bea249f036a7c9b2c83c6c29600148a00c5a1069d0dd39883f3",
+                                            "syntax":  "passed",
+                                            "compilation":  "passed",
+                                            "strict_analysis":  "passed",
+                                            "diagnostic_count":  0,
+                                            "reason":  "validate actual formatted output"
+                                        }
+                                    ],
+                       "analyzer_revision":  "12a6ba75883272c79b66b59815efef4c574196f6",
+                       "analyzer_sha256":  "65ccbcb05acc33c60b20db5e55d4d0102093e9f076f1af1aef7b96fba68318ff",
+                       "definitions_sha256":  "d6d1e40a142fc3dcb1a70759256fb990d1110953dfd7eef667ff254b2e5b54af",
+                       "context_sha256":  "64475df4221db87e6e2e287c577f6169c3f5c382dfc2d91259d3602ad5d7943b",
+                       "elapsed_micros":  753868,
+                       "cache_hit":  false,
+                       "behavioral_test_outcome":  "not_run; independent controlled differential tests are separate",
+                       "selected_strategy":  "annotated",
+                       "compiler_micros":  87,
+                       "analyzer_micros":  1018,
+                       "recovery_transform_failures":  [
+
+                                                       ]
+                   },
+    "types":  {
+                  "unapplied_external_contracts":  [
+
+                                                   ],
+                  "constructor_transformations":  [
+
+                                                  ],
+                  "total_bindings":  9,
+                  "annotated_bindings":  2,
+                  "annotated_parameters":  2,
+                  "annotated_returns":  2,
+                  "useful_annotations":  9,
+                  "explicit_any":  0,
+                  "inferred_any":  0,
+                  "unknown_bindings":  4,
+                  "iterations":  0,
+                  "work_steps":  0,
+                  "evidence":  [
+
+                               ],
+                  "limitations":  [
+                                      "Source text is parsed and formatted directly; runtime token order, parentheses, and original annotations are retained. Bounded inference uses immutable scalar dependencies, existing type contracts and closed equal-arity returns. Unknown calls, varying return arities, fallthrough return mixtures and mutable tables remain unannotated; explicit binding contracts are reported separately."
+                                  ],
+                  "api_definition_sha256":  null,
+                  "preserved_metadata":  [
+
+                                         ],
+                  "emittable_bindings":  8,
+                  "emittable_variadics":  0,
+                  "annotated_variadics":  0,
+                  "emitted_annotations":  10,
+                  "emitted_runtime_annotations":  6,
+                  "emitted_useful_annotations":  9,
+                  "emitted_explicit_any":  0,
+                  "metadata_any":  0,
+                  "metadata_emitted_annotations":  0,
+                  "metadata_emitted_runtime_annotations":  0,
+                  "metadata_annotated_bindings":  0,
+                  "metadata_annotated_parameters":  0,
+                  "metadata_annotated_returns":  0,
+                  "metadata_annotated_variadics":  0,
+                  "metadata_emitted_useful_annotations":  0,
+                  "metadata_emitted_explicit_any":  0,
+                  "optional_failures":  [
+
+                                        ],
+                  "function_return_arities":  {
+
+                                              },
+                  "original_return_sites":  [
+
+                                            ]
+              },
+    "scope":  "Source preservation and dependency-aware presentation; runtime statements are not reordered. Explicit controlled modules are supplied by configuration.",
+    "behavior":  "Not executed by generator; controlled type_layout_whole_module_preserves_import_type_and_initialization_dependencies owns behavioral verification. Strict status and meaningful typing remain separate.",
+    "analyzer_manifest_sha256":  "b555875703c4c16a07b59a9613cff41d4df29f01c38f6b29e395885116d0e66c"
+}

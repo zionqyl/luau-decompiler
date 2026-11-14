@@ -126,6 +126,85 @@ class ClientCaptureTests(unittest.TestCase):
             self.assertEqual(output.read_bytes(), b"user modification")
             self.assertEqual((snapshot / "manifest.json").read_bytes(), original)
 
+    def test_mixed_generation_export_separates_current_quality_and_preserves_exact_sources(self):
+        with temporary_directory() as directory:
+            snapshot, capture_bytes = self.process_fixture(directory, "versions")
+            scope = {"schema": 1, "place_id": 142823291, "permission": "controlled synthetic fixture permission", "classification_basis": "synthetic test paths", "engine_services": [], "engine_component_names": [], "dependency_component_names": [], "project_prefixes": [["ReplicatedStorage", "Modules"]]}
+            scope_path = directory / "scope.json"
+            scope_path.write_bytes(capture_client.json_bytes(scope))
+            destination = directory / "public"
+            args = argparse.Namespace(directory=str(snapshot), scope=str(scope_path), generation="controlled", fallback_generation=None, publish_directory=str(destination), report=None)
+            old_path = snapshot / "generations/controlled/processing.json"
+            old = json.loads(old_path.read_bytes())
+            for result in old["results"].values():
+                result["validation"] = {"strict_analysis": "passed", "compilation": "passed", "meaningful_typing": {"passed": True}}
+            old_path.write_bytes(capture_client.json_bytes(old))
+            with contextlib.redirect_stdout(io.StringIO()):
+                capture_client.export_corpus(args)
+            previous = json.loads((destination / "manifest.json").read_bytes())
+            previous["generations"][0].update({"engine_source_identity": "a" * 64, "portable_engine_text_sha256": "b" * 64, "private_log_path": "do not copy"})
+            (destination / "manifest.json").write_bytes(capture_client.json_bytes(previous))
+            sha = next(iter(old["results"]))
+            generation = snapshot / "generations/current"
+            generation.mkdir()
+            source = b"--[=[\n    Luau Decompiler 0.0.1-fixture\n    Made by @zionqyl\n    https://github.com/zionqyl/luau-decompiler\n]=]\n\nreturn 43\n"
+            (generation / "output.luau").write_bytes(source)
+            configuration = {"input_format": "luau_bytecode", "output_policy": "annotated", "naming": "roblox"}
+            config_bytes = capture_client.json_bytes(configuration)
+            (generation / "current.config.json").write_bytes(config_bytes)
+            configurations = {sha: {"configuration": configuration, "configuration_sha256": capture_client.digest(config_bytes), "configuration_file": "current.config.json"}}
+            current = {"engine_version": "0.0.1-fixture", "executable_sha256": "c" * 64, "configuration_kind": "per_input", "configurations_by_input": configurations,
+                       "configuration_sha256": capture_client.digest(capture_client.json_bytes(configurations)), "engine_source_identity": "d" * 64,
+                       "portable_engine_text_sha256": "e" * 64, "tool_hashes": {"analyzer_sha256": "f" * 64, "analyzer_path": "do not copy"},
+                       "results": {sha: {"complete": True, "source_path": "generations/current/output.luau", "source_sha256": capture_client.digest(source), "configuration_sha256": capture_client.digest(config_bytes),
+                           "validation": {"strict_analysis": "failed", "compilation": "passed", "required_passed": False, "explicit_any": 0, "inferred_unknown": 7,
+                                          "selected_strategy": "annotated", "context_sha256": "1" * 64, "meaningful_typing": {"passed": False, "binding_coverage_percent": 35, "failures": ["insufficient precise bindings"]},
+                                          "diagnostics": [{"message": "private full diagnostics"}], "attempts": [{"source": "private candidate"}], "missing_dependencies": ["private path"]}}}}
+            (generation / "processing.json").write_bytes(capture_client.json_bytes(current))
+            args.generation = "current"
+            args.fallback_generation = "controlled"
+            with contextlib.redirect_stdout(io.StringIO()):
+                capture_client.export_corpus(args)
+            public = json.loads((destination / "manifest.json").read_bytes())
+            self.assertEqual(public["published_outputs"], 2)
+            self.assertEqual(public["current_generation_outputs"], 1)
+            self.assertEqual(public["coverage_basis"], "composite_generations")
+            self.assertEqual(public["coverage"]["mm2_project_scope"]["unique_serialized_buffers"]["inventory"], 2)
+            self.assertEqual(public["coverage"]["mm2_project_scope"]["unique_serialized_buffers"]["strict_passed"], 1)
+            subset = public["current_subset_quality"]
+            self.assertEqual(subset["observations"]["inventory"], 1)
+            self.assertEqual(subset["instances"]["inventory"], 1)
+            self.assertEqual(subset["unique_serialized_buffers"]["inventory"], 1)
+            self.assertEqual(subset["unique_serialized_buffers"]["strict_passed"], 0)
+            self.assertEqual(subset["unique_serialized_buffers"]["strict_failed"], 1)
+            self.assertEqual(subset["unique_serialized_buffers"]["meaningful_typing_passed"], 0)
+            self.assertEqual(subset["unique_serialized_buffers"]["meaningful_typing_failed"], 1)
+            historical, fresh = public["generations"]
+            self.assertTrue(historical["historical"])
+            self.assertEqual(historical["engine_source_identity"], "a" * 64)
+            self.assertNotIn("private_log_path", historical)
+            self.assertFalse(fresh["historical"])
+            self.assertEqual(fresh["configurations_by_input"], configurations)
+            self.assertEqual(fresh["tool_hashes"], {"analyzer_sha256": "f" * 64})
+            fresh_row = next(row for row in public["files"] if not row["historical"])
+            self.assertEqual((destination / fresh_row["output_path"]).read_bytes(), source)
+            self.assertEqual(fresh_row["configuration_sha256"], capture_client.digest(config_bytes))
+            self.assertEqual(fresh_row["validation"]["inferred_unknown"], 7)
+            self.assertEqual(fresh_row["validation"]["diagnostic_count"], 1)
+            self.assertEqual(fresh_row["validation"]["missing_dependencies_count"], 1)
+            self.assertEqual(fresh_row["validation"]["attempts_count"], 1)
+            self.assertNotIn("diagnostics", fresh_row["validation"])
+            self.assertNotIn("attempts", fresh_row["validation"])
+            for row in public["files"]:
+                self.assertEqual(capture_client.digest((destination / row["output_path"]).read_bytes()), row["source_sha256"])
+            self.assertEqual((snapshot / "manifest.json").read_bytes(), capture_bytes)
+            public["generations"][0]["executable_sha256"] = "0" * 64
+            (destination / "manifest.json").write_bytes(capture_client.json_bytes(public))
+            with contextlib.redirect_stdout(io.StringIO()):
+                capture_client.export_corpus(args)
+            public = json.loads((destination / "manifest.json").read_bytes())
+            self.assertNotIn("engine_source_identity", public["generations"][0])
+
     def test_binary_bytes_deduplicate_without_merging_distinct_instances(self):
         with temporary_directory() as directory:
             capture = capture_client.Capture(directory, "snapshot")

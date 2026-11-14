@@ -10,6 +10,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 type Analysis = (Arc<Cfg>, Arc<Ssa>, Arc<RecoveredBindings>);
+type ContextualNames = BTreeMap<(usize, usize), String>;
 
 #[derive(Clone)]
 struct Upvalue {
@@ -59,6 +60,7 @@ struct Shared {
     entry_restrictions: BTreeMap<(usize, usize), String>,
     duplicate_sites: Vec<BTreeMap<usize, usize>>,
     uses_duplicate: bool,
+    contextual_names: ContextualNames,
 }
 
 #[derive(Debug, Clone, serde::Serialize)]
@@ -83,10 +85,14 @@ pub struct RecoveredBindingInfo {
     pub first_pc: usize,
     pub last_pc: usize,
     pub name: String,
+    pub printed_name: String,
+    pub name_hint: String,
+    pub name_role: &'static str,
     pub debug_name: Option<String>,
     pub parameter: bool,
     pub captured: bool,
     pub capture_mode: &'static str,
+    pub naming_origin: &'static str,
 }
 pub struct Reconstruction {
     pub source: String,
@@ -371,6 +377,11 @@ pub fn decompile_module_report(module: &Module, config: &Config) -> Result<Recon
             counts
         })
         .collect();
+    let (contextual_names, naming_work) = if config.naming_options.infer_descriptive_names {
+        contextual_binding_names(module, &analyses, config)?
+    } else {
+        (BTreeMap::new(), 0)
+    };
     let mut shared = Shared {
         names: NameAllocator::new(config.naming, globals),
         caches: BTreeMap::new(),
@@ -391,7 +402,9 @@ pub fn decompile_module_report(module: &Module, config: &Config) -> Result<Recon
         entry_restrictions: BTreeMap::new(),
         duplicate_sites,
         uses_duplicate: false,
+        contextual_names,
     };
+    shared.charge(naming_work, config)?;
     let main = build_function(module, config, &mut shared, module.main, Vec::new(), 0)?;
     if !main.parameters.is_empty() && config.entry_output == crate::config::EntryOutput::Script {
         return Err(
@@ -1204,9 +1217,19 @@ fn build_function(
             config,
         )?;
     }
+    let service_bindings: BTreeSet<_> = proto
+        .code
+        .iter()
+        .enumerate()
+        .filter(|(index, instruction)| {
+            instruction.op == Opcode::Call
+                && call_service_hint(module, proto, &ssa, *index).is_some()
+        })
+        .map(|(index, instruction)| bindings.write(&ssa, index, instruction.a()))
+        .collect();
     for binding in &bindings.bindings {
         let r = binding.register;
-        let cell = captured[r] && !native[r];
+        let cell = binding.reference_cell && !native[r];
         let hint = config
             .naming_options
             .use_debug_names
@@ -1217,6 +1240,7 @@ fn build_function(
                     .map(|name| name.chars().take(128).collect::<String>())
             })
             .flatten()
+            .or_else(|| shared.contextual_names.get(&(pid, binding.id)).cloned())
             .unwrap_or_else(|| {
                 if config.naming_options.infer_descriptive_names {
                     infer_hint_at(
@@ -1247,15 +1271,27 @@ fn build_function(
             .at_proto(pid));
         }
         let override_name = config.name_overrides.get(&identity).or(legacy);
+        let module_alias = pid == module.main
+            && config
+                .naming_options
+                .module_name_hint
+                .as_ref()
+                .is_some_and(|module_name| {
+                    shared.contextual_names.get(&(pid, binding.id))
+                        == Some(&format!("{module_name}_module"))
+                });
+        let service_alias = service_bindings.contains(&binding.id);
         let name = if let Some(name) = override_name {
             name.clone()
+        } else if service_alias || module_alias {
+            shared.names.allocate_service(&hint)
         } else {
             shared.names.allocate(&hint)
         };
         if binding.debug_name.is_some() || cell || override_name.is_some() {
             protected.insert(name.clone());
         }
-        if captured[r] {
+        if binding.reference_cell {
             observable.insert(name.clone());
         }
         crate::execution::reserve_ast_capacity(
@@ -1271,21 +1307,41 @@ fn build_function(
             first_pc: binding.first_pc,
             last_pc: binding.last_pc,
             name: name.clone(),
+            printed_name: name.clone(),
+            name_hint: hint.clone(),
+            name_role: if service_alias {
+                "service"
+            } else if module_alias {
+                "module"
+            } else {
+                "local"
+            },
             debug_name: binding.debug_name.clone(),
             parameter: binding.parameter,
-            captured: captured[r],
+            captured: binding.reference_cell,
             capture_mode: if cell {
                 "cell"
-            } else if captured[r] {
+            } else if binding.reference_cell {
                 "native"
             } else {
                 "none"
+            },
+            naming_origin: if override_name.is_some() {
+                "override"
+            } else if config.naming_options.use_debug_names && binding.debug_name.is_some() {
+                "debug_metadata"
+            } else if shared.contextual_names.contains_key(&(pid, binding.id)) {
+                "dataflow_role"
+            } else if config.naming_options.infer_descriptive_names {
+                "instruction_hint"
+            } else {
+                "stable_fallback"
             },
         });
         binding_registers.push(Register {
             name,
             cell,
-            captured: captured[r],
+            captured: binding.reference_cell,
         });
     }
     for key in config
@@ -1345,6 +1401,28 @@ fn build_function(
         tails.sort_unstable();
     }
     let count = proto.code.len();
+    let single_definition_bindings: BTreeSet<_> = {
+        let mut counts = vec![0usize; bindings.bindings.len()];
+        for (value, definition) in ssa.definitions.iter().enumerate() {
+            if matches!(
+                definition,
+                crate::dataflow::Definition::Parameter(_)
+                    | crate::dataflow::Definition::Instruction { .. }
+            ) {
+                counts[bindings.definition_bindings[value]] += 1;
+            }
+        }
+        counts
+            .into_iter()
+            .enumerate()
+            .filter_map(|(binding, count)| (count == 1).then_some(binding))
+            .collect()
+    };
+    let immutable_bindings = single_definition_bindings
+        .iter()
+        .copied()
+        .filter(|binding| !bindings.bindings[*binding].reference_cell)
+        .collect();
     let mut builder = Builder {
         module,
         config,
@@ -1362,6 +1440,8 @@ fn build_function(
         depth,
         current_index: 0,
         deferred_tables: BTreeMap::new(),
+        immutable_bindings,
+        single_definition_bindings,
     };
     let snapshot =
         if builder.cfg.blocks.len() > 1 && config.control_flow == crate::ControlFlowMode::Auto {
@@ -1423,23 +1503,39 @@ fn build_function(
     let used = ast::collect_names(&body);
     let mut declarations = Vec::new();
     let mut direct = BTreeSet::new();
-    for (r, reg) in builder.registers.iter().enumerate() {
+    let mut cell_initializers = BTreeMap::new();
+    let mut loop_carried_cells = BTreeSet::new();
+    for &(tail, _) in &builder.cfg.back_edges {
+        let index = builder.cfg.blocks[tail].end - 1;
+        for register in builder.ssa.open_captures_before[index].registers() {
+            loop_carried_cells.insert(
+                builder.bindings.definition_bindings[builder.ssa.block_outputs[tail][register]],
+            );
+        }
+    }
+    for (id, reg) in builder.binding_registers.iter().enumerate() {
         if !used.contains_key(&reg.name) {
             continue;
         }
         if reg.cell {
-            let fields = if r < parameters.len() {
+            let binding = &builder.bindings.bindings[id];
+            let fields = if binding.parameter {
                 vec![(
                     Some(Expr::Literal(quote(b"value"))),
-                    Expr::name(&parameters[r]),
+                    Expr::name(&parameters[binding.register]),
                 )]
             } else {
                 Vec::new()
             };
-            declarations.push(Stmt::Local(
-                vec![reg.name.clone()],
-                vec![Expr::Table(fields)],
-            ));
+            if loop_carried_cells.contains(&id) || builder.shared.fallback_prototypes.contains(&pid)
+            {
+                declarations.push(Stmt::Local(
+                    vec![reg.name.clone()],
+                    vec![Expr::Table(fields)],
+                ));
+            } else {
+                cell_initializers.insert(reg.name.clone(), Expr::Table(fields));
+            }
         }
     }
     for (id, reg) in builder.binding_registers.iter().enumerate() {
@@ -1453,6 +1549,25 @@ fn build_function(
         }
     } else {
         ast::place_declarations(&mut body, direct);
+    }
+    if !cell_initializers.is_empty() {
+        ast::place_declarations(&mut body, cell_initializers.keys().cloned().collect());
+        let cell_work = initialize_cell_declarations(
+            &mut body,
+            &mut cell_initializers,
+            config
+                .limits
+                .max_analysis_steps
+                .saturating_sub(builder.shared.steps),
+        )?;
+        builder.shared.charge(cell_work, config)?;
+        if !cell_initializers.is_empty() {
+            return Err(Error::new(
+                "structure",
+                "captured cell initialization has no declaration",
+            )
+            .at_proto(pid));
+        }
     }
     declarations.extend(body);
     let scope_work = ast::close_temporary_scopes(
@@ -1469,6 +1584,64 @@ fn build_function(
         vararg: proto.is_vararg,
         body: declarations,
     })
+}
+
+fn initialize_cell_declarations(
+    body: &mut [Stmt],
+    initializers: &mut BTreeMap<String, Expr>,
+    budget: usize,
+) -> Result<usize> {
+    let mut work = 0usize;
+    for statement in body {
+        crate::execution::checkpoint()?;
+        work = work.saturating_add(1);
+        if work > budget {
+            return Err(Error::new(
+                "limit",
+                "captured cell declaration work exceeds analysis budget",
+            ));
+        }
+        match statement {
+            Stmt::Local(names, values)
+                if names.iter().any(|name| initializers.contains_key(name)) =>
+            {
+                if !values.is_empty() || names.iter().any(|name| !initializers.contains_key(name)) {
+                    return Err(Error::new(
+                        "structure",
+                        "captured cell declaration conflicts with its initializer",
+                    ));
+                }
+                for name in names {
+                    values.push(initializers.remove(name).unwrap());
+                }
+            }
+            Stmt::If { yes, no, .. } => {
+                work = work.saturating_add(initialize_cell_declarations(
+                    yes,
+                    initializers,
+                    budget.saturating_sub(work),
+                )?);
+                work = work.saturating_add(initialize_cell_declarations(
+                    no,
+                    initializers,
+                    budget.saturating_sub(work),
+                )?);
+            }
+            Stmt::Do(body)
+            | Stmt::While { body, .. }
+            | Stmt::Repeat { body, .. }
+            | Stmt::NumericFor { body, .. }
+            | Stmt::GenericFor { body, .. } => {
+                work = work.saturating_add(initialize_cell_declarations(
+                    body,
+                    initializers,
+                    budget.saturating_sub(work),
+                )?);
+            }
+            _ => {}
+        }
+    }
+    Ok(work)
 }
 
 fn is_cfg_shape_error(error: &Error) -> bool {
@@ -1649,6 +1822,314 @@ fn native_upvalue_routes(
     result
 }
 
+fn naming_sources(ssa: &Ssa, proto: &Proto, value: usize) -> (BTreeSet<usize>, bool) {
+    let mut pending = vec![(value, 0)];
+    let mut visited = BTreeSet::new();
+    let mut sources = BTreeSet::new();
+    let mut defaulted = false;
+    while let Some((value, depth)) = pending.pop() {
+        if depth >= 16 || visited.len() >= 64 || !visited.insert(value) {
+            continue;
+        }
+        match &ssa.definitions[value] {
+            crate::dataflow::Definition::Instruction { index, .. } => {
+                let instruction = proto.code[*index];
+                match instruction.op {
+                    Opcode::Move => {
+                        if let Some(source) = ssa.read_definition(*index, instruction.b()) {
+                            pending.push((source, depth + 1));
+                        }
+                    }
+                    Opcode::And | Opcode::Or => {
+                        defaulted |= instruction.op == Opcode::Or;
+                        for register in [instruction.b(), instruction.c()] {
+                            if let Some(source) = ssa.read_definition(*index, register) {
+                                pending.push((source, depth + 1));
+                            }
+                        }
+                    }
+                    Opcode::AndK | Opcode::OrK => {
+                        defaulted |= instruction.op == Opcode::OrK;
+                        if let Some(source) = ssa.read_definition(*index, instruction.b()) {
+                            pending.push((source, depth + 1));
+                        }
+                    }
+                    _ => {
+                        sources.insert(value);
+                    }
+                }
+            }
+            crate::dataflow::Definition::Phi { incoming, .. } => {
+                defaulted |= incoming.len() > 1;
+                for &(_, source) in incoming {
+                    pending.push((source, depth + 1));
+                }
+            }
+            _ => {
+                sources.insert(value);
+            }
+        }
+    }
+    (sources, defaulted)
+}
+
+fn closure_child(module: &Module, proto: &Proto, instruction: Instruction) -> Option<usize> {
+    match instruction.op {
+        Opcode::NewClosure => proto.children.get(instruction.d() as usize).copied(),
+        Opcode::DupClosure => match proto.constants.get(instruction.d() as usize) {
+            Some(Constant::Closure(child)) => Some(*child),
+            _ => None,
+        },
+        _ => None,
+    }
+    .filter(|child| *child < module.protos.len())
+}
+
+fn assignment_field_key<'a>(
+    module: &'a Module,
+    proto: &'a Proto,
+    ssa: &Ssa,
+    index: usize,
+) -> Option<&'a [u8]> {
+    let instruction = proto.code[index];
+    let constant = match instruction.op {
+        Opcode::SetTableKs => instruction.aux? as usize,
+        Opcode::SetTable => {
+            let origin = naming_origin(proto, ssa, index, instruction.c())?;
+            match origin.op {
+                Opcode::LoadK => origin.d() as usize,
+                Opcode::LoadKx => origin.aux? as usize,
+                _ => return None,
+            }
+        }
+        _ => return None,
+    };
+    constant_string(module, proto, constant).ok()
+}
+
+fn contextual_binding_names(
+    module: &Module,
+    analyses: &[Analysis],
+    config: &Config,
+) -> Result<(ContextualNames, usize)> {
+    let mut hints = BTreeMap::new();
+    let mut functions = BTreeMap::<usize, BTreeSet<String>>::new();
+    let mut upvalues = BTreeMap::<(usize, usize), String>::new();
+    let mut work = 0usize;
+    for (pid, proto) in module.protos.iter().enumerate() {
+        let (_, ssa, bindings) = &analyses[pid];
+        for (index, instruction) in proto.code.iter().enumerate() {
+            if !matches!(instruction.op, Opcode::SetTableKs | Opcode::SetTable) {
+                continue;
+            }
+            work = work.saturating_add(64);
+            if work > config.limits.max_analysis_steps {
+                return Err(Error::new("limit", "contextual naming budget exceeded"));
+            }
+            crate::execution::checkpoint()?;
+            let Some(key) = assignment_field_key(module, proto, ssa, index)
+                .and_then(|key| std::str::from_utf8(key).ok())
+                .filter(|key| key.len() <= 128 && is_identifier(key))
+            else {
+                continue;
+            };
+            let Some(value) = ssa.read_definition(index, instruction.a()) else {
+                continue;
+            };
+            let (sources, defaulted) = naming_sources(ssa, proto, value);
+            for source in sources {
+                match &ssa.definitions[source] {
+                    crate::dataflow::Definition::Parameter(_) => {
+                        hints
+                            .entry((pid, bindings.definition_bindings[source]))
+                            .or_insert_with(|| {
+                                if defaulted {
+                                    format!("on_{key}")
+                                } else {
+                                    key.to_owned()
+                                }
+                            });
+                    }
+                    crate::dataflow::Definition::Instruction { index, .. } => {
+                        let origin = proto.code[*index];
+                        if let Some(child) = closure_child(module, proto, origin) {
+                            functions.entry(child).or_default().insert(key.to_owned());
+                            hints
+                                .entry((pid, bindings.definition_bindings[source]))
+                                .or_insert_with(|| {
+                                    if defaulted {
+                                        format!("default_{key}")
+                                    } else {
+                                        key.to_owned()
+                                    }
+                                });
+                        } else if origin.op == Opcode::GetUpval && defaulted {
+                            upvalues
+                                .entry((pid, origin.b()))
+                                .or_insert_with(|| format!("default_{key}"));
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+    for (pid, proto) in module.protos.iter().enumerate() {
+        let (_, ssa, bindings) = &analyses[pid];
+        let mut setters = BTreeMap::<usize, BTreeMap<String, bool>>::new();
+        for (index, instruction) in proto.code.iter().enumerate() {
+            if instruction.op == Opcode::Return && instruction.b() == 2 {
+                if let Some(value) = ssa.read_definition(index, instruction.a()) {
+                    let (sources, _) = naming_sources(ssa, proto, value);
+                    for source in sources {
+                        if let crate::dataflow::Definition::Instruction { index, .. } =
+                            ssa.definitions[source]
+                        {
+                            if matches!(proto.code[index].op, Opcode::NewTable | Opcode::DupTable) {
+                                let hint = if pid == module.main {
+                                    config
+                                        .naming_options
+                                        .module_name_hint
+                                        .as_ref()
+                                        .map(|name| format!("{name}_module"))
+                                } else {
+                                    functions
+                                        .get(&pid)
+                                        .filter(|names| names.len() == 1)
+                                        .and_then(|names| names.first())
+                                        .and_then(|name| {
+                                            name.strip_prefix("create")
+                                                .or_else(|| name.strip_prefix("Create"))
+                                        })
+                                        .filter(|name| !name.is_empty())
+                                        .map(str::to_owned)
+                                };
+                                if let Some(hint) = hint {
+                                    hints
+                                        .entry((pid, bindings.definition_bindings[source]))
+                                        .or_insert(hint);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            let Some(child) = closure_child(module, proto, *instruction) else {
+                continue;
+            };
+            for slot in 0..module.protos[child].num_upvalues as usize {
+                work = work.saturating_add(64);
+                if work > config.limits.max_analysis_steps {
+                    return Err(Error::new("limit", "capture naming budget exceeded"));
+                }
+                let capture_index = index + 1 + slot;
+                let capture = proto.code[capture_index];
+                if capture.a() > 1 {
+                    continue;
+                }
+                let source = ssa.read_definition(capture_index, capture.b()).unwrap();
+                let binding = bindings.definition_bindings[source];
+                if let Some(hint) = upvalues.get(&(child, slot)) {
+                    hints.entry((pid, binding)).or_insert_with(|| hint.clone());
+                }
+                let Some(names) = functions.get(&child).filter(|names| names.len() == 1) else {
+                    continue;
+                };
+                let name = names.first().unwrap();
+                let child_proto = &module.protos[child];
+                let child_ssa = &analyses[child].1;
+                work = work.saturating_add(child_proto.code.len().saturating_mul(64));
+                if work > config.limits.max_analysis_steps {
+                    return Err(Error::new(
+                        "limit",
+                        "capture role propagation budget exceeded",
+                    ));
+                }
+                if name == "Reset" && capture.a() == 0 {
+                    if let Some(origin) = naming_origin(proto, ssa, capture_index, capture.b()) {
+                        if origin.op == Opcode::GetTableKs
+                            && constant_string(module, proto, origin.aux.unwrap_or(0) as usize).ok()
+                                == Some(b"Position".as_slice())
+                        {
+                            let origin_index = proto
+                                .code
+                                .binary_search_by_key(&origin.pc, |instruction| instruction.pc)
+                                .unwrap();
+                            if let Some(receiver) =
+                                naming_origin(proto, ssa, origin_index, origin.b())
+                            {
+                                if receiver.op == Opcode::GetTableKs {
+                                    if let Some(field) = constant_string(
+                                        module,
+                                        proto,
+                                        receiver.aux.unwrap_or(0) as usize,
+                                    )
+                                    .ok()
+                                    .and_then(|value| std::str::from_utf8(value).ok())
+                                    .filter(|value| value.len() <= 128 && is_identifier(value))
+                                    {
+                                        let used_for_position = child_proto.code.iter().enumerate().any(|(index, instruction)| {
+                                            assignment_field_key(module, child_proto, child_ssa, index) == Some(b"Position".as_slice())
+                                                && child_ssa.read_definition(index, instruction.a()).is_some_and(|value| {
+                                                    naming_sources(child_ssa, child_proto, value).0.iter().any(|value| {
+                                                        matches!(child_ssa.definitions[*value], crate::dataflow::Definition::Instruction { index, .. }
+                                                            if child_proto.code[index].op == Opcode::GetUpval && child_proto.code[index].b() == slot)
+                                                    })
+                                                })
+                                        });
+                                        if used_for_position {
+                                            hints.entry((pid, binding)).or_insert_with(|| {
+                                                format!("initial_{field}_position")
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if capture.a() == 1 {
+                    for (write_index, write) in child_proto.code.iter().enumerate() {
+                        if write.op == Opcode::SetUpval && write.b() == slot {
+                            if let Some(value) = child_ssa.read_definition(write_index, write.a()) {
+                                let (sources, _) = naming_sources(child_ssa, child_proto, value);
+                                if sources.len() == 1 {
+                                    if let crate::dataflow::Definition::Instruction {
+                                        index, ..
+                                    } = child_ssa.definitions[*sources.first().unwrap()]
+                                    {
+                                        let value = child_proto.code[index];
+                                        if value.op == Opcode::LoadB {
+                                            setters
+                                                .entry(binding)
+                                                .or_default()
+                                                .insert(name.clone(), value.b() != 0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (binding, values) in setters {
+            let hint = if values.get("Press") == Some(&true) && values.get("Reset") == Some(&false)
+            {
+                Some("is_pressed")
+            } else if values.get("Enable") == Some(&true) && values.get("Disable") == Some(&false) {
+                Some("is_enabled")
+            } else {
+                None
+            };
+            if let Some(hint) = hint {
+                hints.insert((pid, binding), hint.into());
+            }
+        }
+    }
+    Ok((hints, work))
+}
+
 fn infer_hint_at(
     module: &Module,
     proto: &Proto,
@@ -1796,7 +2277,59 @@ fn call_result_hint(module: &Module, proto: &Proto, ssa: &Ssa, index: usize) -> 
             _ => format!("{method}_result"),
         });
     }
+    if method == "new" {
+        let qualifier = match origin.op {
+            Opcode::GetImport => {
+                let aux = origin.aux?;
+                let count = aux >> 30;
+                (count >= 2)
+                    .then(|| constant_string(module, proto, ((aux >> 20) & 1023) as usize).ok())
+                    .flatten()
+            }
+            Opcode::GetTableKs => {
+                let at = proto
+                    .code
+                    .binary_search_by_key(&origin.pc, |instruction| instruction.pc)
+                    .ok()?;
+                let receiver = naming_origin(proto, ssa, at, origin.b())?;
+                match receiver.op {
+                    Opcode::GetGlobal => {
+                        constant_string(module, proto, receiver.aux? as usize).ok()
+                    }
+                    Opcode::GetImport => {
+                        constant_string(module, proto, ((receiver.aux? >> 20) & 1023) as usize).ok()
+                    }
+                    _ => None,
+                }
+            }
+            _ => None,
+        };
+        if let Some(qualifier) = qualifier.and_then(|value| std::str::from_utf8(value).ok()) {
+            if qualifier.len() <= 128 && is_identifier(qualifier) {
+                return Some(qualifier.to_owned());
+            }
+        }
+    }
     Some(format!("{method}_result"))
+}
+fn call_service_hint(module: &Module, proto: &Proto, ssa: &Ssa, index: usize) -> Option<String> {
+    let call = proto.code.get(index)?;
+    let origin = naming_origin(proto, ssa, index, call.a())?;
+    if origin.op != Opcode::NameCall
+        || constant_string(module, proto, origin.aux? as usize).ok()? != b"GetService"
+    {
+        return None;
+    }
+    let argument = naming_origin(proto, ssa, index, call.a() + 2)?;
+    let constant = match argument.op {
+        Opcode::LoadK => argument.d() as usize,
+        Opcode::LoadKx => argument.aux? as usize,
+        _ => return None,
+    };
+    std::str::from_utf8(constant_string(module, proto, constant).ok()?)
+        .ok()
+        .filter(|key| key.len() <= 128 && is_identifier(key))
+        .map(str::to_owned)
 }
 fn nil() -> Expr {
     Expr::Literal("nil".into())
@@ -1853,8 +2386,80 @@ struct Builder<'a> {
     depth: usize,
     current_index: usize,
     deferred_tables: BTreeMap<usize, (usize, usize)>,
+    immutable_bindings: BTreeSet<usize>,
+    single_definition_bindings: BTreeSet<usize>,
 }
 impl Builder<'_> {
+    fn definition_dominates(&self, definition: usize, use_index: usize) -> bool {
+        let target = self.cfg.instruction_block[definition];
+        let mut block = self.cfg.instruction_block[use_index];
+        for _ in 0..self.cfg.blocks.len() {
+            if block == target {
+                return definition < use_index;
+            }
+            let Some(parent) = self.cfg.immediate_dominators[block] else {
+                return false;
+            };
+            if parent == block {
+                break;
+            }
+            block = parent;
+        }
+        false
+    }
+    fn reference_capture_mutation(&self, binding: usize) -> Result<Option<bool>> {
+        let mut pending = Vec::new();
+        for (index, instruction) in self.proto.code.iter().enumerate() {
+            if !self.cfg.blocks[self.cfg.instruction_block[index]].reachable {
+                continue;
+            }
+            let Some(child) = closure_child(self.module, self.proto, *instruction) else {
+                continue;
+            };
+            for slot in 0..self.module.protos[child].num_upvalues as usize {
+                let capture_index = index + 1 + slot;
+                let capture = self.proto.code[capture_index];
+                if capture.a() == 1
+                    && self.bindings.read(&self.ssa, capture_index, capture.b()) == binding
+                {
+                    pending.push((child, slot));
+                }
+            }
+        }
+        let mut visited = BTreeSet::new();
+        let mut work = self.proto.code.len();
+        while let Some((pid, slot)) = pending.pop() {
+            if !visited.insert((pid, slot)) {
+                continue;
+            }
+            let proto = &self.module.protos[pid];
+            work = work.saturating_add(proto.code.len());
+            if work > self.config.limits.max_analysis_steps.min(16_384) {
+                return Ok(None);
+            }
+            crate::execution::charge_work(proto.code.len())?;
+            for (index, instruction) in proto.code.iter().enumerate() {
+                let block = self.shared.analyses[pid].0.instruction_block[index];
+                if !self.shared.analyses[pid].0.blocks[block].reachable {
+                    continue;
+                }
+                if instruction.op == Opcode::SetUpval && instruction.b() == slot && block == 0 {
+                    return Ok(Some(true));
+                } else if instruction.op == Opcode::SetUpval && instruction.b() == slot {
+                    return Ok(None);
+                }
+                if let Some(child) = closure_child(self.module, proto, *instruction) {
+                    for child_slot in 0..self.module.protos[child].num_upvalues as usize {
+                        let capture = proto.code[index + 1 + child_slot];
+                        if capture.a() == 2 && capture.b() == slot {
+                            pending.push((child, child_slot));
+                        }
+                    }
+                }
+            }
+        }
+        Ok(Some(false))
+    }
     fn capture_open(&self, index: usize, r: usize) -> bool {
         self.ssa.open_captures_before[index].contains(r)
     }
@@ -3197,7 +3802,9 @@ impl Builder<'_> {
                 return Ok(());
             }
             CloseUpvals => {
-                for reg in &self.registers[a..] {
+                for r in a..self.registers.len() {
+                    let reg = &self.binding_registers[self.bindings.definition_bindings
+                        [self.ssa.reaching_definition(&self.cfg, index, r)]];
                     if reg.cell {
                         out.push(Stmt::Assign(
                             vec![Expr::name(&reg.name)],
@@ -3810,17 +4417,84 @@ impl Builder<'_> {
         let mut captures = Vec::new();
         let mut values = Vec::new();
         let mut upvalues = Vec::new();
+        let mut fresh_capture = false;
+        let mut mutable_native_capture = false;
         for n in 0..count {
             let capture = &self.proto.code[index + 1 + n];
             let source = capture.b();
+            if !duplicate && capture.a() <= 1 && source != i.a() && self.cfg.back_edges.is_empty() {
+                let binding = self.bindings.read(&self.ssa, index + 1 + n, source);
+                if self.single_definition_bindings.contains(&binding) {
+                    if let Some(crate::dataflow::Definition::Instruction {
+                        index: definition,
+                        ..
+                    }) = self
+                        .ssa
+                        .read_definition(index + 1 + n, source)
+                        .map(|value| &self.ssa.definitions[value])
+                    {
+                        fresh_capture |= matches!(
+                            self.proto.code[*definition].op,
+                            Opcode::NewTable | Opcode::DupTable
+                        ) && self.definition_dominates(*definition, index)
+                            && (capture.a() == 0
+                                || self.reference_capture_mutation(binding)? == Some(false));
+                    }
+                }
+            }
             if duplicate && capture.a() == 0 && source == i.a() {
                 return Err(self.error(
                     index,
                     "DUPCLOSURE self-value capture has no supported source cache representation",
                 ));
             }
+            if (!duplicate
+                || self.pid == self.module.main
+                    && self
+                        .shared
+                        .single_use_root_closures
+                        .contains(&(i.d() as usize)))
+                && capture.a() == 0
+                && source != i.a()
+            {
+                let source_binding = self.bindings.read(&self.ssa, index + 1 + n, source);
+                if self.immutable_bindings.contains(&source_binding) {
+                    let value = self.r_at(index + 1 + n, source);
+                    if self.cfg.back_edges.is_empty() {
+                        if let Some(crate::dataflow::Definition::Instruction {
+                            index: definition,
+                            ..
+                        }) = self
+                            .ssa
+                            .read_definition(index + 1 + n, source)
+                            .map(|value| &self.ssa.definitions[value])
+                        {
+                            fresh_capture |= matches!(
+                                self.proto.code[*definition].op,
+                                Opcode::NewTable | Opcode::DupTable
+                            ) && self.definition_dominates(*definition, index);
+                        }
+                    }
+                    upvalues.push(Upvalue {
+                        identity: value.clone(),
+                        value,
+                        writable: false,
+                        native: false,
+                    });
+                    continue;
+                }
+            }
+            if !duplicate && capture.a() == 2 && !self.upvalues[source].writable {
+                upvalues.push(self.upvalues[source].clone());
+                continue;
+            }
             let native_value = match capture.a() {
-                1 if !self.registers[source].cell => Some(self.r_at(index + 1 + n, source)),
+                1 if !self.binding_registers
+                    [self.bindings.read(&self.ssa, index + 1 + n, source)]
+                .cell =>
+                {
+                    Some(self.r_at(index + 1 + n, source))
+                }
                 2 if self.upvalues[source].native => Some(self.upvalues[source].value.clone()),
                 _ => None,
             };
@@ -3831,6 +4505,11 @@ impl Builder<'_> {
                         "native reference capture cannot pass through a DUPCLOSURE identity cache",
                     ));
                 }
+                if capture.a() == 1 {
+                    mutable_native_capture |= self.reference_capture_mutation(
+                        self.bindings.read(&self.ssa, index + 1 + n, source),
+                    )? == Some(true);
+                }
                 upvalues.push(Upvalue {
                     identity: value.clone(),
                     value,
@@ -3839,10 +4518,23 @@ impl Builder<'_> {
                 });
                 continue;
             }
+            let source_hint = match capture.a() {
+                0 | 1 => Some(
+                    self.binding_registers[self.bindings.read(&self.ssa, index + 1 + n, source)]
+                        .name
+                        .as_str(),
+                ),
+                2 => match &self.upvalues[source].value {
+                    Expr::Name(name) => Some(name.as_str()),
+                    _ => None,
+                },
+                _ => None,
+            };
             let hint = child_proto
                 .upvalue_names
                 .get(n)
                 .map(String::as_str)
+                .or(source_hint)
                 .unwrap_or("captured_value");
             let name = self.shared.names.allocate(hint);
             let (value, reference) = match capture.a() {
@@ -3853,7 +4545,14 @@ impl Builder<'_> {
                             self.error(index, "DUPCLOSURE cannot capture a register reference")
                         );
                     }
-                    (Expr::name(&self.registers[source].name), true)
+                    (
+                        Expr::name(
+                            &self.binding_registers
+                                [self.bindings.read(&self.ssa, index + 1 + n, source)]
+                            .name,
+                        ),
+                        true,
+                    )
                 }
                 2 => (
                     self.upvalues[source].identity.clone(),
@@ -3884,9 +4583,12 @@ impl Builder<'_> {
         )?;
         let mut out = Vec::new();
         if !duplicate
-            && self.pid == self.module.main
-            && self.shared.acyclic_root
-            && self.config.closures.entry_invocation == crate::config::EntryInvocation::Single
+            && (fresh_capture
+                || mutable_native_capture
+                || self.pid == self.module.main
+                    && self.shared.acyclic_root
+                    && self.config.closures.entry_invocation
+                        == crate::config::EntryInvocation::Single)
             && !(0..count).any(|n| {
                 let capture = self.proto.code[index + 1 + n];
                 capture.a() == 0 && capture.b() == i.a()
@@ -3894,7 +4596,13 @@ impl Builder<'_> {
         {
             self.shared.entry_restrictions.insert(
                 (self.pid, i.pc),
-                "direct NEWCLOSURE presentation uses an acyclic root site under the declared single-entry contract; repeated entry retains conservative fresh-closure construction".into(),
+                if mutable_native_capture {
+                    "direct NEWCLOSURE presentation retains a native reference capture with a proven reachable upvalue assignment; recompilation preserves a fresh reference-capturing closure".into()
+                } else if fresh_capture {
+                    "direct NEWCLOSURE presentation retains a fresh dominating table capture at an acyclic site; distinct factory invocations cannot reuse its captured table identity".into()
+                } else {
+                    "direct NEWCLOSURE presentation uses an acyclic root site under the declared single-entry contract; repeated entry retains conservative fresh-closure construction".into()
+                },
             );
             let assignment = self.assign(i.a(), Expr::Function(Box::new(function)));
             let body = if captures.is_empty() {
@@ -3932,7 +4640,13 @@ impl Builder<'_> {
                         return Err(self.error(index,"repeated-entry constant-closure hoisting exceeds the conservative lexical budget"));
                     }
                 } else {
-                    let hint = if self.config.naming_options.use_debug_names {
+                    let contextual_hint = self
+                        .shared
+                        .contextual_names
+                        .get(&(self.pid, self.bindings.write(&self.ssa, index, i.a())));
+                    let hint = if let Some(hint) = contextual_hint {
+                        format!("shared_{hint}")
+                    } else if self.config.naming_options.use_debug_names {
                         child_proto
                             .debug_name
                             .as_ref()
@@ -3962,10 +4676,10 @@ impl Builder<'_> {
                 .single_use_root_closures
                 .contains(&(i.d() as usize))
         {
-            if count == 0 {
+            if captures.is_empty() {
                 return Ok((
                     vec![self.assign(i.a(), Expr::Function(Box::new(function)))],
-                    0,
+                    count,
                 ));
             }
             return Ok((

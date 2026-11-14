@@ -1,9 +1,35 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { Decompiled, Outcome } from "../lib/domain.ts";
-import { initialOptions } from "../lib/domain.ts";
+import { configuration, contractMaps, initialOptions } from "../lib/domain.ts";
 import type { ImportedFile } from "../lib/models.ts";
 import { admitOutcome, mergedSelection, processingIdentity } from "../lib/workspace-state.ts";
+
+test("Roblox presentation uses the observed filename only as a bounded module name hint", () => {
+  const config = configuration(
+    initialOptions,
+    "ReplicatedStorage/ClientServices/Button.bc",
+    {},
+    contractMaps("{}"),
+  );
+  assert.equal(config.naming, "roblox");
+  assert.equal(config.naming_options.module_name_hint, "Button");
+  assert.equal(
+    configuration(initialOptions, "Button\nName.bc", {}, contractMaps("{}")).naming_options
+      .module_name_hint,
+    "Button_Name",
+  );
+  assert.deepEqual(Object.keys(config.typing.binding_types), []);
+  const unicode = configuration(
+    initialOptions,
+    "\u{1f600}".repeat(200) + ".bc",
+    {},
+    contractMaps("{}"),
+  );
+  assert.ok(
+    new TextEncoder().encode(unicode.naming_options.module_name_hint || "").byteLength <= 256,
+  );
+});
 
 function outcome(source: string, bytes: number): Outcome {
   return { status: "complete", result: { source } as Decompiled, resultBytes: bytes };

@@ -38,7 +38,12 @@ try{
     $Destination=[IO.Path]::GetFullPath($Destination)
     $sourceArchive=Join-Path $archives ('luau-decompiler-'+$version+'-source.zip')
     $sourceHash=Write-SourceZip $taskRoot $currentSources $snapshotJson $sourceArchive
-    $provenance=[ordered]@{executable_sha256=$cliHash;semantic_gate_sha256=(Get-FileHash artifacts/release-gate.json -Algorithm SHA256).Hash.ToLowerInvariant();source_archive=[ordered]@{name=[IO.Path]::GetFileName($sourceArchive);sha256=$sourceHash};evidence_archive=('luau-decompiler-'+$version+'-evidence.zip');quality_tools=($tools|Select-Object analyzer_sha256,manifest_sha256,harness_sha256,upstream_revision,definitions_sha256,definitions_revision,definitions_license_sha256)}
+    $runtimeTools=[ordered]@{}
+    foreach($name in @('protocol','analyzer_sha256','manifest_sha256','harness_sha256','upstream_revision','definitions_sha256','definitions_revision','definitions_license_sha256')){
+        if(-not $tools.Contains($name) -or -not $tools[$name]){throw ('Runtime quality-tool provenance is missing: '+$name)}
+        $runtimeTools[$name]=$tools[$name]
+    }
+    $provenance=[ordered]@{executable_sha256=$cliHash;semantic_gate_sha256=(Get-FileHash artifacts/release-gate.json -Algorithm SHA256).Hash.ToLowerInvariant();source_archive=[ordered]@{name=[IO.Path]::GetFileName($sourceArchive);sha256=$sourceHash};evidence_archive=('luau-decompiler-'+$version+'-evidence.zip');quality_tools=$runtimeTools}
     $null=New-RuntimePackage $taskRoot $runtime $version $cli (Join-Path $taskRoot $tools.analyzer_path) (Join-Path $taskRoot $tools.manifest_path) $provenance
     $runtimeArchive=Join-Path $archives ('luau-decompiler-'+$version+'-windows-x64.zip')
     $runtimeHash=Write-PortableZip $runtime $runtimeArchive

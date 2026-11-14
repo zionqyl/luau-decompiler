@@ -1,6 +1,6 @@
 # Candidate support matrix
 
-This matrix describes `0.4.0-rc.4`. Completed checks and pending release boundaries are recorded in the [release assessment](release-candidate.md). An implemented path is not automatically a tested platform or native integration.
+This matrix describes the implemented `0.4.0-rc.5` candidate scope. Rc.4 platform and live-integration observations below are historical evidence, not fresh rc.5 certification. Completed checks and pending release boundaries are recorded in the [release assessment](release-candidate.md). An implemented path is not automatically a tested platform or native integration.
 
 | Input/workflow | Implemented scope | Evidence boundary |
 | --- | --- | --- |
